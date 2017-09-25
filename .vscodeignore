@@ -1,0 +1,13 @@
+# Ignore Everything
+*
+*/**
+# Whitelist Distribution Contents
+!CHANGELOG.md
+!LICENSE
+!README.md
+!icon.png
+!demo/*.gif
+!node_modules/**
+!out/src/**/*.js
+!package-lock.json
+!package.json
