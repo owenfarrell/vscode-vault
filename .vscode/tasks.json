@@ -1,0 +1,50 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "taskName": "start vault",
+            "type": "shell",
+            "command": "vault",
+            "isBackground": true,
+            "args": [
+                "server",
+                "-dev"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "taskName": "install",
+            "type": "shell",
+            "command": "npm",
+            "args": [
+                "install"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "taskName": "npm",
+            "type": "shell",
+            "command": "npm",
+            "isBackground": true,
+            "args": [
+                "run",
+                "compile",
+                "--loglevel",
+                "silent"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": "$tsc-watch"
+        }
+    ]
+}

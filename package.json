@@ -1,0 +1,109 @@
+{
+    "name": "vscode-vault",
+    "version": "1.0.0",
+    "publisher": "owenfarrell",
+    "engines": {
+        "vscode": "^1.18.1"
+    },
+    "license": "MIT",
+    "displayName": "Vault",
+    "description": "Manages interactions with HashiCorp Vault",
+    "categories": [
+        "Other"
+    ],
+    "keywords": [
+        "HashiCorp",
+        "Vault",
+        "Secret",
+        "Password"
+    ],
+    "homepage": "https://github.com/owenfarrell/vscode-vault/",
+    "bugs": {
+        "url": "https://github.com/owenfarrell/vscode-vault/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/owenfarrell/vscode-vault.git"
+    },
+    "galleryBanner": {},
+    "main": "./out/src/extension",
+    "contributes": {
+        "configuration": {
+            "type": "object",
+            "title": "Vault Configuration",
+            "properties": {
+                "vault.trustedAuthorities": {
+                    "type": "array",
+                    "description": "A set of trusted authorities for which strict SSL checking will be skipped.",
+                    "items": {
+                        "description": "The hostname and port of a trusted Vault service",
+                        "type": "string"
+                    }
+                },
+                "vault.clipboardTimeout": {
+                    "type": "number",
+                    "default": 60,
+                    "description": "Specifies the amount of time (in seconds) for which a copied value will be available on the clipboard."
+                }
+            }
+        },
+        "commands": [
+            {
+                "command": "vault.connect",
+                "title": "Connect to Server",
+                "category": "Vault"
+            },
+            {
+                "command": "vault.delete",
+                "title": "Delete Secret",
+                "category": "Vault"
+            },
+            {
+                "command": "vault.list",
+                "title": "List Secrets",
+                "category": "Vault"
+            },
+            {
+                "command": "vault.read",
+                "title": "Read Secret",
+                "category": "Vault"
+            },
+            {
+                "command": "vault.write",
+                "title": "Write Secret",
+                "category": "Vault"
+            }
+        ]
+    },
+    "activationEvents": [
+        "onCommand:vault.connect",
+        "onCommand:vault.delete",
+        "onCommand:vault.list",
+        "onCommand:vault.read",
+        "onCommand:vault.write"
+    ],
+    "badges": [],
+    "markdown": "github",
+    "dependencies": {
+        "clipboardy": "^1.2.2",
+        "flat": "^4.0.0",
+        "node-vault": "^0.7.1",
+        "validator": "^9.1.2",
+        "vscode-uri": "^1.0.1"
+    },
+    "devDependencies": {
+        "@types/clipboardy": "^1.1.0",
+        "@types/mocha": "^2.2.44",
+        "@types/node": "^8.0.53",
+        "@types/node-vault": "^0.5.1",
+        "mocha": "^4.0.1",
+        "typescript": "^2.6.2",
+        "vscode": "^1.1.8"
+    },
+    "scripts": {
+        "vscode:prepublish": "tsc -p ./",
+        "compile": "tsc -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install"
+    },
+    "icon": "icon.png"
+}
