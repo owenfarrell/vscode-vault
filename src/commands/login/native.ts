@@ -16,7 +16,7 @@ function validateVaultToken(userInput: string): string | undefined {
     return isUUID(userInput) ? undefined : "Not a valid vault token";
 }
 
-export default function(endpoint: string): Thenable<VaultToken> {
+export default function (endpoint: string): Thenable<VaultToken> {
     // If a token file exists
     if (fs.existsSync(nativeTokenPath)) {
         // Get the last modified timestamp of the token file
