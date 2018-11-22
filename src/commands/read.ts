@@ -2,7 +2,6 @@
 
 import { default as connect } from "./connect";
 
-import * as clipboardy from "clipboardy";
 import { flatten } from "flat";
 import * as vscode from "vscode";
 
