@@ -5,7 +5,7 @@
 [![Rating](https://vsmarketplacebadge.apphb.com/rating-short/owenfarrell.vscode-vault.svg)](https://marketplace.visualstudio.com/items?itemName=owenfarrell.vscode-vault#review-details)
 
 [![Build Status](https://travis-ci.org/owenfarrell/vscode-vault.svg?branch=master)](https://travis-ci.org/owenfarrell/vscode-vault)
-[![bitHound Overall Score](https://www.bithound.io/github/owenfarrell/vscode-vault/badges/score.svg)](https://www.bithound.io/github/owenfarrell/vscode-vault)
+[![Maintainability](https://api.codeclimate.com/v1/badges/343b07ecb104cb3e50ee/maintainability)](https://codeclimate.com/github/owenfarrell/vscode-vault/maintainability)
 
 [Visual Studio Code](https://code.visualstudio.com/) (VS Code) extension that provides the ability to interact with HashiCorp Vault servers.
 
