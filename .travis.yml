@@ -1,4 +1,15 @@
 language: node_js
 node_js:
-  - "lts/*"
+- lts/*
 cache: npm
+
+before_script:
+- curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 -o cc-test-reporter
+- chmod +x ./cc-test-reporter
+- ./cc-test-reporter before-build
+after_script:
+- ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+
+env:
+  global:
+    secure: ugDv3ALrI6hFqULty/3xRTTVmMzZvugFSWVhdE795IAGWT/jaVuAga1X8U2vsocaSKCfYbDH6a2M+Fj91Wd6RVbrZo/ESYsIa2fBCpETsYS9gjPDVKGahN+45b/VEMBRXfT2BPkOpFiEiBpu3MbMqTj2u0MBiy58O7DduL7KGJd2J3pseiswBR1taqd0L7P88KboLbsLDavlC3tmH/7SvMiPqh3nIEGTL9VEFL/HmFlgQFybquJBn3H2pz3Gh0B/81/EzzDNLJ2Av6bHIlyV3/U45LaHgFqaXF0BHJLJw6fIMc2PjToY8+1KNyGZ34XEXnuwALxGBK/OYALUZ08KbmwxKx80gn4PqOt3w1EzFWiN+z3ZjC5qiSUHhbdiBXr5JqAh1rgF8jTDMt8OGDQXMSiniHxSrVwztTNtMI6T3Itinq8QjZG/fHwPRQ2sYZCqopNPzhnd4cTm3YrKfciVtg28Q1j1SCEX+mMlRdlDnuG3fhi0JmAuyxBdzWqUWW2xDTPTUU8dMfJhvngaZs2ep1Yv4TQhrrplAvewEMWavqVZI1uZJ0gT4idwufnLe4EUMg5dh99OObNY8hxvD/IN83y6kKCuHT11nYma47WOVDrnMc7UQgrqjH3r+shxJ0PodwlNp1OR+KGi34OiAVtP3aOqt0/N3XVvJCwyaN3HJf0=
