@@ -88,16 +88,16 @@
         "clipboardy": "^1.2.3",
         "flat": "^4.1.0",
         "node-vault": "^0.9.12",
-        "validator": "^10.9.0",
-        "vscode-uri": "^1.0.6"
+        "validator": "^10.11.0",
+        "vscode-uri": "^1.0.8"
     },
     "devDependencies": {
         "@types/clipboardy": "^1.1.0",
-        "@types/mocha": "^5.2.5",
-        "@types/node": "^10.12.11",
+        "@types/mocha": "^5.2.7",
+        "@types/node": "^10.17.11",
         "@types/node-vault": "^0.5.3",
         "mocha": "^5.2.0",
-        "typescript": "^3.2.1",
+        "typescript": "^3.7.4",
         "vsce": "^1.71.0",
         "vscode": "^1.1.36"
     },
