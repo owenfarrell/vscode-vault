@@ -98,7 +98,7 @@
         "@types/node-vault": "^0.5.3",
         "mocha": "^5.2.0",
         "typescript": "^3.2.1",
-        "vscode": "^1.1.22"
+        "vscode": "^1.1.36"
     },
     "scripts": {
         "vscode:prepublish": "tsc -p ./",
