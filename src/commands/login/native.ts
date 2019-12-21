@@ -5,16 +5,11 @@ import { VaultToken } from "../../model";
 import * as fs from "fs";
 import * as os from "os";
 import * as Path from "path";
-import { isUUID } from "validator";
 import * as vscode from "vscode";
 
 const nativeTokenPath: string = Path.resolve(os.homedir(), ".vault-token");
 let nativeToken: string = process.env.VAULT_TOKEN;
 let nativeTokenTime: Date = new Date(nativeToken ? Date.now() - (process.uptime() * 1000) : 0);
-
-function validateVaultToken(userInput: string): string | undefined {
-    return isUUID(userInput) ? undefined : "Not a valid vault token";
-}
 
 export default function (endpoint: string): Thenable<VaultToken> {
     // If a token file exists
@@ -31,7 +26,7 @@ export default function (endpoint: string): Thenable<VaultToken> {
         }
     }
     // Prompt for the vault token
-    return vscode.window.showInputBox({ prompt: "Enter Vault token", value: nativeToken, validateInput: validateVaultToken })
+    return vscode.window.showInputBox({ prompt: "Enter Vault token", value: nativeToken })
         // If input was collected, continue, otherwise break the chain
         .then((userInput: string) => userInput || Promise.reject("Not connected to Vault (no token provided)"))
         // Reset the client with the new endpoint address
