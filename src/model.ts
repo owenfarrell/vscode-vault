@@ -43,7 +43,6 @@ export class VaultSession implements vscode.Disposable {
     }
 
     cacheToken(token: VaultToken): void {
-        this.client.token = token.id;
         if (token.renewable === true) {
             let ms = 900 * token.ttl;
             this._tokenTimer = setTimeout(() => this.renewToken(), ms);
