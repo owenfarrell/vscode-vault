@@ -26,7 +26,7 @@
         "url": "https://github.com/owenfarrell/vscode-vault.git"
     },
     "galleryBanner": {},
-    "main": "./out/src/extension",
+    "main": "./dist/extension",
     "contributes": {
         "configuration": {
             "type": "object",
@@ -87,24 +87,30 @@
     "dependencies": {
         "clipboardy": "^1.2.3",
         "flat": "^4.1.0",
-        "node-vault": "^0.9.12",
+        "node-vault": "^0.9.15",
         "validator": "^10.11.0",
         "vscode-uri": "^1.0.8"
     },
     "devDependencies": {
         "@types/clipboardy": "^1.1.0",
         "@types/mocha": "^5.2.7",
-        "@types/node": "^10.17.11",
+        "@types/node": "^10.17.18",
         "@types/node-vault": "^0.5.3",
+        "ajv": "^6.9.1",
         "mocha": "^5.2.0",
-        "typescript": "^3.7.4",
-        "vsce": "^1.71.0",
-        "vscode": "^1.1.36"
+        "ts-loader": "^6.2.2",
+        "typescript": "^3.8.3",
+        "vsce": "^1.74.0",
+        "vscode": "^1.1.36",
+        "webpack": "^4.42.1",
+        "webpack-cli": "^3.3.11"
     },
     "scripts": {
         "package": "vsce package",
-        "vscode:prepublish": "tsc -p ./",
-        "compile": "tsc -watch -p ./",
+        "vscode:prepublish": "webpack --mode production",
+        "test-compile": "tsc -p ./",
+        "compile": "webpack --mode development --watch",
+        "webpack": "webpack --mode development",
         "postinstall": "node ./node_modules/vscode/bin/install"
     },
     "icon": "icon.png"
