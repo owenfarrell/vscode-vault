@@ -61,7 +61,11 @@
             {
                 "command": "vault.list",
                 "title": "List Secrets",
-                "category": "Vault"
+                "category": "Vault",
+                "icon": {
+                    "light": "resources/light/refresh.svg",
+                    "dark": "resources/dark/refresh.svg"
+                }
             },
             {
                 "command": "vault.read",
@@ -71,9 +75,55 @@
             {
                 "command": "vault.write",
                 "title": "Write Secret",
-                "category": "Vault"
+                "category": "Vault",
+                "icon": {
+                    "light": "resources/light/edit.svg",
+                    "dark": "resources/dark/edit.svg"
+                }
             }
-        ]
+        ],
+        "viewsContainers": {
+            "vault": [
+                {
+                    "id": "vault",
+                    "title": "Vault Explorer",
+                    "icon": "resources/viewContainer.svg"
+                }
+            ]
+        },
+        "views": {
+            "vault": [
+                {
+                    "id": "vault",
+                    "name": "Vault Secrets",
+                    "when": "vault"
+                }
+            ]
+        },
+        "menus": {
+            "view/title": [
+                {
+                    "command": "vault.list",
+                    "when": "view == vault",
+                    "group": "navigation"
+                },
+                {
+                    "command": "vault.write",
+                    "when": "view == vault"
+                }
+            ],
+            "view/item/context": [
+                {
+                    "command": "vault.write",
+                    "when": "view == vault && viewItem == secret",
+                    "group": "inline"
+                },
+                {
+                    "command": "vault.delete",
+                    "when": "view == vault && viewItem == secret"
+                }
+            ]
+        }
     },
     "activationEvents": [
         "onCommand:vault.connect",
