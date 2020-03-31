@@ -87,18 +87,18 @@
     "dependencies": {
         "clipboardy": "^1.2.3",
         "flat": "^4.1.0",
-        "node-vault": "^0.9.12",
+        "node-vault": "0.9.13",
         "validator": "^10.11.0",
         "vscode-uri": "^1.0.8"
     },
     "devDependencies": {
         "@types/clipboardy": "^1.1.0",
         "@types/mocha": "^5.2.7",
-        "@types/node": "^10.17.11",
+        "@types/node": "^10.17.18",
         "@types/node-vault": "^0.5.3",
         "mocha": "^5.2.0",
-        "typescript": "^3.7.4",
-        "vsce": "^1.71.0",
+        "typescript": "^3.8.3",
+        "vsce": "^1.74.0",
         "vscode": "^1.1.36"
     },
     "scripts": {
