@@ -83,7 +83,7 @@
             }
         ],
         "viewsContainers": {
-            "vault": [
+            "activitybar": [
                 {
                     "id": "vault",
                     "title": "Vault Explorer",
@@ -95,23 +95,11 @@
             "vault": [
                 {
                     "id": "vault",
-                    "name": "Vault Secrets",
-                    "when": "vault"
+                    "name": "Vault Secrets"
                 }
             ]
         },
         "menus": {
-            "view/title": [
-                {
-                    "command": "vault.list",
-                    "when": "view == vault",
-                    "group": "navigation"
-                },
-                {
-                    "command": "vault.write",
-                    "when": "view == vault"
-                }
-            ],
             "view/item/context": [
                 {
                     "command": "vault.write",
