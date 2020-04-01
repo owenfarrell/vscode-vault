@@ -87,7 +87,7 @@
     "dependencies": {
         "clipboardy": "^1.2.3",
         "flat": "^4.1.0",
-        "node-vault": "^0.9.15",
+        "node-vault": "0.9.13",
         "validator": "^10.11.0",
         "vscode-uri": "^1.0.8"
     },

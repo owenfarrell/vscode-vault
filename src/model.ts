@@ -1,5 +1,7 @@
 "use strict";
 
+import * as adaptors from "./adaptors";
+
 import * as clipboardy from "clipboardy";
 import * as nv from "node-vault";
 import Uri from "vscode-uri";
@@ -10,6 +12,7 @@ export class VaultSession implements vscode.Disposable {
     private _clientOptions: any = { followAllRedirects: true, strictSSL: true };
     private _clipboardTimer: NodeJS.Timer;
     private _outputChannel: vscode.OutputChannel;
+    private _secretMounts = {};
     private _statusBar: vscode.StatusBarItem;
     private _statusBarTimer: NodeJS.Timer;
     private _tokenTimer: NodeJS.Timer;
@@ -71,6 +74,7 @@ export class VaultSession implements vscode.Disposable {
 
     reset(endpoint: string, token?: string): Promise<any> {
         this._tokenTimer && clearTimeout(this._tokenTimer);
+        this._secretMounts = {};
         return Promise.resolve(this.client.token && this.client.tokenRevokeSelf())
             .then((result: any) => result && this.log("Successfully revoked client token", "sign-out"))
             .catch((err: any) => this.logError(err))
@@ -78,7 +82,15 @@ export class VaultSession implements vscode.Disposable {
                 this.client.token = token;
                 this.client.endpoint = endpoint;
                 this.updateOptions();
-            });
+            }).then(() => this.client.mounts())
+            .then((mounts: any) => mounts.data)
+            .then((data: any) => Object.keys(data).forEach((mountPoint) => {
+                let adaptor = adaptors.getAdaptor(data[mountPoint]);
+                if (adaptor !== undefined) {
+                    adaptor.adapt(mountPoint, this.client);
+                    this._secretMounts[mountPoint] = adaptor;
+                }
+            }));
     }
 
     private clearClipboard(): void {
