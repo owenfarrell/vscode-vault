@@ -7,6 +7,6 @@
 !README.md
 !icon.png
 !demo/*.gif
-!dist/
+!dist/extension.js
 !package-lock.json
 !package.json
