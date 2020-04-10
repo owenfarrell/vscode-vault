@@ -12,7 +12,7 @@ export class VaultSession implements vscode.Disposable {
     private _clientOptions: any = { followAllRedirects: true, strictSSL: true };
     private _clipboardTimer: NodeJS.Timer;
     private _outputChannel: vscode.OutputChannel;
-    private _secretMounts = {};
+    private _secretMounts;
     private _statusBar: vscode.StatusBarItem;
     private _statusBarTimer: NodeJS.Timer;
     private _tokenTimer: NodeJS.Timer;
@@ -58,6 +58,26 @@ export class VaultSession implements vscode.Disposable {
         }
     }
 
+    getSecretMounts(): Thenable<any> {
+        let promise : Thenable<any>;
+        if (this._secretMounts) {
+            promise = Promise.resolve();
+        }
+        else {
+            this._secretMounts = {};
+            promise = this.client.mounts()
+                .then((mounts: any) => mounts.data)
+                .then((data: any) => Object.keys(data).forEach((mountPoint) => {
+                    let adaptor = adaptors.getAdaptor(data[mountPoint]);
+                    if (adaptor !== undefined) {
+                        adaptor.adapt(mountPoint, this.client);
+                        this._secretMounts[mountPoint] = adaptor;
+                    }
+                }));
+        };
+        return promise.then(() => Object.keys(this._secretMounts));
+    }
+
     logError(msg: string) {
         vscode.window.showErrorMessage(msg);
         this.log(msg);
@@ -81,16 +101,9 @@ export class VaultSession implements vscode.Disposable {
             .then(() => {
                 this.client.token = token;
                 this.client.endpoint = endpoint;
+                this._secretMounts = undefined;
                 this.updateOptions();
-            }).then(() => this.client.mounts())
-            .then((mounts: any) => mounts.data)
-            .then((data: any) => Object.keys(data).forEach((mountPoint) => {
-                let adaptor = adaptors.getAdaptor(data[mountPoint]);
-                if (adaptor !== undefined) {
-                    adaptor.adapt(mountPoint, this.client);
-                    this._secretMounts[mountPoint] = adaptor;
-                }
-            }));
+            });
     }
 
     private clearClipboard(): void {
