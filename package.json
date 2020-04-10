@@ -94,8 +94,12 @@
         "views": {
             "vault": [
                 {
-                    "id": "vault",
-                    "name": "Vault Secrets"
+                    "id": "vaults",
+                    "name": "Vaults"
+                },
+                {
+                    "id": "vault-secrets",
+                    "name": "Secrets"
                 }
             ]
         },
@@ -133,7 +137,6 @@
         "@types/clipboardy": "^1.1.0",
         "@types/mocha": "^5.2.7",
         "@types/node": "^10.17.18",
-        "@types/node-vault": "^0.5.3",
         "ajv": "^6.9.1",
         "mocha": "^5.2.0",
         "ts-loader": "^6.2.2",
