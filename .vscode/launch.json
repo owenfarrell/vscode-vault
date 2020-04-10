@@ -16,7 +16,7 @@
             "outFiles": [
                 "${workspaceRoot}/dist/extension.js"
             ],
-            "preLaunchTask": "npm"
+            "preLaunchTask": "npm: webpack"
         },
         {
             "name": "Launch Tests",
