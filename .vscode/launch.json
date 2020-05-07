@@ -16,7 +16,10 @@
             "outFiles": [
                 "${workspaceRoot}/dist/extension.js"
             ],
-            "preLaunchTask": "npm: webpack"
+            "preLaunchTask": "npm: webpack",
+            "env": {
+                "VAULT_ADDR": "http://localhost:8200"
+            }
         },
         {
             "name": "Launch Tests",

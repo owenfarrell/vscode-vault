@@ -1,9 +1,10 @@
 "use strict";
 
-import { VaultToken } from "../model";
+import { VaultSession } from "../model";
 import * as login from "./login";
 
-import { isURL } from "validator";
+import { URL } from 'url';
+import validator from "validator";
 import * as vscode from "vscode";
 
 const authenticationItems: vscode.CallableQuickPickItem[] = [
@@ -13,21 +14,39 @@ const authenticationItems: vscode.CallableQuickPickItem[] = [
 ];
 
 function validateURL(userInput: string): string | undefined {
-    return isURL(userInput, { require_tld: false }) ? undefined : "Not a valid URL";
+    return validator.isURL(userInput, { require_tld: false }) ? undefined : "Not a valid URL";
 }
 
-export default function (lax: boolean = false): Thenable<any> {
-    let newEndpoint: string;
-    // If a token already exists and lax mode is enabled, return the existing token, otherwise prompt for the vault address
-    return vscode.window.vault.client.token && lax === true ? Promise.resolve(vscode.window.vault.client.token) : vscode.window.showInputBox({ value: vscode.window.vault.client.endpoint, prompt: "Enter the address of your vault server", validateInput: validateURL })
-        // If input was collected, cache the input, otherwise cancel
-        .then((userInput: string) => (newEndpoint = userInput) || Promise.reject("Not connected to Vault (no endpoint provided)"))
-        // Show the list of authentication options
-        .then(() => vscode.window.showQuickPick(authenticationItems, { placeHolder: "Select an authentication backend" }))
-        // If input was collected, continue, otherwise cancel
-        .then((selectedItem: vscode.CallableQuickPickItem) => selectedItem || Promise.reject("Not connected to Vault (no authentication selected)"))
-        // Execute the selected item's callback method
-        .then((selectedItem: vscode.CallableQuickPickItem) => selectedItem.callback(newEndpoint))
-        .then((token: VaultToken) => vscode.window.vault.cacheToken(token))
-        .then(() => vscode.window.vault.log(`Connected to ${newEndpoint}`, "shield"));
+export default async function (): Promise<VaultSession> {
+    let endpoint = await vscode.window.showInputBox({ prompt: "Enter the address of your vault server", validateInput: validateURL, value: process.env.VAULT_ADDR });
+    if (endpoint === undefined) {
+        return;
+    }
+    // Remove any trailing slash from the input
+    endpoint = endpoint.replace(/\/$/, "");
+
+    let endpointUrl = new URL(endpoint);
+    let name = await vscode.window.showInputBox({ prompt: "Enter the friendly name of your vault", value: endpointUrl.host });
+    if (name === undefined) {
+        return;
+    }
+
+    // Show the list of authentication options
+    let selectedItem = await vscode.window.showQuickPick(authenticationItems, { placeHolder: "Select an authentication backend" });
+    if (selectedItem === undefined) {
+        return;
+    }
+
+    let session = new VaultSession(name);
+    session.client.endpoint = endpoint;
+
+    let token = await selectedItem.callback(session.client);
+    if (token === undefined) {
+        return;
+    }
+
+    session.cacheToken(token);
+    vscode.window.vault.log(`Connected to ${endpointUrl}`, "shield");
+
+    return session;
 }

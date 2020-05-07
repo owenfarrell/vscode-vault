@@ -10,3 +10,4 @@
 !dist/extension.js
 !package-lock.json
 !package.json
+!resources/**/*.svg
