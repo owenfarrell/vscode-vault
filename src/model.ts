@@ -27,9 +27,9 @@ export class VaultSession implements vscode.Disposable {
     //#endregion
 
     public async cacheMountPoints(): Promise<void> {
-        let mounts: any = await this.client.mounts();
-        for (let key in mounts.data) {
-            let adaptor = adaptors.getAdaptor(mounts.data[key]);
+        const mounts: any = await this.client.mounts();
+        for (const key in mounts.data) {
+            const adaptor = adaptors.getAdaptor(mounts.data[key]);
             if (adaptor !== undefined) {
                 vscode.window.vault.log(`Adapting '${key}' for ${adaptor.label} `);
                 adaptor.adapt(key, this.client);
@@ -47,12 +47,12 @@ export class VaultSession implements vscode.Disposable {
     //#region Session Management
     public cacheToken(token: VaultToken): void {
         if (token.renewable === true) {
-            let ms = 900 * token.ttl;
+            const ms = 900 * token.ttl;
             this._tokenTimer = setTimeout(() => this.renewToken(), ms);
             vscode.window.vault.log(`Scheduling renewal of token in ${ms}ms`, 'clock');
         }
         else if (token.ttl > 0) {
-            let ms = 1000 * token.ttl;
+            const ms = 1000 * token.ttl;
             this._tokenTimer = setTimeout(() => this.clearToken(), ms);
             vscode.window.vault.log(`Scheduling cleanup of token in ${ms}ms`, 'clock');
         }
@@ -64,8 +64,8 @@ export class VaultSession implements vscode.Disposable {
 
     private async renewToken(): Promise<any> {
         try {
-            let tokenRenewResult = await this.client.tokenRenewSelf();
-            let token: VaultToken = { id: tokenRenewResult.auth.client_token, renewable: tokenRenewResult.renewable, ttl: tokenRenewResult.lease_duration };
+            const tokenRenewResult = await this.client.tokenRenewSelf();
+            const token: VaultToken = { id: tokenRenewResult.auth.client_token, renewable: tokenRenewResult.renewable, ttl: tokenRenewResult.lease_duration };
             this.cacheToken(token);
             vscode.window.vault.log(`Successfully renewed token for ${this.client.endpoint}`, 'key');
         }

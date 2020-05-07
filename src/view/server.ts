@@ -62,15 +62,15 @@ export class VaultServerTreeItem extends VaultTreeItem {
         // Add a trailing slash
         browseablePath += browseablePath.endsWith('/') ? '' : '/';
 
-        let adaptor = await vscode.window.showQuickPick(adaptors.adaptorList, { placeHolder: 'Select engine type' });
+        const adaptor = await vscode.window.showQuickPick(adaptors.adaptorList, { placeHolder: 'Select engine type' });
         if (adaptor === undefined) {
             return;
         }
 
-        let mountPoint = browseablePath.split('/')[0];
+        const mountPoint = browseablePath.split('/')[0];
         this._session.mount(mountPoint, adaptor);
 
-        let treeItem = new VaultPathTreeItem(browseablePath, this);
+        const treeItem = new VaultPathTreeItem(browseablePath, this);
         if (this.children === undefined) {
             this.children = [treeItem];
         }

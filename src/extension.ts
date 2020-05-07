@@ -6,7 +6,7 @@ import * as view from './view';
 import * as vscode from 'vscode';
 
 export function activate(context: vscode.ExtensionContext) {
-    let session = vscode.window.vault = new VaultWindow();
+    const session = vscode.window.vault = new VaultWindow();
     // Load the configuration to start
     loadConfiguration();
     // Subscribe to configuration event changes
@@ -16,7 +16,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(session);
 
     // Create a tree view
-    let treeDataProvider = new view.VaultProvider();
+    const treeDataProvider = new view.VaultProvider();
     vscode.window.createTreeView('vaultSecrets', { treeDataProvider: treeDataProvider });
     // Subscribe to "vault.browse" events
     vscode.commands.registerCommand('vault.browse', (treeItem: view.VaultServerTreeItem) => treeItem.browse().then((requiresRefresh: boolean) => requiresRefresh === true && treeDataProvider.refresh(treeItem)).catch((error: any) => vscode.window.vault.logError(error)));
@@ -36,7 +36,7 @@ export function deactivate() {
 }
 
 function loadConfiguration() {
-    let configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('vault');
+    const configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('vault');
     vscode.window.vault.trustedAuthorities = <string[]>configuration.get('trustedAuthorities');
     vscode.window.vault.clipboardTimeout = <number>configuration.get('clipboardTimeout') * 1000;
 }

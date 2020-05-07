@@ -28,11 +28,11 @@ export class VaultPathTreeItem extends VaultTreeItem {
     async refresh(): Promise<any> {
         vscode.window.vault.log(`Refreshing path ${this.path}`);
         try {
-            let client = this.getClient();
-            let pathList = await commands.list(client, this.path);
+            const client = this.getClient();
+            const pathList = await commands.list(client, this.path);
 
             this.children = pathList.map((element: string) => {
-                let ChildTreeItem = element.endsWith('/') ? VaultPathTreeItem : VaultSecretTreeItem;
+                const ChildTreeItem = element.endsWith('/') ? VaultPathTreeItem : VaultSecretTreeItem;
                 return new ChildTreeItem(element, this);
             });
         }
@@ -52,7 +52,7 @@ export class VaultPathTreeItem extends VaultTreeItem {
 
     //#region Custom Command Methods
     async write(): Promise<boolean> {
-        let client = this.getClient();
+        const client = this.getClient();
         return commands.write(client, this.path);
     }
     //#endregion

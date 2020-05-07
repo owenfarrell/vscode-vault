@@ -19,33 +19,33 @@ function parseFields(input: string): UserInput {
     }
     else {
         data = {};
-        let regex: RegExp = /([\w_]+)=([^ \n]+)/g;
+        const regex: RegExp = /([\w_]+)=([^ \n]+)/g;
         let match: RegExpExecArray;
         while ((match = regex.exec(input)) !== null) {
-            let key: string = match[1];
-            let value: string = match[2];
+            const key: string = match[1];
+            const value: string = match[2];
             data[key] = value;
         }
     }
-    let fieldCount: number = Object.keys(data).length;
+    const fieldCount: number = Object.keys(data).length;
     vscode.window.vault.log(`Parsed ${fieldCount} fields`);
     return { data: data, fieldCount: fieldCount };
 }
 
 export default async function(client: nv.client, path: string): Promise<boolean> {
-    let pathValidator = (userInput: string) => userInput.startsWith(path) ? null : 'Not a child of this path';
+    const pathValidator = (userInput: string) => userInput.startsWith(path) ? null : 'Not a child of this path';
     path = await vscode.window.showInputBox({ prompt: 'Enter path to write to Vault', validateInput: pathValidator, value: path });
     if (path === undefined) {
         return;
     }
 
-    let fieldValidator = (userInput: string) => validator.isJSON(userInput) || keyValuePairRegex.test(userInput) ? null : 'Must be JSON or key/value pairs';
-    let userInput = await vscode.window.showInputBox({ prompt: 'Enter data to write', placeHolder: 'Enter JSON or key=value pairs', validateInput: fieldValidator });
+    const fieldValidator = (userInput: string) => validator.isJSON(userInput) || keyValuePairRegex.test(userInput) ? null : 'Must be JSON or key/value pairs';
+    const userInput = await vscode.window.showInputBox({ prompt: 'Enter data to write', placeHolder: 'Enter JSON or key=value pairs', validateInput: fieldValidator });
     if (userInput === undefined) {
         return;
     }
 
-    let parsedInput = parseFields(userInput);
+    const parsedInput = parseFields(userInput);
     if (parsedInput.fieldCount === 0) {
         return;
     }

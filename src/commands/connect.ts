@@ -25,22 +25,22 @@ export default async function(): Promise<VaultSession> {
     // Remove any trailing slash from the input
     endpoint = endpoint.replace(/\/$/, '');
 
-    let endpointUrl = new URL(endpoint);
-    let name = await vscode.window.showInputBox({ prompt: 'Enter the friendly name of your vault', value: endpointUrl.host });
+    const endpointUrl = new URL(endpoint);
+    const name = await vscode.window.showInputBox({ prompt: 'Enter the friendly name of your vault', value: endpointUrl.host });
     if (name === undefined) {
         return;
     }
 
     // Show the list of authentication options
-    let selectedItem = await vscode.window.showQuickPick(authenticationItems, { placeHolder: 'Select an authentication backend' });
+    const selectedItem = await vscode.window.showQuickPick(authenticationItems, { placeHolder: 'Select an authentication backend' });
     if (selectedItem === undefined) {
         return;
     }
 
-    let session = new VaultSession(name);
+    const session = new VaultSession(name);
     session.client.endpoint = endpoint;
 
-    let token = await selectedItem.callback(session.client);
+    const token = await selectedItem.callback(session.client);
     if (token === undefined) {
         return;
     }

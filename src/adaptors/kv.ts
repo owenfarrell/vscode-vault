@@ -26,26 +26,26 @@ export class KeyValueVersion2Adaptor implements SecretsEngineAdaptor {
             KeyValueVersion2Adaptor.SHOWED_WARNING = true;
         }
 
-        let mountPointName = mountPoint.charAt(mountPoint.length - 1) === '/' ? mountPoint.slice(0, -1) : mountPoint;
-        let metadataRegex = RegExp('(\\/?' + mountPointName + '(?!\\/metadata))\\/?');
-        let dataRegex = RegExp('(\\/?' + mountPointName + '(?!\\/data))\\/?');
+        const mountPointName = mountPoint.charAt(mountPoint.length - 1) === '/' ? mountPoint.slice(0, -1) : mountPoint;
+        const metadataRegex = RegExp('(\\/?' + mountPointName + '(?!\\/metadata))\\/?');
+        const dataRegex = RegExp('(\\/?' + mountPointName + '(?!\\/data))\\/?');
 
-        let originalDeleteFunction = client.delete;
+        const originalDeleteFunction = client.delete;
         client.delete = function(path, requestOptions) {
             return originalDeleteFunction(path.replace(dataRegex, '$1/metadata/'), requestOptions);
         };
 
-        let originalListFunction = client.list;
+        const originalListFunction = client.list;
         client.list = function(path, requestOptions) {
             return originalListFunction(path.replace(metadataRegex, '$1/metadata/'), requestOptions);
         };
 
-        let originalReadFunction = client.read;
+        const originalReadFunction = client.read;
         client.read = function(path, requestOptions) {
             return originalReadFunction(path.replace(dataRegex, '$1/data/'), requestOptions);
         };
 
-        let originalWriteFunction = client.write;
+        const originalWriteFunction = client.write;
         client.write = function(path, data, requestOptions) {
             return originalWriteFunction(path.replace(dataRegex, '$1/data/'), { data: data }, requestOptions);
         };
