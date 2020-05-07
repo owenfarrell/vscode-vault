@@ -24,17 +24,17 @@ export class VaultSecretTreeItem extends VaultTreeItem {
 
     //#region Custom Command Methods
     async delete(): Promise<void> {
-        let client = this.getClient();
+        const client = this.getClient();
         return commands.delete(client, this.path);
     }
 
     async read(): Promise<void> {
-        let client = this.getClient();
+        const client = this.getClient();
         return commands.read(client, this.path);
     }
 
     async write(): Promise<boolean> {
-        let client = this.getClient();
+        const client = this.getClient();
         return commands.write(client, this.path);
     }
     //#endregion

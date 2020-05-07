@@ -9,21 +9,21 @@ const userpassLoginRequest = { mount_point: 'userpass', username: process.env.US
 
 export default async function(client: nv.client): Promise<VaultToken> {
     // Prompt the user for the authentication mount point
-    let newUserpassMountPoint = await vscode.window.showInputBox({ prompt: 'Enter userpass authentication mount point', value: userpassLoginRequest.mount_point });
+    const newUserpassMountPoint = await vscode.window.showInputBox({ prompt: 'Enter userpass authentication mount point', value: userpassLoginRequest.mount_point });
     // If input was collected, cache the input, otherwise cancel
     if (newUserpassMountPoint === undefined) {
         return;
     }
 
     // Prompt the user for the authentication username
-    let newUserpassUsername = await vscode.window.showInputBox({ prompt: 'Enter Username', value: userpassLoginRequest.username });
+    const newUserpassUsername = await vscode.window.showInputBox({ prompt: 'Enter Username', value: userpassLoginRequest.username });
     // If input was collected, cache the input, otherwise cancel
     if (newUserpassUsername === undefined) {
         return;
     }
 
     // Prompt the user for the authentication password
-    let newUserpassPassword = await vscode.window.showInputBox({ password: true, prompt: 'Enter Password', value: userpassLoginRequest.password });
+    const newUserpassPassword = await vscode.window.showInputBox({ password: true, prompt: 'Enter Password', value: userpassLoginRequest.password });
     // If input was collected, cache the input, otherwise cancel
     if (newUserpassPassword === undefined) {
         return;
@@ -35,6 +35,6 @@ export default async function(client: nv.client): Promise<VaultToken> {
     userpassLoginRequest.password = newUserpassPassword;
 
     vscode.window.vault.log('Logging in with username and password', 'person');
-    let userpassLoginResult = await client.userpassLogin(userpassLoginRequest);
+    const userpassLoginResult = await client.userpassLogin(userpassLoginRequest);
     return <VaultToken>{ id: userpassLoginResult.auth.client_token, renewable: userpassLoginResult.auth.renewable, ttl: userpassLoginResult.auth.lease_duration };
 }

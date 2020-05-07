@@ -16,7 +16,7 @@ export default async function(client: nv.client): Promise<VaultToken> {
     // If a token file exists
     if (fs.existsSync(nativeTokenPath)) {
         // Get the last modified timestamp of the token file
-        let lastModified: Date = fs.statSync(nativeTokenPath).mtime;
+        const lastModified: Date = fs.statSync(nativeTokenPath).mtime;
         vscode.window.vault.log(`Comparing last modified native token time (${nativeTokenTime}) to token file (${lastModified})`);
         // If the last modified timestamp of the token file is more recent than the most-recently cached token value
         if (lastModified > nativeTokenTime) {
@@ -27,7 +27,7 @@ export default async function(client: nv.client): Promise<VaultToken> {
         }
     }
     // Prompt for the vault token
-    let userInput = await vscode.window.showInputBox({ prompt: 'Enter Vault token', value: nativeToken });
+    const userInput = await vscode.window.showInputBox({ prompt: 'Enter Vault token', value: nativeToken });
     // If no input was collected, cancel
     if (userInput === undefined) {
         return;
@@ -36,7 +36,7 @@ export default async function(client: nv.client): Promise<VaultToken> {
     client.token = userInput;
     vscode.window.vault.log('Logging in with native token', 'key');
     // Lookup the token
-    let tokenLookupResult = await client.tokenLookupSelf();
+    const tokenLookupResult = await client.tokenLookupSelf();
     // Cache the token for future use
     return <VaultToken>{ id: tokenLookupResult.data.id, renewable: tokenLookupResult.data.renewable, ttl: tokenLookupResult.data.ttl };
 }

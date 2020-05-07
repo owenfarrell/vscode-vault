@@ -5,13 +5,13 @@ import * as nv from 'node-vault';
 import * as vscode from 'vscode';
 
 export default async function(client: nv.client, path: string): Promise<void> {
-    let result = await client.read(path);
-    let flattenedData: any = flat.flatten(result.data);
-    let items: vscode.SecretQuickPickItem[] = [];
-    for (let key in flattenedData) {
+    const result = await client.read(path);
+    const flattenedData: any = flat.flatten(result.data);
+    const items: vscode.SecretQuickPickItem[] = [];
+    for (const key in flattenedData) {
         items.push({ label: key, secretValue: flattenedData[key] });
     }
-    let selectedItem = items.length === 1 ? items[0] : await vscode.window.showQuickPick(items, { placeHolder: 'Select an attribute' });
+    const selectedItem = items.length === 1 ? items[0] : await vscode.window.showQuickPick(items, { placeHolder: 'Select an attribute' });
     if (selectedItem) {
         vscode.window.vault.clip(selectedItem.label, selectedItem.secretValue);
     }
