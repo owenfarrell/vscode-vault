@@ -3,18 +3,18 @@
 import { VaultPathTreeItem } from './path';
 import { VaultTreeItem } from './treeitem';
 
-import * as adaptors from "../adaptors";
+import * as adaptors from '../adaptors';
 import { VaultSession } from '../model';
 
 import * as path from 'path';
-import * as nv from "node-vault";
+import * as nv from 'node-vault';
 import * as vscode from 'vscode';
 
 export class VaultServerTreeItem extends VaultTreeItem {
 
     private readonly _session: VaultSession
 
-    contextValue = "server";
+    contextValue = 'server';
 
     //#region Constructors
     constructor(session: VaultSession) {
@@ -46,14 +46,14 @@ export class VaultServerTreeItem extends VaultTreeItem {
             this.refresh = super.refresh;
         }
         if (this.children === undefined || this.children.length === 0) {
-            vscode.window.showErrorMessage("Unable to list mounts", "Browse...")
+            vscode.window.showErrorMessage('Unable to list mounts', 'Browse...')
                 .then((selectedAction: string) => selectedAction && vscode.commands.executeCommand('vault.browse', this));
         }
         return true;
     }
 
     async browse(): Promise<boolean> {
-        let browseablePath = await vscode.window.showInputBox({ prompt: "Enter path to browse" });
+        let browseablePath = await vscode.window.showInputBox({ prompt: 'Enter path to browse' });
         if (browseablePath === undefined) {
             return;
         }
@@ -62,7 +62,7 @@ export class VaultServerTreeItem extends VaultTreeItem {
         // Add a trailing slash
         browseablePath += browseablePath.endsWith('/') ? '' : '/';
 
-        let adaptor = await vscode.window.showQuickPick(adaptors.adaptorList, { placeHolder: "Select engine type" });
+        let adaptor = await vscode.window.showQuickPick(adaptors.adaptorList, { placeHolder: 'Select engine type' });
         if (adaptor === undefined) {
             return;
         }

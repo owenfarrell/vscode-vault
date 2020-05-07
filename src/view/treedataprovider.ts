@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 import { VaultServerTreeItem } from './server';
 import { VaultTreeItem } from './treeitem';

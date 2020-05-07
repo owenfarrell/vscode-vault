@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 
-import * as nv from "node-vault";
-import * as vscode from "vscode";
+import * as nv from 'node-vault';
+import * as vscode from 'vscode';
 
 export interface SecretsEngineAdaptor extends vscode.QuickPickItem {
     adapt(mountPoint: string, client: nv.client): void;
@@ -9,7 +9,7 @@ export interface SecretsEngineAdaptor extends vscode.QuickPickItem {
 }
 
 export abstract class DefaultSecretsEngineAdaptor implements SecretsEngineAdaptor {
-    label = "Other";
+    label = 'Other';
 
     adapt(mountPoint: string, client: nv.client): void {
         // Do nothing

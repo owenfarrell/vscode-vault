@@ -1,29 +1,29 @@
-"use strict";
+'use strict';
 
-import { VaultToken } from "../../model";
+import { VaultToken } from '../../model';
 
-import * as nv from "node-vault";
-import * as vscode from "vscode";
+import * as nv from 'node-vault';
+import * as vscode from 'vscode';
 
-const userpassLoginRequest = { mount_point: "userpass", username: process.env.USER || process.env.USERNAME, password: undefined };
+const userpassLoginRequest = { mount_point: 'userpass', username: process.env.USER || process.env.USERNAME, password: undefined };
 
-export default async function (client: nv.client): Promise<VaultToken> {
+export default async function(client: nv.client): Promise<VaultToken> {
     // Prompt the user for the authentication mount point
-    let newUserpassMountPoint = await vscode.window.showInputBox({ prompt: "Enter userpass authentication mount point", value: userpassLoginRequest.mount_point });
+    let newUserpassMountPoint = await vscode.window.showInputBox({ prompt: 'Enter userpass authentication mount point', value: userpassLoginRequest.mount_point });
     // If input was collected, cache the input, otherwise cancel
     if (newUserpassMountPoint === undefined) {
         return;
     }
 
     // Prompt the user for the authentication username
-    let newUserpassUsername = await vscode.window.showInputBox({ prompt: "Enter Username", value: userpassLoginRequest.username })
+    let newUserpassUsername = await vscode.window.showInputBox({ prompt: 'Enter Username', value: userpassLoginRequest.username });
     // If input was collected, cache the input, otherwise cancel
     if (newUserpassUsername === undefined) {
         return;
     }
 
     // Prompt the user for the authentication password
-    let newUserpassPassword = await vscode.window.showInputBox({ password: true, prompt: "Enter Password", value: userpassLoginRequest.password });
+    let newUserpassPassword = await vscode.window.showInputBox({ password: true, prompt: 'Enter Password', value: userpassLoginRequest.password });
     // If input was collected, cache the input, otherwise cancel
     if (newUserpassPassword === undefined) {
         return;
@@ -34,7 +34,7 @@ export default async function (client: nv.client): Promise<VaultToken> {
     userpassLoginRequest.username = newUserpassUsername;
     userpassLoginRequest.password = newUserpassPassword;
 
-    vscode.window.vault.log("Logging in with username and password", "person");
+    vscode.window.vault.log('Logging in with username and password', 'person');
     let userpassLoginResult = await client.userpassLogin(userpassLoginRequest);
     return <VaultToken>{ id: userpassLoginResult.auth.client_token, renewable: userpassLoginResult.auth.renewable, ttl: userpassLoginResult.auth.lease_duration };
 }

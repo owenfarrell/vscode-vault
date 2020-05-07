@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
-import * as nv from "node-vault";
-import validator from "validator";
-import * as vscode from "vscode";
+import * as nv from 'node-vault';
+import validator from 'validator';
+import * as vscode from 'vscode';
 
 const keyValuePairRegex: RegExp = /([\w_]+)=([^ \n]+)/g.compile();
 
@@ -14,7 +14,7 @@ interface UserInput {
 function parseFields(input: string): UserInput {
     let data: any;
     if (validator.isJSON(input)) {
-        vscode.window.vault.log("Parsing data as JSON");
+        vscode.window.vault.log('Parsing data as JSON');
         data = JSON.parse(input);
     }
     else {
@@ -32,15 +32,15 @@ function parseFields(input: string): UserInput {
     return { data: data, fieldCount: fieldCount };
 }
 
-export default async function (client: nv.client, path: string): Promise<boolean> {
-    let pathValidator = (userInput: string) => userInput.startsWith(path) ? null : "Not a child of this path";
-    path = await vscode.window.showInputBox({ prompt: "Enter path to write to Vault", validateInput: pathValidator, value: path });
+export default async function(client: nv.client, path: string): Promise<boolean> {
+    let pathValidator = (userInput: string) => userInput.startsWith(path) ? null : 'Not a child of this path';
+    path = await vscode.window.showInputBox({ prompt: 'Enter path to write to Vault', validateInput: pathValidator, value: path });
     if (path === undefined) {
         return;
     }
 
-    let fieldValidator = (userInput: string) => validator.isJSON(userInput) || keyValuePairRegex.test(userInput) ? null : "Must be JSON or key/value pairs";
-    let userInput = await vscode.window.showInputBox({ prompt: "Enter data to write", placeHolder: "Enter JSON or key=value pairs", validateInput: fieldValidator });
+    let fieldValidator = (userInput: string) => validator.isJSON(userInput) || keyValuePairRegex.test(userInput) ? null : 'Must be JSON or key/value pairs';
+    let userInput = await vscode.window.showInputBox({ prompt: 'Enter data to write', placeHolder: 'Enter JSON or key=value pairs', validateInput: fieldValidator });
     if (userInput === undefined) {
         return;
     }
@@ -51,7 +51,7 @@ export default async function (client: nv.client, path: string): Promise<boolean
     }
 
     await client.write(path, parsedInput);
-    vscode.window.vault.log(`Successfully wrote ${parsedInput.fieldCount} fields to ${path}`, "checklist");
+    vscode.window.vault.log(`Successfully wrote ${parsedInput.fieldCount} fields to ${path}`, 'checklist');
 
     return true;
 }

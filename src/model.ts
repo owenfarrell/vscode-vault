@@ -1,11 +1,11 @@
-"use strict";
+'use strict';
 
-import * as adaptors from "./adaptors";
-import { SecretsEngineAdaptor } from "./adaptors/base";
+import * as adaptors from './adaptors';
+import { SecretsEngineAdaptor } from './adaptors/base';
 
-import * as clipboardy from "clipboardy";
-import * as nv from "node-vault";
-import * as vscode from "vscode";
+import * as clipboardy from 'clipboardy';
+import * as nv from 'node-vault';
+import * as vscode from 'vscode';
 
 export class VaultSession implements vscode.Disposable {
 
@@ -49,12 +49,12 @@ export class VaultSession implements vscode.Disposable {
         if (token.renewable === true) {
             let ms = 900 * token.ttl;
             this._tokenTimer = setTimeout(() => this.renewToken(), ms);
-            vscode.window.vault.log(`Scheduling renewal of token in ${ms}ms`, "clock");
+            vscode.window.vault.log(`Scheduling renewal of token in ${ms}ms`, 'clock');
         }
         else if (token.ttl > 0) {
             let ms = 1000 * token.ttl;
             this._tokenTimer = setTimeout(() => this.clearToken(), ms);
-            vscode.window.vault.log(`Scheduling cleanup of token in ${ms}ms`, "clock");
+            vscode.window.vault.log(`Scheduling cleanup of token in ${ms}ms`, 'clock');
         }
     }
 
@@ -67,7 +67,7 @@ export class VaultSession implements vscode.Disposable {
             let tokenRenewResult = await this.client.tokenRenewSelf();
             let token: VaultToken = { id: tokenRenewResult.auth.client_token, renewable: tokenRenewResult.renewable, ttl: tokenRenewResult.lease_duration };
             this.cacheToken(token);
-            vscode.window.vault.log(`Successfully renewed token for ${this.client.endpoint}`, "key");
+            vscode.window.vault.log(`Successfully renewed token for ${this.client.endpoint}`, 'key');
         }
         catch (err) {
             this.clearToken();
@@ -88,7 +88,7 @@ export class VaultWindow implements vscode.Disposable {
     public clipboardTimeout: number;
 
     constructor() {
-        this._outputChannel = vscode.window.createOutputChannel("Password Vault");
+        this._outputChannel = vscode.window.createOutputChannel('Password Vault');
         this._statusBar = vscode.window.createStatusBarItem();
         this._statusBar.show();
     }
@@ -100,9 +100,9 @@ export class VaultWindow implements vscode.Disposable {
 
     clip(key: string, value: string): void {
         clipboardy.writeSync(value);
-        this.log(`Copied value of "${key}" to clipboard`, "clippy", this.clipboardTimeout);
+        this.log(`Copied value of "${key}" to clipboard`, 'clippy', this.clipboardTimeout);
         if (this.clipboardTimeout > 0) {
-            this._clipboardTimer = setTimeout(() => this.clearClipboard(), this.clipboardTimeout)
+            this._clipboardTimer = setTimeout(() => this.clearClipboard(), this.clipboardTimeout);
         }
     }
 
@@ -126,12 +126,12 @@ export class VaultWindow implements vscode.Disposable {
     }
 
     private clearClipboard(): void {
-        clipboardy.writeSync("");
-        this.log("Cleared clipboard", "clippy");
+        clipboardy.writeSync('');
+        this.log('Cleared clipboard', 'clippy');
     }
 
     private clearStatusBar(): void {
-        this._statusBar.text = "";
+        this._statusBar.text = '';
     }
 }
 

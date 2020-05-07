@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-import * as nv from "node-vault";
+import * as nv from 'node-vault';
 import * as path from 'path';
 import * as vscode from 'vscode';
 
@@ -54,7 +54,7 @@ export abstract class VaultTreeItem extends vscode.TreeItem {
     //#region Custom Command Methods
     async refresh(): Promise<boolean> {
         return true;
-    };
+    }
 
     getClient(): nv.client {
         return this.parent.getClient();
