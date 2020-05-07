@@ -1,31 +1,35 @@
 "use strict";
 
-import * as commands from "./commands";
-import { VaultSession } from "./model";
+import { VaultWindow } from "./model";
+import * as view from "./view";
 
 import * as vscode from "vscode";
 
 export function activate(context: vscode.ExtensionContext) {
-    let session = vscode.window.vault = new VaultSession();
-    if (process.env.VAULT_ADDR) vscode.window.vault.client.endpoint = process.env.VAULT_ADDR;
+    let session = vscode.window.vault = new VaultWindow();
     // Load the configuration to start
     loadConfiguration();
     // Subscribe to configuration event changes
     vscode.workspace.onDidChangeConfiguration(loadConfiguration);
+
     // Push disposables on to context
-    context.subscriptions.push(
-        session,
-        // Subscribe to "vault.connect" events
-        vscode.commands.registerCommand("vault.connect", () => Promise.resolve(commands.connect()).catch((err: any) => session.logError(err))),
-        // Subscribe to "vault.delete" events
-        vscode.commands.registerCommand("vault.delete", () => Promise.resolve(commands.delete()).catch((err: any) => session.logError(err))),
-        // Subscribe to "vault.list" events
-        vscode.commands.registerCommand("vault.list", () => Promise.resolve(commands.list()).catch((err: any) => session.logError(err))),
-        // Subscribe to "vault.read" events
-        vscode.commands.registerCommand("vault.read", () => Promise.resolve(commands.read()).catch((err: any) => session.logError(err))),
-        // Subscribe to "vault.write" events
-        vscode.commands.registerCommand("vault.write", () => Promise.resolve(commands.write()).catch((err: any) => session.logError(err)))
-    );
+    context.subscriptions.push(session);
+
+    // Create a tree view
+    let treeDataProvider = new view.VaultProvider();
+    vscode.window.createTreeView('vaultSecrets', { treeDataProvider: treeDataProvider });
+    // Subscribe to "vault.browse" events
+    vscode.commands.registerCommand("vault.browse", (treeItem: view.VaultServerTreeItem) => treeItem.browse().then((requiresRefresh: boolean) => requiresRefresh === true && treeDataProvider.refresh(treeItem)).catch((error: any) => vscode.window.vault.logError(error)));
+    // Subscribe to "vault.connect" events
+    vscode.commands.registerCommand("vault.connect", () => treeDataProvider.connect().catch((error: any) => vscode.window.vault.logError(error)));
+    // Subscribe to "vault.delete" events
+    vscode.commands.registerCommand("vault.delete", (treeItem: view.VaultSecretTreeItem) => treeItem.delete().then(() => treeDataProvider.refresh(treeDataProvider.getParent(treeItem))).catch((err: any) => session.logError(err)));
+    // Subscribe to "vault.list" events
+    vscode.commands.registerCommand("vault.list", (treeItem: view.VaultTreeItem) => treeDataProvider.refresh(treeItem).catch((err: any) => session.logError(err)));
+    // Subscribe to "vault.read" events
+    vscode.commands.registerCommand("vault.read", (treeItem: view.VaultSecretTreeItem) => treeItem.read().catch((err: any) => session.logError(err)));
+    // Subscribe to "vault.write" events
+    vscode.commands.registerCommand("vault.write", (treeItem: view.VaultPathTreeItem | view.VaultSecretTreeItem) => treeItem.write().then((requiresRefresh: boolean) => requiresRefresh === true && treeDataProvider.refresh(treeItem)).catch((err: any) => session.logError(err)));
 }
 
 export function deactivate() {

@@ -2,35 +2,39 @@
 
 import { VaultToken } from "../../model";
 
+import * as nv from "node-vault";
 import * as vscode from "vscode";
 
-const userpassLoginRequest = { mount_point: "userpass", username: undefined, password: undefined };
+const userpassLoginRequest = { mount_point: "userpass", username: process.env.USER || process.env.USERNAME, password: undefined };
 
-export default function (endpoint: string): Thenable<VaultToken> {
-    let newUserpassMountPoint: string;
-    let newUserpassUsername: string;
-    let newUserpassPassword: string;
+export default async function (client: nv.client): Promise<VaultToken> {
     // Prompt the user for the authentication mount point
-    return vscode.window.showInputBox({ prompt: "Enter userpass authentication mount point", value: userpassLoginRequest.mount_point })
-        // If input was collected, cache the input, otherwise cancel
-        .then((userInput: string) => (newUserpassMountPoint = userInput) || Promise.reject("Not Connected to Vault (no mount point provided)"))
-        // Prompt the user for the authentication username
-        .then(() => vscode.window.showInputBox({ prompt: "Enter Username", value: userpassLoginRequest.username }))
-        // If input was collected, cache the input, otherwise cancel
-        .then((userInput: string) => (newUserpassUsername = userInput) || Promise.reject("Not Connected to Vault (no username provided)"))
-        // Prompt the user for the authentication password
-        .then(() => vscode.window.showInputBox({ password: true, prompt: "Enter Password", value: userpassLoginRequest.password }))
-        // If input was collected, cache the input, otherwise cancel
-        .then((userInput: string) => (newUserpassPassword = userInput) || Promise.reject("Not Connected to Vault (no password provided)"))
-        // Reset the client
-        .then(() => vscode.window.vault.reset(endpoint))
-        // Persist the collected inputs
-        .then(() => {
-            userpassLoginRequest.mount_point = newUserpassMountPoint;
-            userpassLoginRequest.username = newUserpassUsername;
-            userpassLoginRequest.password = newUserpassPassword;
-        })
-        .then(() => vscode.window.vault.log("Logging in with username and password", "person"))
-        .then(() => vscode.window.vault.client.userpassLogin(userpassLoginRequest))
-        .then((result: any) => <VaultToken>{ id: result.auth.client_token, renewable: result.auth.renewable, ttl: result.auth.lease_duration });
+    let newUserpassMountPoint = await vscode.window.showInputBox({ prompt: "Enter userpass authentication mount point", value: userpassLoginRequest.mount_point });
+    // If input was collected, cache the input, otherwise cancel
+    if (newUserpassMountPoint === undefined) {
+        return;
+    }
+
+    // Prompt the user for the authentication username
+    let newUserpassUsername = await vscode.window.showInputBox({ prompt: "Enter Username", value: userpassLoginRequest.username })
+    // If input was collected, cache the input, otherwise cancel
+    if (newUserpassUsername === undefined) {
+        return;
+    }
+
+    // Prompt the user for the authentication password
+    let newUserpassPassword = await vscode.window.showInputBox({ password: true, prompt: "Enter Password", value: userpassLoginRequest.password });
+    // If input was collected, cache the input, otherwise cancel
+    if (newUserpassPassword === undefined) {
+        return;
+    }
+
+    // Cache the collected inputs
+    userpassLoginRequest.mount_point = newUserpassMountPoint;
+    userpassLoginRequest.username = newUserpassUsername;
+    userpassLoginRequest.password = newUserpassPassword;
+
+    vscode.window.vault.log("Logging in with username and password", "person");
+    let userpassLoginResult = await client.userpassLogin(userpassLoginRequest);
+    return <VaultToken>{ id: userpassLoginResult.auth.client_token, renewable: userpassLoginResult.auth.renewable, ttl: userpassLoginResult.auth.lease_duration };
 }

@@ -36,6 +36,9 @@ const config = {
                 ]
             }
         ]
+    },
+    node: {
+        __dirname: false
     }
 };
 module.exports = config;

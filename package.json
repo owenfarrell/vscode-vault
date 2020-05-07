@@ -49,9 +49,18 @@
         },
         "commands": [
             {
+                "command": "vault.browse",
+                "title": "Browse Path",
+                "category": "Vault"
+            },
+            {
                 "command": "vault.connect",
                 "title": "Connect to Server",
-                "category": "Vault"
+                "category": "Vault",
+                "icon": {
+                    "light": "resources/light/add.svg",
+                    "dark": "resources/dark/add.svg"
+                }
             },
             {
                 "command": "vault.delete",
@@ -60,7 +69,7 @@
             },
             {
                 "command": "vault.list",
-                "title": "List Secrets",
+                "title": "Refresh",
                 "category": "Vault",
                 "icon": {
                     "light": "resources/light/refresh.svg",
@@ -82,40 +91,72 @@
                 }
             }
         ],
-        "viewsContainers": {
-            "activitybar": [
+        "menus": {
+            "commandPalette": [
                 {
-                    "id": "vault",
-                    "title": "Vault Explorer",
-                    "icon": "resources/viewContainer.svg"
+                    "command": "vault.browse",
+                    "when": "false"
+                },
+                {
+                    "command": "vault.delete",
+                    "when": "false"
+                },
+                {
+                    "command": "vault.list",
+                    "when": "false"
+                },
+                {
+                    "command": "vault.read",
+                    "when": "false"
+                },
+                {
+                    "command": "vault.write",
+                    "when": "false"
+                }
+            ],
+            "view/item/context": [
+                {
+                    "command": "vault.browse",
+                    "when": "view == vaultSecrets && viewItem == server"
+                },
+                {
+                    "command": "vault.delete",
+                    "when": "view == vaultSecrets && viewItem == secret"
+                },
+                {
+                    "command": "vault.list",
+                    "when": "view == vaultSecrets && viewItem != secret"
+                },
+                {
+                    "command": "vault.read",
+                    "when": "view == vaultSecrets && viewItem == secret"
+                },
+                {
+                    "command": "vault.write",
+                    "when": "view == vaultSecrets && viewItem != server"
+                }
+            ],
+            "view/title": [
+                {
+                    "command": "vault.connect",
+                    "group": "navigation"
                 }
             ]
         },
         "views": {
-            "vault": [
+            "explorer": [
                 {
-                    "id": "vaults",
+                    "id": "vaultSecrets",
                     "name": "Vaults"
-                },
-                {
-                    "id": "vault-secrets",
-                    "name": "Secrets"
                 }
             ]
         },
-        "menus": {
-            "view/item/context": [
-                {
-                    "command": "vault.write",
-                    "when": "view == vault && viewItem == secret",
-                    "group": "inline"
-                },
-                {
-                    "command": "vault.delete",
-                    "when": "view == vault && viewItem == secret"
-                }
-            ]
-        }
+        "viewsWelcome": [
+            {
+                "view": "vaultSecrets",
+                "contents": "\nYou are not connected to any Vaults.\n\n[Add Vault](command:vault.connect)"
+            }
+        ]
     },
     "activationEvents": [
         "onCommand:vault.connect",
@@ -129,20 +170,23 @@
     "dependencies": {
         "clipboardy": "^1.2.3",
         "flat": "^4.1.0",
+        "http-status-codes": "^1.4.0",
         "node-vault": "0.9.13",
-        "validator": "^10.11.0",
+        "validator": "^13.0.0",
         "vscode-uri": "^1.0.8"
     },
     "devDependencies": {
         "@types/clipboardy": "^1.1.0",
+        "@types/flat": "^5.0.0",
         "@types/mocha": "^5.2.7",
         "@types/node": "^10.17.18",
+        "@types/vscode": "^1.29.1",
+        "@types/validator": "^13.0.0",
         "ajv": "^6.9.1",
         "mocha": "^5.2.0",
         "ts-loader": "^6.2.2",
         "typescript": "^3.8.3",
         "vsce": "^1.74.0",
-        "vscode": "^1.1.36",
         "webpack": "^4.42.1",
         "webpack-cli": "^3.3.11"
     },
@@ -151,8 +195,7 @@
         "vscode:prepublish": "webpack --mode production",
         "test-compile": "tsc -p ./",
         "compile": "webpack --mode development --watch",
-        "webpack": "webpack --mode development",
-        "postinstall": "node ./node_modules/vscode/bin/install"
+        "webpack": "webpack --mode development"
     },
     "icon": "icon.png"
 }

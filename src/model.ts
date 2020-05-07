@@ -1,26 +1,91 @@
 "use strict";
 
 import * as adaptors from "./adaptors";
+import { SecretsEngineAdaptor } from "./adaptors/base";
 
 import * as clipboardy from "clipboardy";
 import * as nv from "node-vault";
-import Uri from "vscode-uri";
 import * as vscode from "vscode";
 
 export class VaultSession implements vscode.Disposable {
 
-    private _clientOptions: any = { followAllRedirects: true, strictSSL: true };
+    //#region Attributes
+    public readonly client = nv();
+    public readonly name: string;
+    public readonly mountPoints: string[] = [];
+    private _tokenTimer: NodeJS.Timer;
+    //#endregion
+
+    constructor(name: string) {
+        this.name = name;
+    }
+
+    //#region Disposable Method Implementations
+    dispose() {
+        this._tokenTimer && clearTimeout(this._tokenTimer);
+    }
+    //#endregion
+
+    public async cacheMountPoints(): Promise<void> {
+        let mounts: any = await this.client.mounts();
+        for (let key in mounts.data) {
+            let adaptor = adaptors.getAdaptor(mounts.data[key]);
+            if (adaptor !== undefined) {
+                vscode.window.vault.log(`Adapting '${key}' for ${adaptor.label} `);
+                adaptor.adapt(key, this.client);
+                this.mountPoints.push(key);
+            }
+        }
+    }
+
+    public async mount(mountPoint: string, adaptor: SecretsEngineAdaptor): Promise<void> {
+        vscode.window.vault.log(`Adapting '${mountPoint}' for ${adaptor.label} `);
+        adaptor.adapt(mountPoint, this.client);
+        this.mountPoints.push(mountPoint);
+    }
+
+    //#region Session Management
+    public cacheToken(token: VaultToken): void {
+        if (token.renewable === true) {
+            let ms = 900 * token.ttl;
+            this._tokenTimer = setTimeout(() => this.renewToken(), ms);
+            vscode.window.vault.log(`Scheduling renewal of token in ${ms}ms`, "clock");
+        }
+        else if (token.ttl > 0) {
+            let ms = 1000 * token.ttl;
+            this._tokenTimer = setTimeout(() => this.clearToken(), ms);
+            vscode.window.vault.log(`Scheduling cleanup of token in ${ms}ms`, "clock");
+        }
+    }
+
+    private clearToken(): void {
+        this.client.token = undefined;
+    }
+
+    private async renewToken(): Promise<any> {
+        try {
+            let tokenRenewResult = await this.client.tokenRenewSelf();
+            let token: VaultToken = { id: tokenRenewResult.auth.client_token, renewable: tokenRenewResult.renewable, ttl: tokenRenewResult.lease_duration };
+            this.cacheToken(token);
+            vscode.window.vault.log(`Successfully renewed token for ${this.client.endpoint}`, "key");
+        }
+        catch (err) {
+            this.clearToken();
+            vscode.window.vault.logError(`Unable to renew vault token: ${err.message}`);
+        }
+    }
+    //#endregion
+}
+
+export class VaultWindow implements vscode.Disposable {
+
     private _clipboardTimer: NodeJS.Timer;
     private _outputChannel: vscode.OutputChannel;
-    private _secretMounts;
     private _statusBar: vscode.StatusBarItem;
     private _statusBarTimer: NodeJS.Timer;
-    private _tokenTimer: NodeJS.Timer;
     private _trustedAuthorities: string[] = [];
 
     public clipboardTimeout: number;
-    public readonly client = nv({ requestOptions: this._clientOptions });
-    public lastPath: string;
 
     constructor() {
         this._outputChannel = vscode.window.createOutputChannel("Password Vault");
@@ -33,57 +98,20 @@ export class VaultSession implements vscode.Disposable {
         this._trustedAuthorities = array;
     }
 
-    dispose() {
+    clip(key: string, value: string): void {
+        clipboardy.writeSync(value);
+        this.log(`Copied value of "${key}" to clipboard`, "clippy", this.clipboardTimeout);
+        if (this.clipboardTimeout > 0) {
+            this._clipboardTimer = setTimeout(() => this.clearClipboard(), this.clipboardTimeout)
+        }
+    }
+
+    dispose(): void {
         this._clipboardTimer && clearTimeout(this._clipboardTimer);
         this._statusBarTimer && clearTimeout(this._statusBarTimer);
-        this._tokenTimer && clearTimeout(this._tokenTimer);
     }
 
-    clip(key: string, value: string) {
-        clipboardy.write(value)
-            .then(() => this.clipboardTimeout > 0 ? this._clipboardTimer = setTimeout(() => this.clearClipboard(), this.clipboardTimeout) : undefined)
-            .then(() => this.log(`Copied value of "${key}" to clipboard`, "clippy", this.clipboardTimeout));
-    }
-
-    cacheToken(token: VaultToken): void {
-        if (token.renewable === true) {
-            let ms = 900 * token.ttl;
-            this._tokenTimer = setTimeout(() => this.renewToken(), ms);
-            this.log(`Scheduling renewal of token in ${ms}ms`, "clock");
-        }
-        else if (token.ttl > 0) {
-            let ms = 1000 * token.ttl;
-            this._tokenTimer = setTimeout(() => this.clearToken(), ms);
-            this.log(`Scheduling cleanup of token in ${ms}ms`, "clock");
-        }
-    }
-
-    getSecretMounts(): Thenable<any> {
-        let promise : Thenable<any>;
-        if (this._secretMounts) {
-            promise = Promise.resolve();
-        }
-        else {
-            this._secretMounts = {};
-            promise = this.client.mounts()
-                .then((mounts: any) => mounts.data)
-                .then((data: any) => Object.keys(data).forEach((mountPoint) => {
-                    let adaptor = adaptors.getAdaptor(data[mountPoint]);
-                    if (adaptor !== undefined) {
-                        adaptor.adapt(mountPoint, this.client);
-                        this._secretMounts[mountPoint] = adaptor;
-                    }
-                }));
-        };
-        return promise.then(() => Object.keys(this._secretMounts));
-    }
-
-    logError(msg: string) {
-        vscode.window.showErrorMessage(msg);
-        this.log(msg);
-    }
-
-    log(msg: string, octicon: string = undefined, ms: number = 5000) {
+    log(msg: string, octicon: string = undefined, ms: number = 5000): void {
         this._outputChannel.appendLine(msg);
         if (octicon) {
             this._statusBarTimer && clearTimeout(this._statusBarTimer);
@@ -92,18 +120,9 @@ export class VaultSession implements vscode.Disposable {
         }
     }
 
-    reset(endpoint: string, token?: string): Promise<any> {
-        this._tokenTimer && clearTimeout(this._tokenTimer);
-        this._secretMounts = {};
-        return Promise.resolve(this.client.token && this.client.tokenRevokeSelf())
-            .then((result: any) => result && this.log("Successfully revoked client token", "sign-out"))
-            .catch((err: any) => this.logError(err))
-            .then(() => {
-                this.client.token = token;
-                this.client.endpoint = endpoint;
-                this._secretMounts = undefined;
-                this.updateOptions();
-            });
+    logError(msg: string): void {
+        vscode.window.showErrorMessage(msg);
+        this.log(msg);
     }
 
     private clearClipboard(): void {
@@ -113,27 +132,6 @@ export class VaultSession implements vscode.Disposable {
 
     private clearStatusBar(): void {
         this._statusBar.text = "";
-    }
-
-    private clearToken(): void {
-        this.client.token = undefined;
-    }
-
-    private renewToken(): Thenable<any> {
-        return this.client.tokenRenewSelf()
-            .then((result: any) => <VaultToken>{ id: result.auth.client_token, renewable: result.renewable, ttl: result.lease_duration })
-            .then((token: VaultToken) => this.cacheToken(token))
-            .then(() => this.log(`Successfully renewed token for ${this.client.endpoint}`, "key"))
-            .catch((err) => {
-                this.clearToken();
-                this.logError(`Unable to renew vault token: ${err.message}`);
-            });
-    }
-
-    private updateOptions(): void {
-        let vaultAuthority: string = Uri.parse(this.client.endpoint).authority;
-        this.log(`Checking trusted authority list for ${vaultAuthority}`);
-        this._clientOptions.strictSSL = this._trustedAuthorities.indexOf(vaultAuthority) < 0;
     }
 }
 
