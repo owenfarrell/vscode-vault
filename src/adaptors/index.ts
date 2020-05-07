@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 import { SecretsEngineAdaptor } from './base';
 import { CubbyholeAdaptor } from './cubbyhole';
@@ -8,7 +8,7 @@ export const adaptorList: SecretsEngineAdaptor[] = [
     new CubbyholeAdaptor(),
     new KeyValueVersion1Adaptor(),
     new KeyValueVersion2Adaptor()
-]
+];
 
 export function getAdaptor(mount: any): SecretsEngineAdaptor {
     return adaptorList.find((element) => element.isAdaptable(mount));

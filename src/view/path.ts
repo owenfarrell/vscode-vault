@@ -11,7 +11,7 @@ import { VaultSecretTreeItem } from './secret';
 
 export class VaultPathTreeItem extends VaultTreeItem {
 
-    contextValue = "path";
+    contextValue = 'path';
 
     //#region Constructors
     constructor(label: string, parent: VaultTreeItem) {
@@ -32,7 +32,7 @@ export class VaultPathTreeItem extends VaultTreeItem {
             let pathList = await commands.list(client, this.path);
 
             this.children = pathList.map((element: string) => {
-                let ChildTreeItem = element.endsWith("/") ? VaultPathTreeItem : VaultSecretTreeItem;
+                let ChildTreeItem = element.endsWith('/') ? VaultPathTreeItem : VaultSecretTreeItem;
                 return new ChildTreeItem(element, this);
             });
         }
@@ -53,7 +53,7 @@ export class VaultPathTreeItem extends VaultTreeItem {
     //#region Custom Command Methods
     async write(): Promise<boolean> {
         let client = this.getClient();
-        return commands.write(client, this.path)
+        return commands.write(client, this.path);
     }
     //#endregion
 }

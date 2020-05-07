@@ -7,10 +7,9 @@ import * as commands from '../commands';
 import * as path from 'path';
 import * as vscode from 'vscode';
 
-
 export class VaultSecretTreeItem extends VaultTreeItem {
 
-    contextValue = "secret";
+    contextValue = 'secret';
 
     //#region Constructors
     constructor(label: string, parent: VaultTreeItem) {
