@@ -10,7 +10,6 @@ export interface TreeItemIconPath {
 }
 
 export abstract class VaultTreeItem extends vscode.TreeItem {
-
     protected static readonly WARNING_ICON: TreeItemIconPath = {
         light: path.join(__dirname, '..', 'resources', 'light', 'warning.svg'),
         dark: path.join(__dirname, '..', 'resources', 'dark', 'warning.svg')
@@ -61,4 +60,3 @@ export abstract class VaultTreeItem extends vscode.TreeItem {
     }
     //#endregion
 }
-

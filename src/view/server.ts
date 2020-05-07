@@ -11,7 +11,6 @@ import * as nv from 'node-vault';
 import * as vscode from 'vscode';
 
 export class VaultServerTreeItem extends VaultTreeItem {
-
     private readonly _session: VaultSession
 
     contextValue = 'server';

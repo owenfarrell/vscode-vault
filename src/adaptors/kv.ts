@@ -14,13 +14,11 @@ export class KeyValueVersion1Adaptor extends DefaultSecretsEngineAdaptor {
 }
 
 export class KeyValueVersion2Adaptor implements SecretsEngineAdaptor {
-
     private static SHOWED_WARNING = false;
 
     label = 'K/V Version 2';
 
     adapt(mountPoint: string, client: nv.client): void {
-
         if (KeyValueVersion2Adaptor.SHOWED_WARNING === false) {
             vscode.window.showWarningMessage('KV Secrets Engine - Version 2 Limitations: This extension is currently unable to read, delete, undelete, or destory specific versions of secrets.');
             KeyValueVersion2Adaptor.SHOWED_WARNING = true;
@@ -55,4 +53,3 @@ export class KeyValueVersion2Adaptor implements SecretsEngineAdaptor {
         return mount.type === 'kv' && mount.options.version === '2';
     }
 }
-

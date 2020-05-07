@@ -8,7 +8,6 @@ import * as nv from 'node-vault';
 import * as vscode from 'vscode';
 
 export class VaultSession implements vscode.Disposable {
-
     //#region Attributes
     public readonly client = nv();
     public readonly name: string;
@@ -78,7 +77,6 @@ export class VaultSession implements vscode.Disposable {
 }
 
 export class VaultWindow implements vscode.Disposable {
-
     private _clipboardTimer: NodeJS.Timer;
     private _outputChannel: vscode.OutputChannel;
     private _statusBar: vscode.StatusBarItem;
