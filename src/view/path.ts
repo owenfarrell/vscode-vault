@@ -10,7 +10,6 @@ import * as vscode from 'vscode';
 import { VaultSecretTreeItem } from './secret';
 
 export class VaultPathTreeItem extends VaultTreeItem {
-
     contextValue = 'path';
 
     //#region Constructors

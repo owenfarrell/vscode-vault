@@ -8,7 +8,6 @@ import * as commands from '../commands';
 import * as vscode from 'vscode';
 
 export class VaultTreeDataProvider implements vscode.TreeDataProvider<VaultTreeItem> {
-
     //#region Attributes
     private _serverList: VaultServerTreeItem[] = [];
     private _onDidChangeTreeData = new vscode.EventEmitter<VaultTreeItem>();

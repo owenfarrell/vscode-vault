@@ -13,7 +13,6 @@ function validateGitHubToken(userInput: string): string | undefined {
 }
 
 export default async function(client: nv.client): Promise<VaultToken> {
-
     // Prompt for the mount point
     const newGitgubMountPoint = await vscode.window.showInputBox({ prompt: 'Enter authentication mount point', value: githubLoginRequest.mount_point });
     // If no input was collected, cancel
