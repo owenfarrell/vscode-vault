@@ -1,9 +1,9 @@
 'use strict';
 
-import { VaultWindow } from './model';
 import * as view from './view';
-
 import * as vscode from 'vscode';
+
+import { VaultWindow } from './model';
 
 export function activate(context: vscode.ExtensionContext) {
     const session = vscode.window.vault = new VaultWindow();

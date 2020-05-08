@@ -1,9 +1,9 @@
 'use strict';
 
-import { SecretsEngineAdaptor, DefaultSecretsEngineAdaptor } from './base';
-
 import * as nv from 'node-vault';
 import * as vscode from 'vscode';
+
+import { DefaultSecretsEngineAdaptor, SecretsEngineAdaptor } from './base';
 
 export class KeyValueVersion1Adaptor extends DefaultSecretsEngineAdaptor {
     label = 'K/V Version 1';

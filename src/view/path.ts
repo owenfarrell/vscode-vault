@@ -1,13 +1,12 @@
 'use strict';
 
-import { VaultTreeItem } from './treeitem';
-
 import * as commands from '../commands';
-
 import * as HTTPStatusCodes from 'http-status-codes';
 import * as path from 'path';
 import * as vscode from 'vscode';
+
 import { VaultSecretTreeItem } from './secret';
+import { VaultTreeItem } from './treeitem';
 
 export class VaultPathTreeItem extends VaultTreeItem {
     contextValue = 'path';

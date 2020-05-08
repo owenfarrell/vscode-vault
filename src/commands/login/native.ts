@@ -1,14 +1,14 @@
 'use strict';
 
-import { VaultToken } from '../../model';
-
 import * as fs from 'fs';
 import * as nv from 'node-vault';
 import * as os from 'os';
-import * as Path from 'path';
+import * as path from 'path';
 import * as vscode from 'vscode';
 
-const nativeTokenPath: string = Path.resolve(os.homedir(), '.vault-token');
+import { VaultToken } from '../../model';
+
+const nativeTokenPath: string = path.resolve(os.homedir(), '.vault-token');
 let nativeToken: string = process.env.VAULT_TOKEN;
 let nativeTokenTime: Date = new Date(nativeToken ? Date.now() - (process.uptime() * 1000) : 0);
 

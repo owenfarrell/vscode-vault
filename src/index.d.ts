@@ -1,4 +1,4 @@
-import { VaultWindow, VaultToken } from './model';
+import { VaultToken, VaultWindow } from './model';
 
 declare module 'vscode' {
     export interface CallableQuickPickItem extends QuickPickItem {
