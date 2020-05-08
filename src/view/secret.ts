@@ -1,11 +1,10 @@
 'use strict';
 
-import { VaultTreeItem } from './treeitem';
-
 import * as commands from '../commands';
-
 import * as path from 'path';
 import * as vscode from 'vscode';
+
+import { VaultTreeItem } from './treeitem';
 
 export class VaultSecretTreeItem extends VaultTreeItem {
     contextValue = 'secret';

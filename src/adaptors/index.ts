@@ -1,8 +1,9 @@
 'use strict';
 
-import { SecretsEngineAdaptor } from './base';
-import { CubbyholeAdaptor } from './cubbyhole';
 import { KeyValueVersion1Adaptor, KeyValueVersion2Adaptor } from './kv';
+
+import { CubbyholeAdaptor } from './cubbyhole';
+import { SecretsEngineAdaptor } from './base';
 
 export const adaptorList: SecretsEngineAdaptor[] = [
     new CubbyholeAdaptor(),

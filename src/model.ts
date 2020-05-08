@@ -1,11 +1,11 @@
 'use strict';
 
 import * as adaptors from './adaptors';
-import { SecretsEngineAdaptor } from './adaptors/base';
-
 import * as clipboardy from 'clipboardy';
 import * as nv from 'node-vault';
 import * as vscode from 'vscode';
+
+import { SecretsEngineAdaptor } from './adaptors/base';
 
 export class VaultSession implements vscode.Disposable {
     //#region Attributes

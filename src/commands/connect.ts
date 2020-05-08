@@ -1,11 +1,11 @@
 'use strict';
 
-import { VaultSession } from '../model';
 import * as login from './login';
+import * as vscode from 'vscode';
 
 import { URL } from 'url';
 import validator from 'validator';
-import * as vscode from 'vscode';
+import { VaultSession } from '../model';
 
 const authenticationItems: vscode.CallableQuickPickItem[] = [
     { label: 'Native', description: 'Authenticate via an externally generated token', callback: login.native },

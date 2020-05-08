@@ -1,14 +1,13 @@
 'use strict';
 
-import { VaultPathTreeItem } from './path';
-import { VaultTreeItem } from './treeitem';
-
 import * as adaptors from '../adaptors';
-import { VaultSession } from '../model';
-
-import * as path from 'path';
 import * as nv from 'node-vault';
+import * as path from 'path';
 import * as vscode from 'vscode';
+
+import { VaultPathTreeItem } from './path';
+import { VaultSession } from '../model';
+import { VaultTreeItem } from './treeitem';
 
 export class VaultServerTreeItem extends VaultTreeItem {
     private readonly _session: VaultSession

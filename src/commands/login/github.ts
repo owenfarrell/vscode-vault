@@ -1,10 +1,10 @@
 'use strict';
 
-import { VaultToken } from '../../model';
-
 import * as nv from 'node-vault';
-import validator from 'validator';
 import * as vscode from 'vscode';
+
+import validator from 'validator';
+import { VaultToken } from '../../model';
 
 const githubLoginRequest = { mount_point: 'github', token: process.env.VAULT_AUTH_GITHUB_TOKEN };
 

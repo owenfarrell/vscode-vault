@@ -1,8 +1,9 @@
 'use strict';
 
 import * as nv from 'node-vault';
-import validator from 'validator';
 import * as vscode from 'vscode';
+
+import validator from 'validator';
 
 const keyValuePairRegex: RegExp = /([\w_]+)=([^ \n]+)/g.compile();
 

@@ -46,6 +46,12 @@
             "error",
             "always"
         ],
+        "sort-imports": [
+            "error",
+            {
+                "ignoreCase": true
+            }
+        ],
         "space-before-function-paren": [
             "error",
             "never"

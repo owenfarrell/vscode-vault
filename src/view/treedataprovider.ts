@@ -1,11 +1,10 @@
 'use strict';
 
+import * as commands from '../commands';
+import * as vscode from 'vscode';
+
 import { VaultServerTreeItem } from './server';
 import { VaultTreeItem } from './treeitem';
-
-import * as commands from '../commands';
-
-import * as vscode from 'vscode';
 
 export class VaultTreeDataProvider implements vscode.TreeDataProvider<VaultTreeItem> {
     //#region Attributes
