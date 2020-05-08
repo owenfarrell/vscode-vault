@@ -199,9 +199,8 @@
         "webpack-cli": "^3.3.11"
     },
     "scripts": {
-        "package": "vsce package",
+        "build": "vsce package",
         "vscode:prepublish": "webpack --mode production",
-        "test-compile": "tsc -p ./",
         "compile": "webpack --mode development --watch",
         "webpack": "webpack --mode development"
     },
