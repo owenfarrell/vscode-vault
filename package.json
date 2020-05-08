@@ -199,7 +199,7 @@
         "webpack-cli": "^3.3.11"
     },
     "scripts": {
-        "build": "vsce package",
+        "build": "vsce package -o vscode-vault.vsix",
         "vscode:prepublish": "webpack --mode production",
         "compile": "webpack --mode development --watch",
         "webpack": "webpack --mode development"
