@@ -4,9 +4,6 @@
 [![Installs](https://vsmarketplacebadge.apphb.com/installs/owenfarrell.vscode-vault.svg)](https://marketplace.visualstudio.com/items?itemName=owenfarrell.vscode-vault)
 [![Rating](https://vsmarketplacebadge.apphb.com/rating-short/owenfarrell.vscode-vault.svg)](https://marketplace.visualstudio.com/items?itemName=owenfarrell.vscode-vault#review-details)
 
-[![Build Status](https://travis-ci.org/owenfarrell/vscode-vault.svg?branch=master)](https://travis-ci.org/owenfarrell/vscode-vault)
-[![Maintainability](https://api.codeclimate.com/v1/badges/343b07ecb104cb3e50ee/maintainability)](https://codeclimate.com/github/owenfarrell/vscode-vault/maintainability)
-
 [Visual Studio Code](https://code.visualstudio.com/) (VS Code) extension that provides the ability to interact with HashiCorp Vault servers.
 
 ## Features
@@ -47,7 +44,7 @@ When reading key-value data from a path, select an key from the available list. 
 #### JSON
 
 When writing JSON data to a path, data must be a well-formed JSON object in the form of `{ members }`.
-                     
+
 ![Demo](demo/write-json.gif)
 
 JSON data (or complex data structures, such as a map) is presented through the UI as a flattened object instance to allow for selecting nested values.
