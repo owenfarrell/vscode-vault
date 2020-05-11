@@ -51,31 +51,30 @@ export class VaultServerTreeItem extends VaultTreeItem {
     }
 
     async browse(): Promise<boolean> {
+        let requiresRefresh = false;
         let browseablePath = await vscode.window.showInputBox({ prompt: 'Enter path to browse' });
-        if (browseablePath === undefined) {
-            return;
-        }
-        // Remove any leading slashes
-        browseablePath = browseablePath.replace(/^\/+/, '');
-        // Add a trailing slash
-        browseablePath += browseablePath.endsWith('/') ? '' : '/';
+        if (browseablePath) {
+            // Remove any leading slashes
+            browseablePath = browseablePath.replace(/^\/+/, '');
+            // Add a trailing slash
+            browseablePath += browseablePath.endsWith('/') ? '' : '/';
 
-        const adaptor = await vscode.window.showQuickPick(adaptors.adaptorList, { placeHolder: 'Select engine type' });
-        if (adaptor === undefined) {
-            return;
-        }
+            const adaptor = await vscode.window.showQuickPick(adaptors.adaptorList, { placeHolder: 'Select engine type' });
+            if (adaptor) {
+                const mountPoint = browseablePath.split('/')[0];
+                this._session.mount(mountPoint, adaptor);
 
-        const mountPoint = browseablePath.split('/')[0];
-        this._session.mount(mountPoint, adaptor);
-
-        const treeItem = new VaultPathTreeItem(browseablePath, this);
-        if (this.children === undefined) {
-            this.children = [treeItem];
+                const treeItem = new VaultPathTreeItem(browseablePath, this);
+                if (this.children === undefined) {
+                    this.children = [treeItem];
+                }
+                else {
+                    this.children.push(treeItem);
+                }
+                requiresRefresh = true;
+            }
         }
-        else {
-            this.children.push(treeItem);
-        }
-        return true;
+        return requiresRefresh;
     }
     //#endregion
 }
