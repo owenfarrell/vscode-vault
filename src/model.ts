@@ -30,9 +30,7 @@ export class VaultSession implements vscode.Disposable {
         for (const key in mounts.data) {
             const adaptor = adaptors.getAdaptor(mounts.data[key]);
             if (adaptor !== undefined) {
-                vscode.window.vault.log(`Adapting '${key}' for ${adaptor.label} `);
-                adaptor.adapt(key, this.client);
-                this.mountPoints.push(key);
+                this.mount(key, adaptor);
             }
         }
     }
