@@ -11,22 +11,19 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
-
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Checkout Source
+      uses: actions/checkout@v2
+    - name: Setup Node
       uses: actions/setup-node@v1
       with:
         node-version: 10.x
-
-    - run: npm ci
-
-    - run: npm run build
-
-    - name: Upload a Build Artifact
+    - name: Clean Install
+      run: npm ci
+    - name: Run Build
+      run: npm run build
+    - name: Upload Build Artifact
       uses: actions/upload-artifact@v2
       with:
         path: vscode-vault.vsix
