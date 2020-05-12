@@ -20,7 +20,7 @@ export class KeyValueVersion2Adaptor implements SecretsEngineAdaptor {
 
     adapt(mountPoint: string, client: nv.client): void {
         if (KeyValueVersion2Adaptor.SHOWED_WARNING === false) {
-            vscode.window.showWarningMessage('KV Secrets Engine - Version 2 Limitations: This extension is currently unable to read, delete, undelete, or destory specific versions of secrets.');
+            vscode.window.showInformationMessage('KV Secrets Engine - Version 2 Limitations: This extension is currently unable to read, delete, undelete, or destory specific versions of secrets.');
             KeyValueVersion2Adaptor.SHOWED_WARNING = true;
         }
 
