@@ -5,7 +5,8 @@ import * as vscode from 'vscode';
 
 import validator from 'validator';
 
-const keyValuePairRegex: RegExp = new RegExp('([\\w_]+)=([^ \\n]+)', 'g');
+const KEY_VALUE_PAIR: RegExp = new RegExp('([\\w_]+)=([^ ]+)', 'g');
+const KEY_VALUE_PAIR_LIST: RegExp = new RegExp(`^((${KEY_VALUE_PAIR.source}) *)+$`);
 
 interface UserInput {
     data: any;
@@ -28,7 +29,7 @@ function parseFields(input: string): UserInput {
         // Initialize the field count counter
         fieldCount = 0;
         // Create a clone of the validation regex
-        const regex: RegExp = new RegExp(keyValuePairRegex.source, keyValuePairRegex.flags);
+        const regex: RegExp = new RegExp(KEY_VALUE_PAIR.source, KEY_VALUE_PAIR.flags);
         let match: RegExpExecArray;
         // While more regex matches exist
         while ((match = regex.exec(input)) !== null) {
@@ -48,7 +49,7 @@ function parseFields(input: string): UserInput {
 
 function validateFields(userInput: string) {
     // If the input is valid JSON or key/value pairs, return null (no error), otherwise return an error message
-    return validator.isJSON(userInput) || keyValuePairRegex.test(userInput) ? null : 'Must be JSON or key/value pairs';
+    return validator.isJSON(userInput) || userInput.match(KEY_VALUE_PAIR_LIST) ? null : 'Must be JSON or key/value pairs';
 }
 
 export default async function(client: nv.client, path: string): Promise<boolean> {
@@ -57,7 +58,7 @@ export default async function(client: nv.client, path: string): Promise<boolean>
     // TODO improve this function by validating the mount point, not the path
     const pathValidator = (userInput: string) => userInput.startsWith(path) ? null : 'Not a child of this path';
     // Prompt for the path
-    path = await vscode.window.showInputBox({ prompt: 'Enter path to write to Vault', validateInput: pathValidator, value: path });
+    path = await vscode.window.showInputBox({ prompt: 'Enter path to write to Vault', validateInput: pathValidator, value: path, valueSelection: [path.length, path.length] });
     // If the path was collected
     if (path) {
         // Prompt for the fields to write
