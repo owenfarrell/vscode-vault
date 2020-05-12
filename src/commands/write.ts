@@ -5,7 +5,7 @@ import * as vscode from 'vscode';
 
 import validator from 'validator';
 
-const keyValuePairRegex: RegExp = /([\w_]+)=([^ \n]+)/g.compile();
+const keyValuePairRegex: RegExp = new RegExp('([\\w_]+)=([^ \\n]+)', 'g');
 
 interface UserInput {
     data: any;
@@ -14,38 +14,64 @@ interface UserInput {
 
 function parseFields(input: string): UserInput {
     let data: any;
+    let fieldCount: number;
+    // If the specified value is valid JSON
     if (validator.isJSON(input)) {
-        vscode.window.vault.log('Parsing data as JSON');
+        // Parse the specified value as JSON
         data = JSON.parse(input);
+        // Get the number of fields parsed
+        fieldCount = Object.keys(data).length;
     }
     else {
+        // Create an empty object
         data = {};
-        const regex: RegExp = /([\w_]+)=([^ \n]+)/g;
+        // Initialize the field count counter
+        fieldCount = 0;
+        // Create a clone of the validation regex
+        const regex: RegExp = new RegExp(keyValuePairRegex.source, keyValuePairRegex.flags);
         let match: RegExpExecArray;
+        // While more regex matches exist
         while ((match = regex.exec(input)) !== null) {
+            // Extract the key from the first capture group
             const key: string = match[1];
+            // Extract the key from the second capture group
             const value: string = match[2];
+            // Add the key/value pair to the object
             data[key] = value;
+            // Increment the field count counter
+            fieldCount++;
         }
     }
-    const fieldCount: number = Object.keys(data).length;
     vscode.window.vault.log(`Parsed ${fieldCount} fields`);
-    return { data: data, fieldCount: fieldCount };
+    return data;
+}
+
+function validateFields(userInput: string) {
+    // If the input is valid JSON or key/value pairs, return null (no error), otherwise return an error message
+    return validator.isJSON(userInput) || keyValuePairRegex.test(userInput) ? null : 'Must be JSON or key/value pairs';
 }
 
 export default async function(client: nv.client, path: string): Promise<boolean> {
+    let requiresRefresh = false;
+    // Create an anonymous function that ensures writes to the same mountpoint
+    // TODO improve this function by validating the mount point, not the path
     const pathValidator = (userInput: string) => userInput.startsWith(path) ? null : 'Not a child of this path';
+    // Prompt for the path
     path = await vscode.window.showInputBox({ prompt: 'Enter path to write to Vault', validateInput: pathValidator, value: path });
+    // If the path was collected
     if (path) {
-        const fieldValidator = (userInput: string) => validator.isJSON(userInput) || keyValuePairRegex.test(userInput) ? null : 'Must be JSON or key/value pairs';
-        const userInput = await vscode.window.showInputBox({ prompt: 'Enter data to write', placeHolder: 'Enter JSON or key=value pairs', validateInput: fieldValidator });
-        if (userInput) {
+        // Prompt for the fields to write
+        const userInput = await vscode.window.showInputBox({ prompt: 'Enter data to write', placeHolder: 'Enter JSON or key=value pairs', validateInput: validateFields });
+        // If the fields to write were collected
+        if (userInput?.length > 0) {
+            // Parse the fields
             const parsedInput = parseFields(userInput);
-            if (parsedInput.fieldCount > 0) {
-                await client.write(path, parsedInput);
-                vscode.window.vault.log(`Successfully wrote ${parsedInput.fieldCount} fields to ${path}`, 'checklist');
-            }
+            // Write the fields to the path
+            await client.write(path, parsedInput);
+            // Flag the need for a refresh of the tree view
+            requiresRefresh = true;
+            vscode.window.vault.log(`Successfully wrote to ${path}`, 'checklist');
         }
     }
-    return true;
+    return requiresRefresh;
 }

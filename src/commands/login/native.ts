@@ -28,17 +28,18 @@ export default async function(client: nv.client): Promise<VaultToken> {
     }
 
     let token: VaultToken;
-    // Prompt for the vault token
+    // Prompt for the Vault token
     const userInput = await vscode.window.showInputBox({ prompt: 'Enter Vault token', value: nativeToken });
-    // If no input was collected, cancel
+    // If the Vault token was collected
     if (userInput) {
-        // Set the token to the client
+        // Cache the collected inputs
         client.token = userInput;
-        vscode.window.vault.log('Logging in with native token', 'key');
-        // Lookup the token
+        // Submit a lookup request
         const tokenLookupResult = await client.tokenLookupSelf();
-        // Cache the token for future use
+        // Parse the lookup response
         token = { id: tokenLookupResult.data.id, renewable: tokenLookupResult.data.renewable, ttl: tokenLookupResult.data.ttl };
+        vscode.window.vault.log('Logging in with native token', 'key');
     }
+    // Return the token (if defined)
     return token;
 }

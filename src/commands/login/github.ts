@@ -16,20 +16,22 @@ export default async function(client: nv.client): Promise<VaultToken> {
     let token: VaultToken;
     // Prompt for the mount point
     const newGitgubMountPoint = await vscode.window.showInputBox({ prompt: 'Enter authentication mount point', value: githubLoginRequest.mount_point });
-    // If no input was collected, cancel
+    // If the mount point was collected
     if (newGitgubMountPoint) {
         // Prompt for the GitHub token
         const newGithubToken = await vscode.window.showInputBox({ prompt: 'Enter GitHub access token', value: githubLoginRequest.token, validateInput: validateGitHubToken });
-        // If no input was collected, cancel
+        // If the GitHub token was collected
         if (newGithubToken) {
             // Cache the collected inputs
             githubLoginRequest.mount_point = newGitgubMountPoint;
             githubLoginRequest.token = newGithubToken;
-            vscode.window.vault.log('Logging in with access token', 'mark-github');
+            // Submit a login request
             const githubLoginResult = await client.githubLogin(githubLoginRequest);
+            // Parse the login response
             token = { id: githubLoginResult.auth.client_token, renewable: githubLoginResult.auth.renewable, ttl: githubLoginResult.auth.lease_duration };
+            vscode.window.vault.log('Logging in with access token', 'mark-github');
         }
     }
-
+    // Return the token (if defined)
     return token;
 }

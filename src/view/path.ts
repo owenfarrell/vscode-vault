@@ -3,7 +3,6 @@
 import * as commands from '../commands';
 import * as HTTPStatusCodes from 'http-status-codes';
 import * as path from 'path';
-import * as vscode from 'vscode';
 
 import { VaultSecretTreeItem } from './secret';
 import { VaultTreeItem } from './treeitem';
@@ -23,24 +22,31 @@ export class VaultPathTreeItem extends VaultTreeItem {
     //#endregion
 
     //#region VaultTreeItem Implementation
-    async refresh(): Promise<any> {
-        vscode.window.vault.log(`Refreshing path ${this.path}`);
+    async refresh(): Promise<boolean> {
         try {
+            // Get the client stub
             const client = this.getClient();
+            // List the path
             const pathList = await commands.list(client, this.path);
-
+            // Update the list of children based on the list of paths
             this.children = pathList.map((element: string) => {
+                // If the path ends with a slash, create a child path, otherwise create a child secret
                 const ChildTreeItem = element.endsWith('/') ? VaultPathTreeItem : VaultSecretTreeItem;
+                // Instantiate a new child element
                 return new ChildTreeItem(element, this);
             });
         }
         catch (err) {
+            // Clear the list of children
             this.children = [];
+            // If the response status code is a 404, but the response body indicates no error
             if (err.response?.statusCode === HTTPStatusCodes.NOT_FOUND && err.response?.body?.errors?.length === 0) {
-                // Just means its empty
+                // That's just Vault's way of saying that there are no children
             }
             else {
+                // Update the icon to indicate an error
                 this.iconPath = VaultTreeItem.WARNING_ICON;
+                // Update the tooltip to include the error message
                 this.tooltip = err.toString().trim();
             }
         }
@@ -50,7 +56,9 @@ export class VaultPathTreeItem extends VaultTreeItem {
 
     //#region Custom Command Methods
     async write(): Promise<boolean> {
+        // Get the client stub
         const client = this.getClient();
+        // Write the path
         return commands.write(client, this.path);
     }
     //#endregion
