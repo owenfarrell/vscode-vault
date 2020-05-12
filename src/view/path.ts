@@ -14,8 +14,8 @@ export class VaultPathTreeItem extends VaultTreeItem {
     constructor(label: string, parent: VaultTreeItem) {
         super(label, parent);
         this.iconPath = this._defaultIconPath = {
-            light: path.join(__dirname, '..', 'resources', 'light', 'folder.svg'),
-            dark: path.join(__dirname, '..', 'resources', 'dark', 'folder.svg')
+            light: path.join(__dirname, '..', 'resources', 'light', 'tree', 'folder.svg'),
+            dark: path.join(__dirname, '..', 'resources', 'dark', 'tree', 'folder.svg')
         };
         this.path = parent.path + label;
     }

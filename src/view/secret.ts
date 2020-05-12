@@ -13,8 +13,8 @@ export class VaultSecretTreeItem extends VaultTreeItem {
     constructor(label: string, parent: VaultTreeItem) {
         super(label, parent, vscode.TreeItemCollapsibleState.None);
         this.iconPath = this._defaultIconPath = {
-            light: path.join(__dirname, '..', 'resources', 'light', 'document.svg'),
-            dark: path.join(__dirname, '..', 'resources', 'dark', 'document.svg')
+            light: path.join(__dirname, '..', 'resources', 'light', 'tree', 'secret.svg'),
+            dark: path.join(__dirname, '..', 'resources', 'dark', 'tree', 'secret.svg')
         };
         this.path = parent.path + label;
     }

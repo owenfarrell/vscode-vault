@@ -58,8 +58,8 @@
                 "title": "Connect to Server",
                 "category": "Vault",
                 "icon": {
-                    "light": "resources/light/add.svg",
-                    "dark": "resources/dark/add.svg"
+                    "light": "resources/light/command/add.svg",
+                    "dark": "resources/dark/command/add.svg"
                 }
             },
             {
@@ -72,8 +72,8 @@
                 "title": "Refresh",
                 "category": "Vault",
                 "icon": {
-                    "light": "resources/light/refresh.svg",
-                    "dark": "resources/dark/refresh.svg"
+                    "light": "resources/light/command/refresh.svg",
+                    "dark": "resources/dark/command/refresh.svg"
                 }
             },
             {
@@ -86,8 +86,8 @@
                 "title": "Write Secret",
                 "category": "Vault",
                 "icon": {
-                    "light": "resources/light/edit.svg",
-                    "dark": "resources/dark/edit.svg"
+                    "light": "resources/light/command/edit.svg",
+                    "dark": "resources/dark/command/edit.svg"
                 }
             }
         ],

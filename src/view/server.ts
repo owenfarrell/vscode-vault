@@ -18,8 +18,8 @@ export class VaultServerTreeItem extends VaultTreeItem {
     constructor(session: VaultSession) {
         super(session.name);
         this.iconPath = this._defaultIconPath = {
-            light: path.join(__dirname, '..', 'resources', 'light', 'server.svg'),
-            dark: path.join(__dirname, '..', 'resources', 'dark', 'server.svg')
+            light: path.join(__dirname, '..', 'resources', 'light', 'tree', 'server.svg'),
+            dark: path.join(__dirname, '..', 'resources', 'dark', 'tree', 'server.svg')
         };
         this.id += session.name.endsWith('/') ? '' : '/';
         this._session = session;
