@@ -18,7 +18,7 @@ export default async function(client: nv.client, path: string): Promise<void> {
     // For each mount point
     for (const key in flattenedData) {
         // Create a new quick pick item from the key/value pair
-        items.push({ label: key, secretValue: flattenedData[key] });
+        items.push({ label: `$(symbol-${typeof flattenedData[key]}) ${key}`, secretValue: flattenedData[key] });
     }
     // If only one quick pick item exists, automatically select it, otherwise prompt for the item to pick
     const selectedItem = items.length === 1 ? items[0] : await vscode.window.showQuickPick(items, { placeHolder: 'Select an attribute' });
