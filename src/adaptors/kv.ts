@@ -29,22 +29,23 @@ export class KeyValueVersion2Adaptor implements SecretsEngineAdaptor {
         const dataRegex = RegExp('(\\/?' + mountPointName + '(?!\\/data))\\/?');
 
         const originalDeleteFunction = client.delete;
-        client.delete = function(path, requestOptions) {
+        client.delete = function(path, requestOptions): Promise<any> {
             return originalDeleteFunction(path.replace(dataRegex, '$1/metadata/'), requestOptions);
         };
 
         const originalListFunction = client.list;
-        client.list = function(path, requestOptions) {
+        client.list = function(path, requestOptions): Promise<any> {
             return originalListFunction(path.replace(metadataRegex, '$1/metadata/'), requestOptions);
         };
 
         const originalReadFunction = client.read;
-        client.read = function(path, requestOptions) {
-            return originalReadFunction(path.replace(dataRegex, '$1/data/'), requestOptions);
+        client.read = async function(path, requestOptions): Promise<any> {
+            const readResponse = await originalReadFunction(path.replace(dataRegex, '$1/data/'), requestOptions);
+            return readResponse.data;
         };
 
         const originalWriteFunction = client.write;
-        client.write = function(path, data, requestOptions) {
+        client.write = function(path, data, requestOptions): Promise<any> {
             return originalWriteFunction(path.replace(dataRegex, '$1/data/'), { data: data }, requestOptions);
         };
     }
