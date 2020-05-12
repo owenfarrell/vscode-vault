@@ -20,6 +20,12 @@ export class VaultSecretTreeItem extends VaultTreeItem {
     }
     //#endregion
 
+    //#region VaultTreeItem Implementation
+    async refresh(): Promise<boolean> {
+        return this.parent.refresh();
+    }
+    //#endregion
+
     //#region Custom Command Methods
     async delete(): Promise<void> {
         // Get the client stub
