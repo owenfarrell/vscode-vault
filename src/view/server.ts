@@ -11,6 +11,7 @@ import { VaultTreeItem } from './treeitem';
 
 export class VaultServerTreeItem extends VaultTreeItem {
     private readonly _session: VaultSession
+    private _dirtyCache: boolean;
 
     contextValue = 'server';
 
@@ -33,31 +34,44 @@ export class VaultServerTreeItem extends VaultTreeItem {
     }
 
     async refresh(): Promise<boolean> {
-        try {
-            // Fetch the list of mounts from Vault (NOTE: this is likely fail due to user access restrictions)
-            await this._session.cacheMountPoints();
-            // Map the list of mounts to a list of tree items
-            this.children = this._session.mountPoints.map((element: string) => new VaultPathTreeItem(element, this));
+        let returnValue : boolean;
+        // If mount points are not being explicitly tracked
+        if (this._dirtyCache === undefined) {
+            try {
+                // Fetch the list of mounts from Vault (NOTE: this is likely fail due to user access restrictions)
+                await this._session.cacheMountPoints();
+                // Map the list of mounts to a list of tree items
+                this.children = this._session.mountPoints.map((element: string) => new VaultPathTreeItem(element, this));
+            }
+            catch (err) {
+                vscode.window.vault.log(`Unable to cache mount points: ${err.message}`);
+                // Clear the list of child elements
+                this.children = undefined;
+                // Start tracking mount points explicitly and prevent subsequent refreshes from triggering this same error
+                this._dirtyCache = false;
+            }
+            // If no list of children or no children are defined
+            if (this.children === undefined || this.children.length === 0) {
+                // Show an error message and prompt the user for an action
+                vscode.window.showErrorMessage('Unable to list mounts', 'Browse...')
+                    // If the (1) action is selected, execute the associated command
+                    .then((selectedAction: string) => selectedAction && vscode.commands.executeCommand('vault.browse', this));
+            }
+            returnValue = true;
         }
-        catch (err) {
-            vscode.window.vault.log(`Unable to cache mount points: ${err.message}`);
-            // Clear the list of child elements
-            this.children = undefined;
-            // Prevent subsequent refreshes from triggering this same error
-            this.refresh = super.refresh;
+        // If mount points are being explicitly tracked
+        else {
+            // Return the current value of the cache status flag
+            returnValue = this._dirtyCache;
+            // Reset the current value of the cache status flag
+            this._dirtyCache = false;
         }
-        // If no list of children or no children are defined
-        if (this.children === undefined || this.children.length === 0) {
-            // Show an error message and prompt the user for an action
-            vscode.window.showErrorMessage('Unable to list mounts', 'Browse...')
-                // If the (1) action is selected, execute the associated command
-                .then((selectedAction: string) => selectedAction && vscode.commands.executeCommand('vault.browse', this));
-        }
-        return true;
+        return returnValue;
     }
+    //#endregion
 
-    async browse(): Promise<boolean> {
-        let requiresRefresh = false;
+    //#region Custom Command Methods
+    async browse(): Promise<void> {
         // Prompt for the path
         let browseablePath = await vscode.window.showInputBox({ prompt: 'Enter path to browse' });
         // If the path was collected
@@ -87,10 +101,9 @@ export class VaultServerTreeItem extends VaultTreeItem {
                     this.children.push(treeItem);
                 }
                 // Flag the need for a refresh of the tree view
-                requiresRefresh = true;
+                this._dirtyCache = true;
             }
         }
-        return requiresRefresh;
     }
     //#endregion
 }

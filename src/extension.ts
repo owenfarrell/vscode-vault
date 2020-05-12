@@ -30,7 +30,7 @@ export function activate(context: vscode.ExtensionContext) {
         vaultWindow,
         vscode.window.createTreeView('vaultSecrets', { treeDataProvider: vaultTreeDataProvider }),
         // Subscribe to "vault.browse" events
-        vscode.commands.registerCommand('vault.browse', (treeItem: view.VaultServerTreeItem) => treeItem.browse().then((requiresRefresh: boolean) => requiresRefresh === true && vaultTreeDataProvider.refresh(treeItem)).catch((error: any) => vaultWindow.logError(error))),
+        vscode.commands.registerCommand('vault.browse', (treeItem: view.VaultServerTreeItem) => treeItem.browse().then(() => vaultTreeDataProvider.refresh(treeItem)).catch((error: any) => vaultWindow.logError(error))),
         // Subscribe to "vault.connect" events
         vscode.commands.registerCommand('vault.connect', () => vaultTreeDataProvider.connect().catch((error: any) => vaultWindow.logError(error))),
         // Subscribe to "vault.delete" events

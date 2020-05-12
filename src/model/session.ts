@@ -29,6 +29,8 @@ export class VaultSession implements vscode.Disposable {
     public async cacheMountPoints(): Promise<void> {
         // Fetch the list of client mounts
         const mounts: any = await this.client.mounts();
+        // Clear the existing array
+        this.mountPoints.length = 0;
         // For each mount point
         for (const key in mounts.data) {
             // Get the adaptor for the specified mount point
