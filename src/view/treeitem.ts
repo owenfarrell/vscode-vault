@@ -11,8 +11,8 @@ export interface TreeItemIconPath {
 
 export abstract class VaultTreeItem extends vscode.TreeItem {
     protected static readonly WARNING_ICON: TreeItemIconPath = {
-        light: path.join(__dirname, '..', 'resources', 'light', 'warning.svg'),
-        dark: path.join(__dirname, '..', 'resources', 'dark', 'warning.svg')
+        light: path.join(__dirname, '..', 'resources', 'light', 'tree', 'warning.svg'),
+        dark: path.join(__dirname, '..', 'resources', 'dark', 'tree', 'warning.svg')
     };
 
     //#region Attributes
