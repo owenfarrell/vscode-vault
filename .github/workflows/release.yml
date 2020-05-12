@@ -23,4 +23,4 @@ jobs:
     - name: Clean Install
       run: npm ci
     - name: Publish
-      run: ./node_modules/vsce/out/vsce --packagePath vscode-vault.vsix --pat $VSCE_PUBLISHER_TOKEN
+      run: ./node_modules/vsce/out/vsce --packagePath vscode-vault.vsix --pat $VSCE_PAT
