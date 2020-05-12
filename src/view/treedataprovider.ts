@@ -17,42 +17,54 @@ export class VaultTreeDataProvider implements vscode.TreeDataProvider<VaultTreeI
 
     getChildren(element?: VaultTreeItem): vscode.ProviderResult<VaultTreeItem[]> {
         let providerResult: vscode.ProviderResult<VaultTreeItem[]>;
+        // If no element is selected in the tree view
         if (element === undefined) {
-            vscode.window.vault.log('No tree element specified, returning server list');
+            // Return the top level elements of the tree view
             providerResult = this._serverList;
         }
+        // If the selected element has no children defined
         else if (element.children === undefined) {
-            vscode.window.vault.log(`Tree element ${element.id} has no children defined, refreshing`);
+            // If the selected element has no children defined
+            vscode.window.vault.log(`Refreshing ${element.id}`);
             providerResult = this.refresh(element);
         }
+        // If the selected element has children defined
         else {
-            vscode.window.vault.log(`Tree element ${element.id} has children cached`);
+            // Return the children
             providerResult = element.children;
         }
         return providerResult;
     }
 
     getParent(element: VaultTreeItem): VaultTreeItem {
+        // Return the parent
         return element.parent;
     }
 
     getTreeItem(element: VaultTreeItem): vscode.TreeItem {
+        // Return the element
         return element;
     }
     //#endregion
 
     //#region Custom Command Methods
     async connect(): Promise<void> {
+        //
         const session = await commands.connect();
-        const treeItem = new VaultServerTreeItem(session);
         if (session) {
+            // Create a new tree item from the session
+            const treeItem = new VaultServerTreeItem(session);
+            // Add the server to the list of top-level tree items
             this._serverList.push(treeItem);
+            // Fire an event to trigger a refresh of the tree view
             this._onDidChangeTreeData.fire();
         }
     }
 
     async refresh(element: VaultTreeItem): Promise<VaultTreeItem[]> {
+        // If refreshing the element changed the content
         if (await element.refresh() === true) {
+            // Fire an event to trigger a refresh of the tree view
             this._onDidChangeTreeData.fire();
         }
         return undefined;
