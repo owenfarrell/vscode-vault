@@ -59,9 +59,7 @@ export abstract class VaultTreeItem extends vscode.TreeItem {
     }
 
     //#region Custom Command Methods
-    async refresh(): Promise<boolean> {
-        return true;
-    }
+    abstract async refresh(): Promise<boolean>;
 
     getClient(): nv.client {
         return this.parent.getClient();
