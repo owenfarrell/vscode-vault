@@ -58,8 +58,8 @@
                 "title": "Connect to Server",
                 "category": "Vault",
                 "icon": {
-                    "light": "resources/light/command/add.svg",
-                    "dark": "resources/dark/command/add.svg"
+                    "light": "resources/light/command/connect.svg",
+                    "dark": "resources/dark/command/connect.svg"
                 }
             },
             {
