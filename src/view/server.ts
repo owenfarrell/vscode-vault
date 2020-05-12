@@ -48,7 +48,7 @@ export class VaultServerTreeItem extends VaultTreeItem {
         }
         // If no list of children or no children are defined
         if (this.children === undefined || this.children.length === 0) {
-            // Show an error message
+            // Show an error message and prompt the user for an action
             vscode.window.showErrorMessage('Unable to list mounts', 'Browse...')
                 // If the (1) action is selected, execute the associated command
                 .then((selectedAction: string) => selectedAction && vscode.commands.executeCommand('vault.browse', this));
