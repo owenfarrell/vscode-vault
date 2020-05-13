@@ -42,6 +42,11 @@ export class VaultPathTreeItem extends VaultTreeItem {
             // If the response status code is a 404, but the response body indicates no error
             if (err.response?.statusCode === HTTPStatusCodes.NOT_FOUND && err.response?.body?.errors?.length === 0) {
                 // That's just Vault's way of saying that there are no children
+                // If the parent is a path
+                if (this.parent.contextValue === this.contextValue) {
+                    // Refresh the parent path
+                    return this.parent.refresh();
+                }
             }
             else {
                 // Update the icon to indicate an error
