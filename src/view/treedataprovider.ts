@@ -58,7 +58,7 @@ export class VaultTreeDataProvider implements vscode.TreeDataProvider<VaultTreeI
             // Add the server to the list of top-level tree items
             this._serverList.push(treeItem);
             // Fire an event to trigger a refresh of the tree view
-            this._onDidChangeTreeData.fire();
+            this._onDidChangeTreeData.fire(undefined);
         }
     }
 
@@ -66,7 +66,7 @@ export class VaultTreeDataProvider implements vscode.TreeDataProvider<VaultTreeI
         // If refreshing the element changed the content
         if (await element.refresh() === true) {
             // Fire an event to trigger a refresh of the tree view
-            this._onDidChangeTreeData.fire();
+            this._onDidChangeTreeData.fire(undefined);
         }
         return undefined;
     }
