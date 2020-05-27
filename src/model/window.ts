@@ -1,6 +1,5 @@
 'use strict';
 
-import * as clipboardy from 'clipboardy';
 import * as vscode from 'vscode';
 
 export class VaultWindow implements vscode.Disposable {
@@ -19,7 +18,7 @@ export class VaultWindow implements vscode.Disposable {
 
     clip(key: string, value: string): void {
         // Write the specified value to the clipboard
-        clipboardy.writeSync(value);
+        vscode.env.clipboard.writeText(value);
         this.log(`Copied value of "${key}" to clipboard`, 'clippy', this.clipboardTimeout);
         // If a clipboard timeout is set
         if (this.clipboardTimeout > 0) {
@@ -57,7 +56,7 @@ export class VaultWindow implements vscode.Disposable {
     }
 
     private clearClipboard(): void {
-        clipboardy.writeSync('');
+        vscode.env.clipboard.writeText('');
         this.log('Cleared clipboard', 'clippy');
     }
 
