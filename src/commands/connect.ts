@@ -25,7 +25,7 @@ function validateURL(userInput: string): string | undefined {
 }
 
 export default async function(): Promise<VaultSession> {
-    let session : VaultSession;
+    let session: VaultSession;
     // Prompt for the Vault endpoint
     let endpoint = await vscode.window.showInputBox({ prompt: 'Enter the address of your vault server', validateInput: validateURL, value: process.env.VAULT_ADDR });
     // If the Vault endpoint was collected
@@ -43,9 +43,7 @@ export default async function(): Promise<VaultSession> {
             // If an authentication option was selected
             if (selectedItem) {
                 // Create a new Vault session object
-                session = new VaultSession(name);
-                // Set the endpoint to the client use for the session
-                session.client.endpoint = endpoint;
+                session = new VaultSession(name, endpointUrl);
                 // Call the selected authentication function
                 const token = await selectedItem.callback(session.client);
                 // If a token was collected

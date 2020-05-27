@@ -2,20 +2,26 @@
 
 import * as adaptors from '../adaptors';
 import * as nv from 'node-vault';
+import * as request from 'request';
 import * as vscode from 'vscode';
 
 import { SecretsEngineAdaptor } from '../adaptors/base';
+import { Url } from 'url';
 import { VaultToken } from './token';
 
 export class VaultSession implements vscode.Disposable {
     //#region Attributes
-    public readonly client = nv();
+    public readonly client: nv.client;
+    public readonly endpoint: Url;
     public readonly name: string;
     public readonly mountPoints: string[] = [];
+    public readonly requestOptions: request.CoreOptions = { followAllRedirects: true, strictSSL: true };
     private _tokenTimer: NodeJS.Timer;
     //#endregion
 
-    constructor(name: string) {
+    constructor(name: string, endpointUrl : Url) {
+        this.client = nv({ endpoint: endpointUrl.hostname, requestOptions: this.requestOptions });
+        this.endpoint = endpointUrl;
         this.name = name;
     }
 
