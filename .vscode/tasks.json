@@ -15,36 +15,17 @@
             "problemMatcher": []
         },
         {
-            "label": "install",
-            "type": "shell",
-            "command": "npm",
-            "args": [
-                "install"
-            ],
-            "problemMatcher": []
-        },
-        {
-            "label": "npm",
-            "type": "shell",
-            "command": "npm",
+            "type": "npm",
+            "script": "watch",
+            "problemMatcher": "$tsc-watch",
             "isBackground": true,
-            "args": [
-                "run",
-                "compile",
-                "--loglevel",
-                "silent"
-            ],
+            "presentation": {
+                "reveal": "never"
+            },
             "group": {
                 "kind": "build",
                 "isDefault": true
-            },
-            "presentation": {
-                "echo": false,
-                "reveal": "silent",
-                "focus": false,
-                "panel": "shared"
-            },
-            "problemMatcher": "$tsc-watch"
+            }
         }
     ]
 }
