@@ -185,7 +185,6 @@
     "badges": [],
     "markdown": "github",
     "dependencies": {
-        "clipboardy": "^1.2.3",
         "flat": "^4.1.0",
         "http-status-codes": "^1.4.0",
         "node-vault": "0.9.13",
