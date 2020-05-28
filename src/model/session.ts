@@ -1,8 +1,8 @@
 'use strict';
 
 import * as adaptors from '../adaptors';
+import * as config from '../config';
 import * as nv from 'node-vault';
-import * as request from 'request';
 import * as url from 'url';
 import * as vscode from 'vscode';
 
@@ -15,12 +15,17 @@ export class VaultSession implements vscode.Disposable {
     public readonly endpoint: url.Url;
     public readonly name: string;
     public readonly mountPoints: string[] = [];
-    public readonly requestOptions: request.CoreOptions = { followAllRedirects: true, strictSSL: true };
     private _tokenTimer: NodeJS.Timer;
     //#endregion
 
-    constructor(name: string, endpointUrl : url.Url) {
-        this.client = nv({ endpoint: url.format(endpointUrl), requestOptions: this.requestOptions });
+    constructor(name: string, endpointUrl: url.Url) {
+        this.client = nv({
+            endpoint: url.format(endpointUrl),
+            requestOptions: {
+                followAllRedirects: true,
+                strictSSL: config.TRUSTED_AUTHORITIES.indexOf(endpointUrl.host) < 0
+            }
+        });
         this.endpoint = endpointUrl;
         this.name = name;
     }

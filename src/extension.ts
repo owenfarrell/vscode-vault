@@ -17,13 +17,13 @@ export function activate(context: vscode.ExtensionContext) {
     const vaultTreeDataProvider = new view.VaultTreeDataProvider();
 
     // Load the configuration to start
-    config.load(vaultWindow, vaultTreeDataProvider);
+    config.load(vaultWindow);
     // Subscribe to configuration event changes
     const eventListener : vscode.Disposable = vscode.workspace.onDidChangeConfiguration((event : vscode.ConfigurationChangeEvent) => {
         // If the Vault extension configuration changed
         if (event.affectsConfiguration('vault')) {
             // (Re)Load the configuration
-            config.load(vaultWindow, vaultTreeDataProvider);
+            config.load(vaultWindow);
         }
     });
 
