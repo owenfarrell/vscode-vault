@@ -17,13 +17,18 @@ export class VaultWindow implements vscode.Disposable {
     }
 
     clip(key: string, value: string): void {
+        // If a clipboard timer is already defined
+        if (this._clipboardTimer) {
+            // Cancel the timer
+            this._clipboardTimer.unref();
+        }
         // Write the specified value to the clipboard
         vscode.env.clipboard.writeText(value);
         this.log(`Copied value of "${key}" to clipboard`, 'clippy', this.clipboardTimeout);
         // If a clipboard timeout is set
         if (this.clipboardTimeout > 0) {
             // Create a timeout function to clear the clipboard
-            this._clipboardTimer = setTimeout(() => this.clearClipboard(), this.clipboardTimeout);
+            this._clipboardTimer = setTimeout(() => this.clearClipboard(value), this.clipboardTimeout);
         }
     }
 
@@ -55,9 +60,22 @@ export class VaultWindow implements vscode.Disposable {
         this.log(msg);
     }
 
-    private clearClipboard(): void {
-        vscode.env.clipboard.writeText('');
-        this.log('Cleared clipboard', 'clippy');
+    private clearClipboard(expectedValue: string): void {
+        // Read the clipboard contents
+        vscode.env.clipboard.readText()
+            .then((actualValue: string) => {
+                // If the actual clipboard contents match the expected contents
+                if (actualValue === expectedValue) {
+                    // Write an empty string to the clipboard
+                    vscode.env.clipboard.writeText('');
+                    this.log('Cleared clipboard', 'clippy');
+                }
+                // If the actual clipboard contents differ from the expected contents
+                else {
+                    // Clear the status bar
+                    this.clearStatusBar();
+                }
+            });
     }
 
     private clearStatusBar(): void {
