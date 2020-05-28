@@ -27,11 +27,9 @@ function validateURL(userInput: string): string | undefined {
 export default async function(): Promise<VaultSession> {
     let session: VaultSession;
     // Prompt for the Vault endpoint
-    let endpoint = await vscode.window.showInputBox({ prompt: 'Enter the address of your vault server', validateInput: validateURL, value: process.env.VAULT_ADDR });
+    const endpoint = await vscode.window.showInputBox({ prompt: 'Enter the address of your vault server', validateInput: validateURL, value: process.env.VAULT_ADDR });
     // If the Vault endpoint was collected
     if (endpoint) {
-        // Remove any trailing slash from the input
-        endpoint = endpoint.replace(/\/$/, '');
         // Create a URL object from the Vault endpoint
         const endpointUrl = new URL(endpoint);
         // Prompt for the friendly (display) name

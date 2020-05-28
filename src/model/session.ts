@@ -12,7 +12,6 @@ import { VaultToken } from './token';
 export class VaultSession implements vscode.Disposable {
     //#region Attributes
     public readonly client: nv.client;
-    public readonly endpoint: url.Url;
     public readonly name: string;
     public readonly mountPoints: string[] = [];
     private _tokenTimer: NodeJS.Timer;
@@ -20,13 +19,13 @@ export class VaultSession implements vscode.Disposable {
 
     constructor(name: string, endpointUrl: url.Url) {
         this.client = nv({
-            endpoint: url.format(endpointUrl),
+            // Remove any trailing slash from the URL
+            endpoint: url.format(endpointUrl).replace(/\/$/, ''),
             requestOptions: {
                 followAllRedirects: true,
                 strictSSL: config.TRUSTED_AUTHORITIES.indexOf(endpointUrl.host) < 0
             }
         });
-        this.endpoint = endpointUrl;
         this.name = name;
     }
 
