@@ -199,7 +199,7 @@
         "@types/node": "^10.17.18",
         "@types/request": "^2.48.5",
         "@types/validator": "^13.0.0",
-        "@types/vscode": "^1.45.0",
+        "@types/vscode": "^1.29.1",
         "@typescript-eslint/eslint-plugin": "^2.33.0",
         "@typescript-eslint/parser": "^2.33.0",
         "ajv": "^6.9.1",
