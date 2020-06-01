@@ -63,7 +63,7 @@ TODO
 
 The following settings are supported
 
-* `vault.trustedEndpoints` : A collection of authorities (username and port) for which strict SSL checking will be skipped.
+* `vault.trustedEndpoints` : A collection of authorities (username and port, or `servername:port` in case of Native authentication) for which strict SSL checking will be skipped.
 * `vault.clipboardTimeout` : A duration (in seconds) after which clipboard contents will be cleared. When set to `0`, clipboard clearing will be disabled. Defaults to `60`.
 
 -----------------------------------------------------------------------------------------------------------
