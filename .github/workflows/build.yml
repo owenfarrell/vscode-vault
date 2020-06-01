@@ -33,7 +33,7 @@ jobs:
       with:
         path: vscode-vault.vsix
     - name: Publish
-      if: success() && startsWith( github.ref, 'refs/tags/releases/')
+      if: success() && startsWith( github.ref, 'refs/tags/v')
       # TODO: Remove the --pat flag when vsce support environmental variables
       run: ./node_modules/vsce/out/vsce publish --packagePath ./artifact/vscode-vault.vsix --pat $VSCE_PAT
       env:
