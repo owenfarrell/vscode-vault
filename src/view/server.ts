@@ -10,7 +10,7 @@ import { VaultSession } from '../model';
 import { VaultTreeItem } from './treeitem';
 
 export class VaultServerTreeItem extends VaultTreeItem {
-    private readonly _session: VaultSession
+    public readonly session: VaultSession
     private _dirtyCache: boolean;
 
     contextValue = 'server';
@@ -23,14 +23,14 @@ export class VaultServerTreeItem extends VaultTreeItem {
             dark: path.join(__dirname, '..', 'resources', 'dark', 'tree', 'server.svg')
         };
         this.id += session.name.endsWith('/') ? '' : '/';
-        this._session = session;
+        this.session = session;
         // TODO Re-add support for custom options
     }
     //#endregion
 
     //#region VaultTreeItem Implementation
     getClient(): nv.client {
-        return this._session.client;
+        return this.session.client;
     }
 
     async refresh(): Promise<boolean> {
@@ -39,9 +39,9 @@ export class VaultServerTreeItem extends VaultTreeItem {
         if (this._dirtyCache === undefined) {
             try {
                 // Fetch the list of mounts from Vault (NOTE: this is likely fail due to user access restrictions)
-                await this._session.cacheMountPoints();
+                await this.session.cacheMountPoints();
                 // Map the list of mounts to a list of tree items
-                this.children = this._session.mountPoints.map((element: string) => new VaultPathTreeItem(element, this));
+                this.children = this.session.mountPoints.map((element: string) => new VaultPathTreeItem(element, this));
             }
             catch (err) {
                 vscode.window.vault.log(`Unable to cache mount points: ${err.message}`);
@@ -87,7 +87,7 @@ export class VaultServerTreeItem extends VaultTreeItem {
                 // Extract the mount from the path
                 const mountPoint = browseablePath.split('/')[0];
                 // Add the mount using the adaptor for the selected engine
-                this._session.mount(mountPoint, adaptor);
+                this.session.mount(mountPoint, adaptor);
                 // Create a new tree item for the path
                 const treeItem = new VaultPathTreeItem(browseablePath, this);
                 // If no children are defined

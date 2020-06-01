@@ -3,7 +3,7 @@
     "version": "2.0.1",
     "publisher": "owenfarrell",
     "engines": {
-        "vscode": "^1.45.0"
+        "vscode": "^1.29.1"
     },
     "license": "MIT",
     "displayName": "Vault",
@@ -197,8 +197,9 @@
         "@types/flat": "^5.0.0",
         "@types/mocha": "^5.2.7",
         "@types/node": "^10.17.18",
+        "@types/request": "^2.48.5",
         "@types/validator": "^13.0.0",
-        "@types/vscode": "^1.45.0",
+        "@types/vscode": "^1.29.1",
         "@typescript-eslint/eslint-plugin": "^2.33.0",
         "@typescript-eslint/parser": "^2.33.0",
         "ajv": "^6.9.1",
