@@ -1,5 +1,6 @@
 'use strict';
 
+import * as config from './config';
 import * as view from './view';
 import * as vscode from 'vscode';
 
@@ -11,23 +12,25 @@ declare module 'vscode' {
     }
 }
 
-function loadConfiguration() {
-    const configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('vault');
-    vscode.window.vault.clipboardTimeout = <number>configuration.get('clipboardTimeout') * 1000;
-}
-
 export function activate(context: vscode.ExtensionContext) {
     const vaultWindow = vscode.window.vault = new VaultWindow();
     const vaultTreeDataProvider = new view.VaultTreeDataProvider();
 
     // Load the configuration to start
-    loadConfiguration();
+    config.load(vaultWindow);
     // Subscribe to configuration event changes
-    vscode.workspace.onDidChangeConfiguration(loadConfiguration);
+    const eventListener : vscode.Disposable = vscode.workspace.onDidChangeConfiguration((event : vscode.ConfigurationChangeEvent) => {
+        // If the Vault extension configuration changed
+        if (event.affectsConfiguration('vault')) {
+            // (Re)Load the configuration
+            config.load(vaultWindow);
+        }
+    });
 
     // Push disposables on to context
     context.subscriptions.push(
         vaultWindow,
+        eventListener,
         vscode.window.createTreeView('vaultSecrets', { treeDataProvider: vaultTreeDataProvider }),
         // Subscribe to "vault.browse" events
         vscode.commands.registerCommand('vault.browse', (treeItem: view.VaultServerTreeItem) => treeItem.browse().then(() => vaultTreeDataProvider.refresh(treeItem)).catch((err: Error) => vaultWindow.logError(`Unable to browse Vault path (${err.message})`))),
