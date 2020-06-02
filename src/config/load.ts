@@ -10,7 +10,7 @@ export default async function(window: model.VaultWindow) {
     const configuration = vscode.workspace.getConfiguration('vault');
     // Update the clipboard timeout based on the clipboardTimeout value from the configuration
     // TODO Disentangle this from the model?
-    window.clipboardTimeout = <number>configuration.get('clipboardTimeout') * 1000;
+    window.clipboardTimeout = configuration.get<number>('clipboardTimeout') * 1000;
     // Get the trustedAuthorities value from the configuration
     TRUSTED_AUTHORITIES = configuration.get('trustedAuthorities');
 }
