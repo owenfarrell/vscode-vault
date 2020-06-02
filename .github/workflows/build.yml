@@ -6,32 +6,32 @@ name: Build
 on:
   push:
     branches:
-    - master
+      - master
   pull_request:
     branches:
-    - master
+      - master
   release:
     types:
-    - created
+      - created
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Source
-      uses: actions/checkout@v2
-    - name: Setup Node
-      uses: actions/setup-node@v1
-      with:
-        node-version: 10.x
-    - name: Clean Install
-      run: npm ci
-    - name: Run Build
-      run: npm run build
-    - name: Upload Build Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        path: vscode-vault.vsix
+      - name: Checkout Source
+        uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+      - name: Clean Install
+        run: npm ci
+      - name: Run Build
+        run: npm run build
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          path: vscode-vault.vsix
 
   # TODO: Separate this in to a separate workflow when GitHub Actions allows downloading the latest artifact
   # https://github.com/actions/download-artifact/issues/3
@@ -41,21 +41,21 @@ jobs:
     if: github.event_name == 'release' && github.event.action == 'created'
     runs-on: ubuntu-latest
     steps:
-    - name: Download Build Artifact
-      uses: actions/download-artifact@v2
-    # TODO: Determine a more efficient way of accessing node_modules from the previous job
-    - name: Clean Install
-      run: npm ci
-    - name: Publish
-      # TODO: Remove the --pat flag when vsce support environmental variables
-      # https://github.com/microsoft/vscode-vsce/releases/tag/v1.76.0
-      run: ./node_modules/vsce/out/vsce publish --packagePath artifact/vscode-vault.vsix --pat $VSCE_PAT
-      env:
-        VSCE_PAT: ${{ secrets.VSCE_PAT }}
-    - name: Bump Version
-      run: npm version patch --git-tag-version=false
-    - uses: stefanzweifel/git-auto-commit-action@v4
-      with:
-        commit_message: Prepare for next development iteration
-        branch: master
-        file_pattern: package.json package-lock.json
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v2
+      # TODO: Determine a more efficient way of accessing node_modules from the previous job
+      - name: Clean Install
+        run: npm ci
+      - name: Publish
+        # TODO: Remove the --pat flag when vsce support environmental variables
+        # https://github.com/microsoft/vscode-vsce/releases/tag/v1.76.0
+        run: ./node_modules/vsce/out/vsce publish --packagePath artifact/vscode-vault.vsix --pat $VSCE_PAT
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+      - name: Bump Version
+        run: npm version patch --git-tag-version=false
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Prepare for next development iteration
+          branch: master
+          file_pattern: package.json package-lock.json
