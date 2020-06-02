@@ -3,18 +3,18 @@ name: Depdency Check
 on:
   push:
     branches:
-    - master
+      - master
   pull_request:
     branches:
-    - master
+      - master
 
 jobs:
   Snyk:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Source
-      uses: actions/checkout@v2
-    - name: Analyze
-      uses: snyk/actions/node@master
-      env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      - name: Checkout Source
+        uses: actions/checkout@v2
+      - name: Analyze
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}

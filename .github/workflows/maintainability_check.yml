@@ -19,6 +19,8 @@ jobs:
         with:
           # Disabling shallow clone is recommended for improving relevancy of reporting
           fetch-depth: 0
+      - name: Clean Install
+        run: npm ci
       - name: Analyze
         uses: sonarsource/sonarcloud-github-action@master
         env:
