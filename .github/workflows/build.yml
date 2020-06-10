@@ -41,11 +41,17 @@ jobs:
     if: github.event_name == 'release' && github.event.action == 'created'
     runs-on: ubuntu-latest
     steps:
-      - name: Download Build Artifact
-        uses: actions/download-artifact@v2
       # TODO: Determine a more efficient way of accessing node_modules from the previous job
+      - name: Checkout Source
+        uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
       - name: Clean Install
         run: npm ci
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v2
       - name: Publish
         # TODO: Remove the --pat flag when vsce support environmental variables
         # https://github.com/microsoft/vscode-vsce/releases/tag/v1.76.0
