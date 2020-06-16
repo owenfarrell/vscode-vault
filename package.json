@@ -210,7 +210,7 @@
         "eslint-plugin-standard": "^4.0.1",
         "ts-loader": "^6.2.2",
         "typescript": "^3.9.3",
-        "vsce": "^1.74.0",
+        "vsce": "^1.76.0",
         "webpack": "^4.42.1",
         "webpack-cli": "^3.3.11"
     },

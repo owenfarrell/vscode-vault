@@ -53,9 +53,7 @@ jobs:
       - name: Download Build Artifact
         uses: actions/download-artifact@v2
       - name: Publish
-        # TODO: Remove the --pat flag when vsce support environmental variables
-        # https://github.com/microsoft/vscode-vsce/releases/tag/v1.76.0
-        run: ./node_modules/vsce/out/vsce publish --packagePath artifact/vscode-vault.vsix --pat $VSCE_PAT
+        run: ./node_modules/vsce/out/vsce publish --packagePath artifact/vscode-vault.vsix
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
       - name: Bump Version
