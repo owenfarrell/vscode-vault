@@ -3,7 +3,6 @@
 import * as adaptors from 'src/adaptors';
 import * as model from 'src/model';
 import * as nv from 'node-vault';
-import * as path from 'path';
 import * as vscode from 'vscode';
 
 import { formatPath, OPTIONAL_TRAILING_SLASH, PATH_SEPARATOR, splitPath } from 'src/util';
@@ -22,10 +21,7 @@ export class VaultServerTreeItem extends VaultTreeItem {
         super(session.name);
         this.children = [];
         this.contextValue = VaultServerTreeItem.DISCONNECTED_CONTEXT;
-        this.iconPath = this._defaultIconPath = {
-            light: path.join(__dirname, '..', 'resources', 'light', 'tree', 'server.svg'),
-            dark: path.join(__dirname, '..', 'resources', 'dark', 'tree', 'server.svg')
-        };
+        this.iconPath = this._defaultIcon = new vscode.ThemeIcon('server');
         this.id = this.id.replace(OPTIONAL_TRAILING_SLASH, PATH_SEPARATOR);
         this.session = session;
         // TODO Re-add support for custom options

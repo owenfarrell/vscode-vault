@@ -1,6 +1,6 @@
 'use strict';
 
-import * as path from 'path';
+import * as vscode from 'vscode';
 
 import { VaultTreeItem } from './treeitem';
 
@@ -10,10 +10,7 @@ export class VaultShellTreeItem extends VaultTreeItem {
     //#region Constructors
     constructor(label: string, parent: VaultTreeItem) {
         super(label, parent);
-        this.iconPath = this._defaultIconPath = {
-            light: path.join(__dirname, '..', 'resources', 'light', 'tree', 'folder.svg'),
-            dark: path.join(__dirname, '..', 'resources', 'dark', 'tree', 'folder.svg')
-        };
+        this.iconPath = this._defaultIcon = new vscode.ThemeIcon('folder-opened');
         this.path = parent.path + label;
     }
     //#endregion

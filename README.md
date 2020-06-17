@@ -62,7 +62,7 @@ JSON data (or complex data structures, such as a map) is presented through the U
 
 ## Requirements
 
-Running this extension requires VisualStuido Code version 1.30.0 (November 2018) or later.
+Running this extension requires VisualStuido Code version 1.42.0 (January 2020) or later.
 
 ## Extension Settings
 
