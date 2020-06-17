@@ -13,7 +13,7 @@ export class VaultPathTreeItem extends VaultTreeItem {
     //#region Constructors
     constructor(label: string, parent: VaultTreeItem) {
         super(label, parent);
-        this.iconPath = this._defaultIcon = vscode.ThemeIcon.Folder;
+        this.iconPath = this._defaultIcon = new vscode.ThemeIcon('folder-opened');
         this.path = parent.path + label;
     }
     //#endregion
