@@ -2,7 +2,7 @@
 
 import * as commands from '../commands';
 import * as HTTPStatusCodes from 'http-status-codes';
-import * as path from 'path';
+import * as vscode from 'vscode';
 
 import { VaultSecretTreeItem } from './secret';
 import { VaultTreeItem } from './treeitem';
@@ -13,10 +13,7 @@ export class VaultPathTreeItem extends VaultTreeItem {
     //#region Constructors
     constructor(label: string, parent: VaultTreeItem) {
         super(label, parent);
-        this.iconPath = this._defaultIconPath = {
-            light: path.join(__dirname, '..', 'resources', 'light', 'tree', 'folder.svg'),
-            dark: path.join(__dirname, '..', 'resources', 'dark', 'tree', 'folder.svg')
-        };
+        this.iconPath = this._defaultIcon = vscode.ThemeIcon.Folder;
         this.path = parent.path + label;
     }
     //#endregion

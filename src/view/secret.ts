@@ -1,7 +1,6 @@
 'use strict';
 
 import * as commands from '../commands';
-import * as path from 'path';
 import * as vscode from 'vscode';
 
 import { VaultTreeItem } from './treeitem';
@@ -12,10 +11,7 @@ export class VaultSecretTreeItem extends VaultTreeItem {
     //#region Constructors
     constructor(label: string, parent: VaultTreeItem) {
         super(label, parent, vscode.TreeItemCollapsibleState.None);
-        this.iconPath = this._defaultIconPath = {
-            light: path.join(__dirname, '..', 'resources', 'light', 'tree', 'secret.svg'),
-            dark: path.join(__dirname, '..', 'resources', 'dark', 'tree', 'secret.svg')
-        };
+        this.iconPath = this._defaultIcon = vscode.ThemeIcon.File;
         this.path = parent.path + label;
     }
     //#endregion

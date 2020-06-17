@@ -1,23 +1,13 @@
 'use strict';
 
 import * as nv from 'node-vault';
-import * as path from 'path';
 import * as vscode from 'vscode';
 
-export interface TreeItemIconPath {
-    light: string | vscode.Uri;
-    dark: string | vscode.Uri
-}
-
 export abstract class VaultTreeItem extends vscode.TreeItem {
-    protected static readonly WARNING_ICON: TreeItemIconPath = {
-        light: path.join(__dirname, '..', 'resources', 'light', 'tree', 'warning.svg'),
-        dark: path.join(__dirname, '..', 'resources', 'dark', 'tree', 'warning.svg')
-    };
-
+    protected static readonly WARNING_ICON = new vscode.ThemeIcon('warning');
     //#region Attributes
     private _children: VaultTreeItem[];
-    protected _defaultIconPath : TreeItemIconPath;
+    protected _defaultIcon : vscode.ThemeIcon;
     public readonly parent: VaultTreeItem;
     public path: string = '';
     //#endregion
@@ -44,7 +34,7 @@ export abstract class VaultTreeItem extends vscode.TreeItem {
         }
         else {
             // Update the icon to use the default icon
-            this.iconPath = this._defaultIconPath;
+            this.iconPath = this._defaultIcon;
             // If the specified value is empty
             if (value.length === 0) {
                 // Update the collapsable state

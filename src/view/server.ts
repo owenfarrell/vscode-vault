@@ -2,7 +2,6 @@
 
 import * as adaptors from '../adaptors';
 import * as nv from 'node-vault';
-import * as path from 'path';
 import * as vscode from 'vscode';
 
 import { VaultPathTreeItem } from './path';
@@ -18,10 +17,7 @@ export class VaultServerTreeItem extends VaultTreeItem {
     //#region Constructors
     constructor(session: VaultSession) {
         super(session.name);
-        this.iconPath = this._defaultIconPath = {
-            light: path.join(__dirname, '..', 'resources', 'light', 'tree', 'server.svg'),
-            dark: path.join(__dirname, '..', 'resources', 'dark', 'tree', 'server.svg')
-        };
+        this.iconPath = this._defaultIcon = new vscode.ThemeIcon('server');
         this.id += session.name.endsWith('/') ? '' : '/';
         this.session = session;
         // TODO Re-add support for custom options

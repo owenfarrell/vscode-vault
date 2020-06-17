@@ -3,7 +3,7 @@
     "version": "2.1.1",
     "publisher": "owenfarrell",
     "engines": {
-        "vscode": "^1.30.0"
+        "vscode": "^1.42.0"
     },
     "license": "MIT",
     "displayName": "Vault",
@@ -52,55 +52,37 @@
                 "command": "vault.browse",
                 "title": "Browse Path",
                 "category": "Vault",
-                "icon": {
-                    "light": "resources/light/command/browse.svg",
-                    "dark": "resources/dark/command/browse.svg"
-                }
+                "icon": "$(search)"
             },
             {
                 "command": "vault.connect",
                 "title": "Connect to Server",
                 "category": "Vault",
-                "icon": {
-                    "light": "resources/light/command/connect.svg",
-                    "dark": "resources/dark/command/connect.svg"
-                }
+                "icon": "$(plus)"
             },
             {
                 "command": "vault.delete",
                 "title": "Delete Secret",
                 "category": "Vault",
-                "icon": {
-                    "light": "resources/light/command/delete.svg",
-                    "dark": "resources/dark/command/delete.svg"
-                }
+                "icon": "$(close)"
             },
             {
                 "command": "vault.list",
                 "title": "Refresh",
                 "category": "Vault",
-                "icon": {
-                    "light": "resources/light/command/refresh.svg",
-                    "dark": "resources/dark/command/refresh.svg"
-                }
+                "icon": "$(refresh)"
             },
             {
                 "command": "vault.read",
                 "title": "Read Secret",
                 "category": "Vault",
-                "icon": {
-                    "light": "resources/light/command/read.svg",
-                    "dark": "resources/dark/command/read.svg"
-                }
+                "icon": "$(link-external)"
             },
             {
                 "command": "vault.write",
                 "title": "Write Secret",
                 "category": "Vault",
-                "icon": {
-                    "light": "resources/light/command/edit.svg",
-                    "dark": "resources/dark/command/edit.svg"
-                }
+                "icon": "$(edit)"
             }
         ],
         "menus": {
@@ -198,7 +180,7 @@
         "@types/node": "^10.17.24",
         "@types/request": "^2.48.5",
         "@types/validator": "^13.0.0",
-        "@types/vscode": "1.30.0",
+        "@types/vscode": "1.42.0",
         "@typescript-eslint/eslint-plugin": "^2.34.0",
         "@typescript-eslint/parser": "^2.34.0",
         "ajv": "^6.9.1",
