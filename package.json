@@ -67,6 +67,15 @@
                 }
             },
             {
+                "command": "vault.disconnect",
+                "title": "Disconnect from Server",
+                "category": "Vault",
+                "icon": {
+                    "light": "resources/light/command/disconnect.svg",
+                    "dark": "resources/dark/command/disconnect.svg"
+                }
+            },
+            {
                 "command": "vault.delete",
                 "title": "Delete Secret",
                 "category": "Vault",
@@ -114,6 +123,10 @@
                     "when": "false"
                 },
                 {
+                    "command": "vault.disconnect",
+                    "when": "false"
+                },
+                {
                     "command": "vault.list",
                     "when": "false"
                 },
@@ -136,6 +149,11 @@
                     "command": "vault.delete",
                     "group": "inline@5",
                     "when": "view == vaultSecrets && viewItem == secret"
+                },
+                {
+                    "command": "vault.disconnect",
+                    "group": "inline",
+                    "when": "view == vaultSecrets && viewItem == server"
                 },
                 {
                     "command": "vault.list",
