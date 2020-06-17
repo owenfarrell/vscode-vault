@@ -129,27 +129,27 @@
             "view/item/context": [
                 {
                     "command": "vault.browse",
-                    "group": "inline",
+                    "group": "inline@1",
                     "when": "view == vaultSecrets && viewItem == server"
                 },
                 {
                     "command": "vault.delete",
-                    "group": "inline",
+                    "group": "inline@5",
                     "when": "view == vaultSecrets && viewItem == secret"
                 },
                 {
                     "command": "vault.list",
-                    "group": "inline",
+                    "group": "inline@2",
                     "when": "view == vaultSecrets && viewItem != secret"
                 },
                 {
                     "command": "vault.read",
-                    "group": "inline",
+                    "group": "inline@3",
                     "when": "view == vaultSecrets && viewItem == secret"
                 },
                 {
                     "command": "vault.write",
-                    "group": "inline",
+                    "group": "inline@4",
                     "when": "view == vaultSecrets && viewItem != server"
                 }
             ],
