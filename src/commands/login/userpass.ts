@@ -3,7 +3,8 @@
 import * as nv from 'node-vault';
 import * as vscode from 'vscode';
 
-import { CallableQuickPickItem, VaultToken } from '../../model';
+import { CallableQuickPickItem } from './base';
+import { VaultToken } from '../../model';
 
 const userpassLoginRequest = { mount_point: 'userpass', username: process.env.USER || process.env.USERNAME, password: undefined };
 
