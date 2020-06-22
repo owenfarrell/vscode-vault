@@ -152,7 +152,7 @@
                 },
                 {
                     "command": "vault.disconnect",
-                    "group": "inline",
+                    "group": "inline@6",
                     "when": "view == vaultSecrets && viewItem == server"
                 },
                 {
