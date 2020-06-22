@@ -3,11 +3,11 @@
 import * as nv from 'node-vault';
 import * as vscode from 'vscode';
 
-import { VaultToken } from '../../model';
+import { CallableQuickPickItem, VaultToken } from '../../model';
 
 const userpassLoginRequest = { mount_point: 'userpass', username: process.env.USER || process.env.USERNAME, password: undefined };
 
-export default async function(client: nv.client): Promise<VaultToken> {
+async function login(client: nv.client): Promise<VaultToken> {
     let token: VaultToken;
     // Prompt the user for the authentication mount point
     const newUserpassMountPoint = await vscode.window.showInputBox({ prompt: 'Enter userpass authentication mount point', value: userpassLoginRequest.mount_point });
@@ -36,3 +36,9 @@ export default async function(client: nv.client): Promise<VaultToken> {
     // Return the token (if defined)
     return token;
 }
+
+export const QUICK_PICK: CallableQuickPickItem = {
+    label: 'Username & Password',
+    description: 'Authenticate via a username and password',
+    callback: login
+};

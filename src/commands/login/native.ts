@@ -6,13 +6,13 @@ import * as os from 'os';
 import * as path from 'path';
 import * as vscode from 'vscode';
 
-import { VaultToken } from '../../model';
+import { CallableQuickPickItem, VaultToken } from '../../model';
 
 const nativeTokenPath: string = path.resolve(os.homedir(), '.vault-token');
 let nativeToken: string = process.env.VAULT_TOKEN;
 let nativeTokenTime: Date = new Date(nativeToken ? Date.now() - (process.uptime() * 1000) : 0);
 
-export default async function(client: nv.client): Promise<VaultToken> {
+async function login(client: nv.client): Promise<VaultToken> {
     // If a token file exists
     if (fs.existsSync(nativeTokenPath)) {
         // Get the last modified timestamp of the token file
@@ -43,3 +43,9 @@ export default async function(client: nv.client): Promise<VaultToken> {
     // Return the token (if defined)
     return token;
 }
+
+export const QUICK_PICK: CallableQuickPickItem = {
+    label: 'Native',
+    description: 'Authenticate via an externally generated token',
+    callback: login
+};

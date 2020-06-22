@@ -1,23 +1,11 @@
 'use strict';
 
 import * as login from './login';
-import * as nv from 'node-vault';
 import * as vscode from 'vscode';
-
-import { VaultSession, VaultToken } from '../model';
 
 import { URL } from 'url';
 import validator from 'validator';
-
-interface CallableQuickPickItem extends vscode.QuickPickItem {
-    callback(client: nv.client): Promise<VaultToken>;
-}
-
-const authenticationItems: CallableQuickPickItem[] = [
-    { label: 'Native', description: 'Authenticate via an externally generated token', callback: login.native },
-    { label: 'GitHub', description: 'Authenticate via a GitHub personal access token', callback: login.github },
-    { label: 'Username & Password', description: 'Authenticate via a username and password', callback: login.userpass }
-];
+import { VaultSession } from '../model';
 
 function validateURL(userInput: string): string | undefined {
     // If the input is a valid URL, return null (no error), otherwise return an error message
@@ -37,7 +25,7 @@ export default async function(): Promise<VaultSession> {
         // If the friendly (display) name was collected
         if (name) {
             // Show the list of authentication options
-            const selectedItem = await vscode.window.showQuickPick(authenticationItems, { placeHolder: 'Select an authentication backend' });
+            const selectedItem = await vscode.window.showQuickPick(login.AUTHENTICATION_ITEMS, { placeHolder: 'Select an authentication backend' });
             // If an authentication option was selected
             if (selectedItem) {
                 // Create a new Vault session object

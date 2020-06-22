@@ -3,8 +3,8 @@
 import * as nv from 'node-vault';
 import * as vscode from 'vscode';
 
+import { CallableQuickPickItem, VaultToken } from '../../model';
 import validator from 'validator';
-import { VaultToken } from '../../model';
 
 const githubLoginRequest = { mount_point: 'github', token: process.env.VAULT_AUTH_GITHUB_TOKEN };
 
@@ -12,7 +12,7 @@ function validateGitHubToken(userInput: string): string | undefined {
     return userInput.length === 40 && validator.isHexadecimal(userInput) ? undefined : 'Not a valid GitHub token';
 }
 
-export default async function(client: nv.client): Promise<VaultToken> {
+async function login(client: nv.client): Promise<VaultToken> {
     let token: VaultToken;
     // Prompt for the mount point
     const newGitgubMountPoint = await vscode.window.showInputBox({ prompt: 'Enter authentication mount point', value: githubLoginRequest.mount_point });
@@ -35,3 +35,9 @@ export default async function(client: nv.client): Promise<VaultToken> {
     // Return the token (if defined)
     return token;
 }
+
+export const QUICK_PICK: CallableQuickPickItem = {
+    label: 'GitHub',
+    description: 'Authenticate via a GitHub personal access token',
+    callback: login
+};
