@@ -18,11 +18,13 @@ export class VaultSession implements vscode.Disposable {
     private _endpoint: string;
     private _options: request.CoreOptions;
     private _tokenTimer: NodeJS.Timer;
+    private _login: (client: nv.client) => Promise<VaultToken>;
     //#endregion
 
-    constructor(name: string, endpointUrl: url.Url) {
+    constructor(name: string, endpointUrl: url.Url, login: (client: nv.client) => Promise<VaultToken>) {
         // Remove any trailing slash from the URL
         this._endpoint = url.format(endpointUrl).replace(/\/$/, '');
+        this._login = login;
         this._options = {
             followAllRedirects: true,
             strictSSL: config.TRUSTED_AUTHORITIES.indexOf(endpointUrl.host) < 0
@@ -48,6 +50,19 @@ export class VaultSession implements vscode.Disposable {
             endpoint: this._endpoint,
             requestOptions: this._options
         });
+    }
+    //#endregion
+
+    //#region Session Management
+    public async login(): Promise<void> {
+        // Call the selected authentication function
+        const token = await this._login(this._client);
+        // If a token was collected
+        if (token) {
+            // Cache the token
+            this.cacheToken(token);
+            vscode.window.vault.log(`Connected to ${this._client.endpoint}`, 'shield');
+        }
     }
     //#endregion
 
@@ -78,8 +93,8 @@ export class VaultSession implements vscode.Disposable {
     }
     //#endregion
 
-    //#region Session Management
-    public cacheToken(token: VaultToken): void {
+    //#region Session Management Helpers
+    private cacheToken(token: VaultToken): void {
         let action: string;
         let callback: () => void;
         let ms: number;
