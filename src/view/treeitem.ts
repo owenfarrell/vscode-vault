@@ -30,6 +30,7 @@ export abstract class VaultTreeItem extends vscode.TreeItem {
     }
     //#endregion
 
+    //#region Getters and Setters
     get children(): VaultTreeItem[] {
         return this._children;
     }
@@ -57,6 +58,7 @@ export abstract class VaultTreeItem extends vscode.TreeItem {
             }
         }
     }
+    //#endregion
 
     //#region Custom Command Methods
     abstract async refresh(): Promise<boolean>;
