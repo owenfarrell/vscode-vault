@@ -1,3 +1,3 @@
 'use strict';
 
-export { default as load, TRUSTED_AUTHORITIES } from './load';
+export const TRUSTED_AUTHORITIES: string[] = [];
