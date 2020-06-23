@@ -32,6 +32,7 @@ export class VaultSession implements vscode.Disposable {
     //#region Disposable Method Implementations
     dispose() {
         this._tokenTimer && clearTimeout(this._tokenTimer);
+        this.clearToken();
     }
     //#endregion
 
@@ -91,7 +92,6 @@ export class VaultSession implements vscode.Disposable {
 
     private clearToken(): void {
         // Clear the token
-        // TODO How do we re-login?
         this.client.token = undefined;
     }
 
