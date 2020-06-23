@@ -52,13 +52,17 @@ function validateFields(userInput: string) {
     return validator.isJSON(userInput) || userInput.match(KEY_VALUE_PAIR_LIST) ? null : 'Must be JSON or key/value pairs';
 }
 
-export default async function(client: nv.client, path: string): Promise<boolean> {
+export default async function(client: nv.client, path: string, mountPoint?: string): Promise<boolean> {
     let requiresRefresh = false;
-    // Create an anonymous function that ensures writes to the same mountpoint
-    // TODO improve this function by validating the mount point, not the path
-    const pathValidator = (userInput: string) => userInput.startsWith(path) ? null : 'Not a child of this path';
-    // Prompt for the path
-    path = await vscode.window.showInputBox({ prompt: 'Enter path to write to Vault', validateInput: pathValidator, value: path, valueSelection: [path.length, path.length] });
+    // If a mount point is specified
+    if (mountPoint) {
+        // If the specified path isn't a child of the mount point, don't preload the input box
+        const pathInputBoxValue = path.startsWith(mountPoint) ? path : mountPoint;
+        // Create an anonymous function that ensures writes to the same mount point
+        const pathValidator = (userInput: string) => userInput.startsWith(mountPoint) ? null : 'Path is part of a different mount point';
+        // Prompt for the path
+        path = await vscode.window.showInputBox({ prompt: 'Enter path to write to Vault', validateInput: pathValidator, value: pathInputBoxValue, valueSelection: [path.length, path.length] });
+    }
     // If no path was collected
     if (!path) {
         return undefined;

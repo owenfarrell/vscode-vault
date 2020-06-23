@@ -115,7 +115,7 @@ export function activate(context: vscode.ExtensionContext) {
         .catch((err: Error) => vaultWindow.logError(`Unable to read Vault path (${err.message})`));
 
     const writeFn = (treeItem: view.VaultPathTreeItem | view.VaultSecretTreeItem) => treeItem.write()
-        .then((requiresRefresh: boolean) => requiresRefresh === true && vaultTreeDataProvider.refresh(treeItem))
+        .then((updatedItem: view.VaultPathTreeItem) => updatedItem && vaultTreeDataProvider.refresh(updatedItem))
         .catch((err: Error) => vaultWindow.logError(`Unable to write Vault path (${err.message})`));
 
     // Push disposables on to context

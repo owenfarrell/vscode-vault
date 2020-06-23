@@ -60,11 +60,14 @@ export class VaultPathTreeItem extends VaultTreeItem {
     //#endregion
 
     //#region Custom Command Methods
-    async write(): Promise<boolean> {
+    async write(): Promise<VaultTreeItem> {
         // Get the client stub
         const client = this.getClient();
+        // Find the top-level path
+        let treeItem: VaultTreeItem;
+        for (treeItem = this; treeItem.parent.path.length > 0; treeItem = treeItem.parent);
         // Write the path
-        return commands.write(client, this.path);
+        return await commands.write(client, this.path, treeItem.path) === true ? treeItem : undefined;
     }
     //#endregion
 }

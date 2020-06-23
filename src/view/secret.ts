@@ -41,11 +41,11 @@ export class VaultSecretTreeItem extends VaultTreeItem {
         return commands.read(client, this.path);
     }
 
-    async write(): Promise<boolean> {
+    async write(): Promise<VaultTreeItem> {
         // Get the client stub
         const client = this.getClient();
         // Write the path
-        return commands.write(client, this.path);
+        return await commands.write(client, this.path) ? this : undefined;
     }
     //#endregion
 }
