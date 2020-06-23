@@ -103,6 +103,15 @@
                 }
             },
             {
+                "command": "vault.remove",
+                "title": "Remove",
+                "category": "Vault",
+                "icon": {
+                    "light": "resources/light/command/remove.svg",
+                    "dark": "resources/dark/command/remove.svg"
+                }
+            },
+            {
                 "command": "vault.write",
                 "title": "Write Secret",
                 "category": "Vault",
@@ -135,40 +144,59 @@
                     "when": "false"
                 },
                 {
+                    "command": "vault.remove",
+                    "when": "false"
+                },
+                {
                     "command": "vault.write",
                     "when": "false"
                 }
             ],
             "view/item/context": [
                 {
-                    "command": "vault.browse",
+                    "command": "vault.remove",
                     "group": "inline@1",
                     "when": "view == vaultSecrets && viewItem == server"
+                },
+                {
+                    "command": "vault.browse",
+                    "group": "inline@1",
+                    "when": "view == vaultSecrets && viewItem == connection"
+                },
+                {
+                    "command": "vault.list",
+                    "group": "inline@2",
+                    "when": "view == vaultSecrets && viewItem == connection"
+                },
+                {
+                    "command": "vault.disconnect",
+                    "group": "inline@3",
+                    "when": "view == vaultSecrets && viewItem == connection"
+                },
+                {
+                    "command": "vault.list",
+                    "group": "inline@1",
+                    "when": "view == vaultSecrets && viewItem == path"
+                },
+                {
+                    "command": "vault.write",
+                    "group": "inline@2",
+                    "when": "view == vaultSecrets && viewItem == path"
+                },
+                {
+                    "command": "vault.read",
+                    "group": "inline@1",
+                    "when": "view == vaultSecrets && viewItem == secret"
+                },
+                {
+                    "command": "vault.write",
+                    "group": "inline@2",
+                    "when": "view == vaultSecrets && viewItem == secret"
                 },
                 {
                     "command": "vault.delete",
                     "group": "inline@5",
                     "when": "view == vaultSecrets && viewItem == secret"
-                },
-                {
-                    "command": "vault.disconnect",
-                    "group": "inline@6",
-                    "when": "view == vaultSecrets && viewItem == server"
-                },
-                {
-                    "command": "vault.list",
-                    "group": "inline@2",
-                    "when": "view == vaultSecrets && viewItem != secret"
-                },
-                {
-                    "command": "vault.read",
-                    "group": "inline@3",
-                    "when": "view == vaultSecrets && viewItem == secret"
-                },
-                {
-                    "command": "vault.write",
-                    "group": "inline@4",
-                    "when": "view == vaultSecrets && viewItem != server"
                 }
             ],
             "view/title": [

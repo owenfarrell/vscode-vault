@@ -64,6 +64,8 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand('vault.delete', deleteFn),
         // Subscribe to "vault.disconnect" events
         vscode.commands.registerCommand('vault.disconnect', disconnectFn),
+        // Subscribe to "vault.remove" events
+        vscode.commands.registerCommand('vault.remove', disconnectFn),
         // Subscribe to "vault.list" events
         vscode.commands.registerCommand('vault.list', listFn),
         // Subscribe to "vault.read" events
