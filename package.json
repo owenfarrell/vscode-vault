@@ -103,6 +103,15 @@
                 }
             },
             {
+                "command": "vault.reconnect",
+                "title": "Connect",
+                "category": "Vault",
+                "icon": {
+                    "light": "resources/light/command/reconnect.svg",
+                    "dark": "resources/dark/command/reconnect.svg"
+                }
+            },
+            {
                 "command": "vault.remove",
                 "title": "Remove",
                 "category": "Vault",
@@ -144,6 +153,10 @@
                     "when": "false"
                 },
                 {
+                    "command": "vault.reconnect",
+                    "when": "false"
+                },
+                {
                     "command": "vault.remove",
                     "when": "false"
                 },
@@ -154,8 +167,13 @@
             ],
             "view/item/context": [
                 {
-                    "command": "vault.remove",
+                    "command": "vault.reconnect",
                     "group": "inline@1",
+                    "when": "view == vaultSecrets && viewItem == server"
+                },
+                {
+                    "command": "vault.remove",
+                    "group": "inline@2",
                     "when": "view == vaultSecrets && viewItem == server"
                 },
                 {

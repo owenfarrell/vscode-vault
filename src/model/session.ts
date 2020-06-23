@@ -3,6 +3,7 @@
 import * as adaptors from '../adaptors';
 import * as config from '../config';
 import * as nv from 'node-vault';
+import * as request from 'request';
 import * as url from 'url';
 import * as vscode from 'vscode';
 
@@ -11,28 +12,42 @@ import { VaultToken } from './token';
 
 export class VaultSession implements vscode.Disposable {
     //#region Attributes
-    public readonly client: nv.client;
     public readonly name: string;
     public readonly mountPoints: string[] = [];
+    private _client: nv.client;
+    private _endpoint: string;
+    private _options: request.CoreOptions;
     private _tokenTimer: NodeJS.Timer;
     //#endregion
 
     constructor(name: string, endpointUrl: url.Url) {
-        this.client = nv({
-            // Remove any trailing slash from the URL
-            endpoint: url.format(endpointUrl).replace(/\/$/, ''),
-            requestOptions: {
-                followAllRedirects: true,
-                strictSSL: config.TRUSTED_AUTHORITIES.indexOf(endpointUrl.host) < 0
-            }
-        });
+        // Remove any trailing slash from the URL
+        this._endpoint = url.format(endpointUrl).replace(/\/$/, '');
+        this._options = {
+            followAllRedirects: true,
+            strictSSL: config.TRUSTED_AUTHORITIES.indexOf(endpointUrl.host) < 0
+        };
         this.name = name;
+
+        this._client = nv({
+            endpoint: this._endpoint,
+            requestOptions: this._options
+        });
     }
+
+    //#region Getters and Setters
+    public get client() : nv.client {
+        return this._client;
+    }
+    //#endregion
 
     //#region Disposable Method Implementations
     dispose() {
         this._tokenTimer && clearTimeout(this._tokenTimer);
-        this.clearToken();
+        this._client = nv({
+            endpoint: this._endpoint,
+            requestOptions: this._options
+        });
     }
     //#endregion
 
@@ -91,6 +106,7 @@ export class VaultSession implements vscode.Disposable {
     }
 
     private clearToken(): void {
+        vscode.window.vault.log(`Clearing token for ${this.client.endpoint}`);
         // Clear the token
         this.client.token = undefined;
     }

@@ -31,7 +31,7 @@ export function activate(context: vscode.ExtensionContext) {
         .then(() => vaultTreeDataProvider.refresh(treeItem))
         .catch((err: Error) => vaultWindow.logError(`Unable to browse Vault path (${err.message})`));
 
-    const connectFn = () => vaultTreeDataProvider.connect()
+    const connectFn = (treeItem?: view.VaultServerTreeItem) => vaultTreeDataProvider.connect(treeItem)
         .catch((err: Error) => vaultWindow.logError(`Unable to connect to Vault (${err.message})`));
 
     const deleteFn = (treeItem: view.VaultSecretTreeItem) => treeItem.delete()
@@ -60,6 +60,8 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand('vault.browse', browseFn),
         // Subscribe to "vault.connect" events
         vscode.commands.registerCommand('vault.connect', connectFn),
+        // Subscribe to "vault.reconnect" events
+        vscode.commands.registerCommand('vault.reconnect', connectFn),
         // Subscribe to "vault.delete" events
         vscode.commands.registerCommand('vault.delete', deleteFn),
         // Subscribe to "vault.disconnect" events
