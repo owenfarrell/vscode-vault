@@ -41,10 +41,10 @@ async function login(client: nv.client): Promise<model.VaultToken> {
     return token;
 }
 
-const QUICK_PICK: CallableQuickPickItem = {
+const github: CallableQuickPickItem = {
     label: 'GitHub',
     description: 'Authenticate via a GitHub personal access token',
     callback: login
 };
 
-export default QUICK_PICK;
+export default github;

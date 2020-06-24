@@ -47,10 +47,10 @@ async function login(client: nv.client): Promise<model.VaultToken> {
     return token;
 }
 
-const QUICK_PICK: CallableQuickPickItem = {
+const native: CallableQuickPickItem = {
     label: 'Native',
     description: 'Authenticate via an externally generated token',
     callback: login
 };
 
-export default QUICK_PICK;
+export default native;

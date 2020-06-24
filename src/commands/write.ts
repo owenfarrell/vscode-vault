@@ -69,14 +69,14 @@ export default async function(client: nv.client, path: string, mountPoint?: stri
     }
 
     // Prompt for the fields to write
-    const userInput = await vscode.window.showInputBox({ prompt: 'Enter data to write', placeHolder: 'Enter JSON or key=value pairs', validateInput: validateFields });
+    const dataToWrite = await vscode.window.showInputBox({ prompt: 'Enter data to write', placeHolder: 'Enter JSON or key=value pairs', validateInput: validateFields });
     // If no fields to write were collected
-    if (!userInput || userInput.length === 0) {
+    if (!dataToWrite || dataToWrite.length === 0) {
         return undefined;
     }
 
     // Parse the fields
-    const parsedInput = parseFields(userInput);
+    const parsedInput = parseFields(dataToWrite);
     // Write the fields to the path
     await client.write(path, parsedInput);
     // Flag the need for a refresh of the tree view

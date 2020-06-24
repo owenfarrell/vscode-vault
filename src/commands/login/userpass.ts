@@ -44,10 +44,10 @@ async function login(client: nv.client): Promise<model.VaultToken> {
     return token;
 }
 
-const QUICK_PICK: CallableQuickPickItem = {
+const userpass: CallableQuickPickItem = {
     label: 'Username & Password',
     description: 'Authenticate via a username and password',
     callback: login
 };
 
-export default QUICK_PICK;
+export default userpass;

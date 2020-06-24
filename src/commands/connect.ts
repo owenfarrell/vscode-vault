@@ -25,7 +25,7 @@ export default async function(reservedNames: string[] = []): Promise<model.Vault
     // Create an anonymous function that ensures names are unique
     const validateName = (userInput: string): string | undefined => {
         // If the input is included in the list of reserved names, return an error, otherwise undefined (no error)
-        return reservedNames.indexOf(userInput) > 0 ? 'Vault names must be unique' : undefined;
+        return reservedNames.indexOf(userInput) < 0 ? undefined : 'Vault names must be unique';
     };
     // If the default name is reserved, don't preload the input box
     const nameInputBoxValue = validateName(endpointUrl.host) ? undefined : endpointUrl.host;
