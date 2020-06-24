@@ -7,14 +7,14 @@ import { SecretsEngineAdaptor } from './base';
 
 export { SecretsEngineAdaptor };
 
-export const LIST: SecretsEngineAdaptor[] = [
+export const QUICK_PICK_LIST: SecretsEngineAdaptor[] = [
     new CubbyholeAdaptor(),
     new KeyValueVersion1Adaptor(),
     new KeyValueVersion2Adaptor()
 ];
 
-export const MAP = new Map<string, SecretsEngineAdaptor>(LIST.map(element => [element.label, element]));
+const QUICK_PICK_MAP = new Map<string, SecretsEngineAdaptor>(QUICK_PICK_LIST.map(element => [element.label, element]));
 
-export function getAdaptor(mount: any): SecretsEngineAdaptor {
-    return LIST.find((element) => element.isAdaptable(mount));
+export function get(mount: string | any): SecretsEngineAdaptor {
+    return typeof mount === 'string' ? QUICK_PICK_MAP.get(mount) : QUICK_PICK_LIST.find((element) => element.isAdaptable(mount));
 }

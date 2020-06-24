@@ -23,7 +23,7 @@ export class VaultSession implements vscode.Disposable {
 
     constructor(clientConfig: VaultClientConfig) {
         this._config = clientConfig;
-        this._login = login.MAP.get(clientConfig.login).callback;
+        this._login = login.get(clientConfig.login).callback;
 
         // If the URL was provided as a string
         const endpointUrl = new url.URL(clientConfig.endpoint);
@@ -91,7 +91,7 @@ export class VaultSession implements vscode.Disposable {
         // For each mount point
         for (const key in mounts.data) {
             // Get the adaptor for the specified mount point
-            const adaptor = adaptors.getAdaptor(mounts.data[key]);
+            const adaptor = adaptors.get(mounts.data[key]);
             // If the mount point is supported
             if (adaptor !== undefined) {
                 // Mount the path
@@ -100,9 +100,9 @@ export class VaultSession implements vscode.Disposable {
         }
     }
 
-    public async mount(mountPoint: string, adaptor: SecretsEngineAdaptor | string): Promise<void> {
+    public async mount(mountPoint: string, adaptor: adaptors.SecretsEngineAdaptor | string): Promise<void> {
         if (typeof adaptor === 'string') {
-            adaptor = adaptors.MAP.get(adaptor);
+            adaptor = adaptors.get(adaptor);
         }
         vscode.window.vault.log(`Adapting '${mountPoint}' for ${adaptor.label} `);
         // Adapt the client for requests to the specified path

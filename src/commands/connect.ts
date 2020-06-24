@@ -30,7 +30,7 @@ export default async function(): Promise<model.VaultClientConfig> {
     }
 
     // Show the list of authentication options
-    const selectedItem = await vscode.window.showQuickPick(login.LIST, { placeHolder: 'Select an authentication backend' });
+    const selectedItem = await vscode.window.showQuickPick(login.QUICK_PICK_LIST, { placeHolder: 'Select an authentication backend' });
     // If no authentication option was selected
     if (!selectedItem) {
         return undefined;

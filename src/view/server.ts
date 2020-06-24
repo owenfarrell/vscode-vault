@@ -111,7 +111,7 @@ export class VaultServerTreeItem extends VaultTreeItem {
         // Add a trailing slash to the path if it isn't already there
         browseablePath += browseablePath.endsWith('/') ? '' : '/';
         // Promopt for the secrets engine
-        const adaptor = await vscode.window.showQuickPick(adaptors.LIST, { placeHolder: 'Select engine type' });
+        const adaptor = await vscode.window.showQuickPick(adaptors.QUICK_PICK_LIST, { placeHolder: 'Select engine type' });
         // If no secrets engine was collected
         if (!adaptor) {
             return undefined;
