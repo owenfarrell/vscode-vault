@@ -21,7 +21,12 @@ export class VaultSession implements vscode.Disposable {
     private _login: (client: nv.client) => Promise<VaultToken>;
     //#endregion
 
-    constructor(name: string, endpointUrl: url.Url, login: (client: nv.client) => Promise<VaultToken>) {
+    constructor(name: string, endpointUrl: url.Url | string, login: (client: nv.client) => Promise<VaultToken>) {
+        // If the URL was provided as a string
+        if (typeof endpointUrl === 'string') {
+            // Parse the string as a URL object
+            endpointUrl = new url.URL(endpointUrl);
+        }
         // Remove any trailing slash from the URL
         this._endpoint = url.format(endpointUrl).replace(/\/$/, '');
         this._login = login;
