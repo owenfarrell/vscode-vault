@@ -64,8 +64,14 @@ export class VaultTreeDataProvider implements vscode.TreeDataProvider<VaultTreeI
     async connect(treeItem?: VaultServerTreeItem): Promise<void> {
         // If no tree item was specified
         if (!treeItem) {
+            const reservedNames: string[] = [];
+            // Get the list of server IDs and session names
+            this._serverList.forEach((element: VaultServerTreeItem) => {
+                reservedNames.push(element.id);
+                reservedNames.push(element.session.name);
+            });
             // Establish a new session by connecting to a server
-            const config = await commands.connect();
+            const config = await commands.connect(reservedNames);
             // If a new session config was created
             if (config) {
                 // Create a new session
