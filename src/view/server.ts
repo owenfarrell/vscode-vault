@@ -1,22 +1,22 @@
 'use strict';
 
 import * as adaptors from '../adaptors';
+import * as model from '../model';
 import * as nv from 'node-vault';
 import * as path from 'path';
 import * as vscode from 'vscode';
 
 import { VaultPathTreeItem } from './path';
-import { VaultSession } from '../model';
 import { VaultTreeItem } from './treeitem';
 
 export class VaultServerTreeItem extends VaultTreeItem {
     private static readonly CONNECTED_CONTEXT = 'connection';
     private static readonly DISCONNECTED_CONTEXT = 'server';
-    public readonly session: VaultSession
+    public readonly session: model.VaultSession
     private _dirtyCache: boolean;
 
     //#region Constructors
-    constructor(session: VaultSession) {
+    constructor(session: model.VaultSession) {
         super(session.name);
         this.children = [];
         this.contextValue = VaultServerTreeItem.DISCONNECTED_CONTEXT;

@@ -1,21 +1,19 @@
 'use strict';
 
 import * as adaptors from '../adaptors';
+import * as config from '../config';
 import * as login from '../commands/login';
 import * as nv from 'node-vault';
 import * as request from 'request';
+import * as url from 'url';
 import * as vscode from 'vscode';
 
-import { format, URL } from 'url';
 import { VaultClientConfig, VaultConnectionConfig } from './config';
-
-import { SecretsEngineAdaptor } from '../adaptors/base';
-import { TRUSTED_AUTHORITIES } from '../config';
 import { VaultToken } from './token';
 
 export class VaultSession implements vscode.Disposable {
     //#region Attributes
-    public readonly mountPoints: Map<string, SecretsEngineAdaptor> = new Map();
+    public readonly mountPoints: Map<string, adaptors.SecretsEngineAdaptor> = new Map();
     private readonly _config: VaultClientConfig;
     private _client: nv.client;
     private _login: (client: nv.client) => Promise<VaultToken>;
@@ -23,21 +21,21 @@ export class VaultSession implements vscode.Disposable {
     private _tokenTimer: NodeJS.Timer;
     //#endregion
 
-    constructor(config: VaultClientConfig) {
-        this._config = config;
-        this._login = login.MAP.get(config.login).callback;
+    constructor(clientConfig: VaultClientConfig) {
+        this._config = clientConfig;
+        this._login = login.MAP.get(clientConfig.login).callback;
 
         // If the URL was provided as a string
-        const endpointUrl = new URL(config.endpoint);
+        const endpointUrl = new url.URL(clientConfig.endpoint);
         // Remove any trailing slash from the URL
-        config.endpoint = format(endpointUrl).replace(/\/$/, '');
+        clientConfig.endpoint = url.format(endpointUrl).replace(/\/$/, '');
         this._options = {
             followAllRedirects: true,
-            strictSSL: TRUSTED_AUTHORITIES.indexOf(endpointUrl.host) < 0
+            strictSSL: config.TRUSTED_AUTHORITIES.indexOf(endpointUrl.host) < 0
         };
 
         this._client = nv({
-            endpoint: config.endpoint,
+            endpoint: clientConfig.endpoint,
             requestOptions: this._options
         });
     }

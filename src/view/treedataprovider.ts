@@ -1,10 +1,10 @@
 'use strict';
 
 import * as commands from '../commands';
+import * as model from '../model';
 import * as vscode from 'vscode';
 
 import { VaultServerTreeItem } from './server';
-import { VaultSession } from '../model';
 import { VaultTreeItem } from './treeitem';
 
 export class VaultTreeDataProvider implements vscode.TreeDataProvider<VaultTreeItem> {
@@ -14,13 +14,13 @@ export class VaultTreeDataProvider implements vscode.TreeDataProvider<VaultTreeI
     //#endregion
 
     //#region Constructors
-    constructor(sessionList: VaultSession[] = []) {
+    constructor(sessionList: model.VaultSession[] = []) {
         sessionList.forEach(element => this._serverList.push(new VaultServerTreeItem(element)));
     }
     //#endregion
 
     //#region Getters and Setters
-    public get sessionList() : VaultSession[] {
+    public get sessionList(): model.VaultSession[] {
         return this._serverList.map(element => element.session);
     }
     //#endregion
@@ -69,7 +69,7 @@ export class VaultTreeDataProvider implements vscode.TreeDataProvider<VaultTreeI
             // If a new session config was created
             if (config) {
                 // Create a new session
-                const session = new VaultSession(config);
+                const session = new model.VaultSession(config);
                 // Create a new tree item from the session
                 treeItem = new VaultServerTreeItem(session);
                 // Add the server to the list of top-level tree items

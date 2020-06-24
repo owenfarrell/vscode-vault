@@ -5,6 +5,8 @@ import { KeyValueVersion1Adaptor } from './kv';
 import { KeyValueVersion2Adaptor } from './kv2';
 import { SecretsEngineAdaptor } from './base';
 
+export { SecretsEngineAdaptor };
+
 export const LIST: SecretsEngineAdaptor[] = [
     new CubbyholeAdaptor(),
     new KeyValueVersion1Adaptor(),

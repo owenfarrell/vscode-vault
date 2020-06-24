@@ -28,9 +28,9 @@ export function activate(context: vscode.ExtensionContext) {
 
     let sessionList: model.VaultSession[];
     try {
-        const savedConnectionConfigList = context.globalState.get<model.VaultConnectionConfig[]>('sessions');
-        if (savedConnectionConfigList) {
-            sessionList = savedConnectionConfigList.map(config => {
+        const savedConfigList = context.globalState.get<model.VaultConnectionConfig[]>('sessions');
+        if (savedConfigList) {
+            sessionList = savedConfigList.map(config => {
                 // TODO Implement error handling
                 const session = new model.VaultSession(config);
                 for (const entry of config.mountPoints) {
@@ -44,16 +44,16 @@ export function activate(context: vscode.ExtensionContext) {
         vaultWindow.logError(`Unable to load session configuration from global state (${err.message})`);
     }
 
-    const saveSessionConfigList = () => context.globalState.update('sessions', vaultTreeDataProvider.sessionList.map(element => element.config));
-
     const vaultTreeDataProvider = new view.VaultTreeDataProvider(sessionList);
+
+    const saveSessionList = () => context.globalState.update('sessions', vaultTreeDataProvider.sessionList.map(element => element.config));
 
     const browseFn = (treeItem: view.VaultServerTreeItem) => treeItem.browse()
         .then(() => vaultTreeDataProvider.refresh(treeItem))
         .catch((err: Error) => vaultWindow.logError(`Unable to browse Vault path (${err.message})`));
 
     const connectFn = (treeItem?: view.VaultServerTreeItem) => vaultTreeDataProvider.connect(treeItem)
-        .then(saveSessionConfigList)
+        .then(saveSessionList)
         .catch((err: Error) => vaultWindow.logError(`Unable to connect to Vault (${err.message})`));
 
     const deleteFn = (treeItem: view.VaultSecretTreeItem) => treeItem.delete()
@@ -61,7 +61,7 @@ export function activate(context: vscode.ExtensionContext) {
         .catch((err: Error) => vaultWindow.logError(`Unable to delete Vault path (${err.message})`));
 
     const disconnectFn = (treeItem: view.VaultServerTreeItem) => vaultTreeDataProvider.disconnect(treeItem)
-        .then(saveSessionConfigList)
+        .then(saveSessionList)
         .catch((err: Error) => vaultWindow.logError(`Unable to connect to Vault (${err.message})`));
 
     const listFn = (treeItem: view.VaultTreeItem) => vaultTreeDataProvider.refresh(treeItem)

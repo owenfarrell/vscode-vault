@@ -1,19 +1,19 @@
 'use strict';
 
 import * as fs from 'fs';
+import * as model from '../../model';
 import * as nv from 'node-vault';
 import * as os from 'os';
 import * as path from 'path';
 import * as vscode from 'vscode';
 
 import { CallableQuickPickItem } from './base';
-import { VaultToken } from '../../model';
 
 const nativeTokenPath: string = path.resolve(os.homedir(), '.vault-token');
 let nativeToken: string = process.env.VAULT_TOKEN;
 let nativeTokenTime: Date = new Date(nativeToken ? Date.now() - (process.uptime() * 1000) : 0);
 
-async function login(client: nv.client): Promise<VaultToken> {
+async function login(client: nv.client): Promise<model.VaultToken> {
     // If a token file exists
     if (fs.existsSync(nativeTokenPath)) {
         // Get the last modified timestamp of the token file
@@ -40,7 +40,7 @@ async function login(client: nv.client): Promise<VaultToken> {
     // Submit a lookup request
     const tokenLookupResult = await client.tokenLookupSelf();
     // Parse the lookup response
-    const token: VaultToken = { id: tokenLookupResult.data.id, renewable: tokenLookupResult.data.renewable, ttl: tokenLookupResult.data.ttl };
+    const token: model.VaultToken = { id: tokenLookupResult.data.id, renewable: tokenLookupResult.data.renewable, ttl: tokenLookupResult.data.ttl };
     vscode.window.vault.log('Logging in with native token', 'key');
 
     // Return the token (if defined)
