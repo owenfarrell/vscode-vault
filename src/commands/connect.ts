@@ -5,14 +5,14 @@ import * as vscode from 'vscode';
 
 import { URL } from 'url';
 import validator from 'validator';
-import { VaultSession } from '../model';
+import { VaultClientConfig } from '../model';
 
 function validateURL(userInput: string): string | undefined {
     // If the input is a valid URL, return null (no error), otherwise return an error message
     return validator.isURL(userInput, { require_tld: false }) ? undefined : 'Not a valid URL';
 }
 
-export default async function(): Promise<VaultSession> {
+export default async function(): Promise<VaultClientConfig> {
     // Prompt for the Vault endpoint
     const endpoint = await vscode.window.showInputBox({ prompt: 'Enter the address of your vault server', validateInput: validateURL, value: process.env.VAULT_ADDR });
     // If no Vault endpoint was collected
@@ -30,12 +30,12 @@ export default async function(): Promise<VaultSession> {
     }
 
     // Show the list of authentication options
-    const selectedItem = await vscode.window.showQuickPick(login.AUTHENTICATION_ITEMS, { placeHolder: 'Select an authentication backend' });
+    const selectedItem = await vscode.window.showQuickPick(login.LIST, { placeHolder: 'Select an authentication backend' });
     // If no authentication option was selected
     if (!selectedItem) {
         return undefined;
     }
 
-    // Create a new Vault session object
-    return new VaultSession(name, endpointUrl, selectedItem.callback);
+    // Create a new Vault session config object
+    return { endpoint: endpoint, login: selectedItem.label, name: name };
 }

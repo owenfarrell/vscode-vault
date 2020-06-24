@@ -1,8 +1,14 @@
 'use strict';
 
-export interface VaultSessionConfig {
+export interface VaultClientConfig {
     name: string,
     endpoint: string,
-    mountPoints: string[],
     login: string
+}
+
+export interface VaultConnectionConfig extends VaultClientConfig {
+    mountPoints?: {
+        path: string,
+        adaptor: string
+    }[],
 }

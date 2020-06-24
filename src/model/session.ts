@@ -1,50 +1,60 @@
 'use strict';
 
 import * as adaptors from '../adaptors';
-import * as config from '../config';
+import * as login from '../commands/login';
 import * as nv from 'node-vault';
 import * as request from 'request';
-import * as url from 'url';
 import * as vscode from 'vscode';
 
+import { format, URL } from 'url';
+import { VaultConnectionConfig, VaultClientConfig } from './config';
+
 import { SecretsEngineAdaptor } from '../adaptors/base';
+import { TRUSTED_AUTHORITIES } from '../config';
 import { VaultToken } from './token';
 
 export class VaultSession implements vscode.Disposable {
     //#region Attributes
-    public readonly name: string;
-    public readonly mountPoints: string[] = [];
+    public readonly mountPoints: Map<string, SecretsEngineAdaptor> = new Map();
+    private readonly _config: VaultClientConfig;
     private _client: nv.client;
-    private _endpoint: string;
+    private _login: (client: nv.client) => Promise<VaultToken>;
     private _options: request.CoreOptions;
     private _tokenTimer: NodeJS.Timer;
-    private _login: (client: nv.client) => Promise<VaultToken>;
     //#endregion
 
-    constructor(name: string, endpointUrl: url.Url | string, login: (client: nv.client) => Promise<VaultToken>) {
+    constructor(config: VaultClientConfig) {
+        this._config = config;
+        this._login = login.MAP.get(config.login).callback;
+
         // If the URL was provided as a string
-        if (typeof endpointUrl === 'string') {
-            // Parse the string as a URL object
-            endpointUrl = new url.URL(endpointUrl);
-        }
+        const endpointUrl = new URL(config.endpoint);
         // Remove any trailing slash from the URL
-        this._endpoint = url.format(endpointUrl).replace(/\/$/, '');
-        this._login = login;
+        config.endpoint = format(endpointUrl).replace(/\/$/, '');
         this._options = {
             followAllRedirects: true,
-            strictSSL: config.TRUSTED_AUTHORITIES.indexOf(endpointUrl.host) < 0
+            strictSSL: TRUSTED_AUTHORITIES.indexOf(endpointUrl.host) < 0
         };
-        this.name = name;
 
         this._client = nv({
-            endpoint: this._endpoint,
+            endpoint: config.endpoint,
             requestOptions: this._options
         });
     }
 
     //#region Getters and Setters
-    public get client() : nv.client {
+    public get client(): nv.client {
         return this._client;
+    }
+
+    public get config(): VaultConnectionConfig {
+        const mapEntries = Array.from(this.mountPoints.entries());
+        const mountPointConfig = mapEntries.map(entry => <any>{ path: entry[0], adaptor: entry[1].label });
+        return Object.assign(this._config, { mountPoints: mountPointConfig });
+    }
+
+    public get name(): string {
+        return this._config.name;
     }
     //#endregion
 
@@ -52,9 +62,12 @@ export class VaultSession implements vscode.Disposable {
     dispose() {
         this._tokenTimer && clearTimeout(this._tokenTimer);
         this._client = nv({
-            endpoint: this._endpoint,
+            endpoint: this._config.endpoint,
             requestOptions: this._options
         });
+        for (const entry of this.mountPoints.entries()) {
+            this.mount(entry[0], entry[1]);
+        }
     }
     //#endregion
 
@@ -76,7 +89,7 @@ export class VaultSession implements vscode.Disposable {
         // Fetch the list of client mounts
         const mounts: any = await this.client.mounts();
         // Clear the existing array
-        this.mountPoints.length = 0;
+        this.mountPoints.clear();
         // For each mount point
         for (const key in mounts.data) {
             // Get the adaptor for the specified mount point
@@ -94,7 +107,7 @@ export class VaultSession implements vscode.Disposable {
         // Adapt the client for requests to the specified path
         adaptor.adapt(mountPoint, this.client);
         // Add the path to the list of mount points
-        this.mountPoints.push(mountPoint);
+        this.mountPoints.set(mountPoint, adaptor);
     }
     //#endregion
 

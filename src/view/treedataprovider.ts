@@ -13,9 +13,17 @@ export class VaultTreeDataProvider implements vscode.TreeDataProvider<VaultTreeI
     private _onDidChangeTreeData = new vscode.EventEmitter<VaultTreeItem>();
     //#endregion
 
+    //#region Constructors
     constructor(sessionList: VaultSession[] = []) {
         sessionList.forEach(element => this._serverList.push(new VaultServerTreeItem(element)));
     }
+    //#endregion
+
+    //#region Getters and Setters
+    public get sessionList() : VaultSession[] {
+        return this._serverList.map(element => element.session);
+    }
+    //#endregion
 
     //#region TreeDataProvider Implementation
     public readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
@@ -57,9 +65,11 @@ export class VaultTreeDataProvider implements vscode.TreeDataProvider<VaultTreeI
         // If no tree item was specified
         if (!treeItem) {
             // Establish a new session by connecting to a server
-            const session = await commands.connect();
-            // If a new session was created
-            if (session) {
+            const config = await commands.connect();
+            // If a new session config was created
+            if (config) {
+                // Create a new session
+                const session = new VaultSession(config);
                 // Create a new tree item from the session
                 treeItem = new VaultServerTreeItem(session);
                 // Add the server to the list of top-level tree items

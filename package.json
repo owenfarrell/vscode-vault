@@ -240,6 +240,7 @@
         ]
     },
     "activationEvents": [
+        "onView:vaultSecrets",
         "onCommand:vault.connect",
         "onCommand:vault.delete",
         "onCommand:vault.list",

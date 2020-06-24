@@ -1,6 +1,6 @@
 'use strict';
 
-import * as login from './commands/login';
+import * as adaptors from './adaptors';
 import * as model from './model';
 import * as view from './view';
 import * as vscode from 'vscode';
@@ -16,18 +16,6 @@ declare module 'vscode' {
 export function activate(context: vscode.ExtensionContext) {
     const vaultWindow = vscode.window.vault = new model.VaultWindow();
 
-    const savedSessions = context.globalState.get<model.VaultSessionConfig[]>('sessions');
-    if (savedSessions) {
-        savedSessions.forEach(element => {
-            // TODO Implement error handling
-            const loginFn = login.get(element.login).callback;
-            const session = new model.VaultSession(element.name, element.endpoint, loginFn);
-            this._serverList.push(new view.VaultServerTreeItem(session));
-        });
-    }
-
-    const vaultTreeDataProvider = new view.VaultTreeDataProvider();
-
     // Load the configuration to start
     loadConfig(vaultWindow);
     // Subscribe to configuration event changes
@@ -39,11 +27,34 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
+    let sessionList: model.VaultSession[];
+    try {
+        const savedConnectionConfigList = context.globalState.get<model.VaultConnectionConfig[]>('sessions');
+        if (savedConnectionConfigList) {
+            sessionList = savedConnectionConfigList.map(config => {
+                // TODO Implement error handling
+                const session = new model.VaultSession(config);
+                for (const entry of config.mountPoints) {
+                    const adaptor = adaptors.MAP.get(entry[1]);
+                    session.mount(entry[0], adaptor);
+                }
+                return session;
+            });
+        }
+    }
+    catch (err) {
+        vaultWindow.logError(`Unable to load session configuration from global state ${err}`);
+    }
+    const vaultTreeDataProvider = new view.VaultTreeDataProvider(sessionList);
+
+    const saveSessionConfigList = () => context.globalState.update('sessions', vaultTreeDataProvider.sessionList.map(element => element.config));
+
     const browseFn = (treeItem: view.VaultServerTreeItem) => treeItem.browse()
         .then(() => vaultTreeDataProvider.refresh(treeItem))
         .catch((err: Error) => vaultWindow.logError(`Unable to browse Vault path (${err.message})`));
 
     const connectFn = (treeItem?: view.VaultServerTreeItem) => vaultTreeDataProvider.connect(treeItem)
+        .then(saveSessionConfigList)
         .catch((err: Error) => vaultWindow.logError(`Unable to connect to Vault (${err.message})`));
 
     const deleteFn = (treeItem: view.VaultSecretTreeItem) => treeItem.delete()
@@ -51,6 +62,7 @@ export function activate(context: vscode.ExtensionContext) {
         .catch((err: Error) => vaultWindow.logError(`Unable to delete Vault path (${err.message})`));
 
     const disconnectFn = (treeItem: view.VaultServerTreeItem) => vaultTreeDataProvider.disconnect(treeItem)
+        .then(saveSessionConfigList)
         .catch((err: Error) => vaultWindow.logError(`Unable to connect to Vault (${err.message})`));
 
     const listFn = (treeItem: view.VaultTreeItem) => vaultTreeDataProvider.refresh(treeItem)

@@ -10,12 +10,16 @@ import { VaultSession } from '../model';
 import { VaultTreeItem } from './treeitem';
 
 export class VaultServerTreeItem extends VaultTreeItem {
+    private static readonly CONNECTED_CONTEXT = 'connection';
+    private static readonly DISCONNECTED_CONTEXT = 'server';
     public readonly session: VaultSession
     private _dirtyCache: boolean;
 
     //#region Constructors
     constructor(session: VaultSession) {
         super(session.name);
+        this.children = [];
+        this.contextValue = VaultServerTreeItem.DISCONNECTED_CONTEXT;
         this.iconPath = this._defaultIconPath = {
             light: path.join(__dirname, '..', 'resources', 'light', 'tree', 'server.svg'),
             dark: path.join(__dirname, '..', 'resources', 'dark', 'tree', 'server.svg')
@@ -48,21 +52,21 @@ export class VaultServerTreeItem extends VaultTreeItem {
             // Clear the list of children
             this.children = [];
             // Update the context value
-            this.contextValue = 'server';
+            this.contextValue = VaultServerTreeItem.DISCONNECTED_CONTEXT;
             // Clear tracked mount points
             this._dirtyCache = undefined;
         }
         // If the Vault client is connected
         else {
             // Update the context value
-            this.contextValue = 'connection';
+            this.contextValue = VaultServerTreeItem.CONNECTED_CONTEXT;
             // If mount points are not being explicitly tracked
             if (this._dirtyCache === undefined) {
                 try {
                     // Fetch the list of mounts from Vault (NOTE: this is likely fail due to user access restrictions)
                     await this.session.cacheMountPoints();
                     // Map the list of mounts to a list of tree items
-                    this.children = this.session.mountPoints.map((element: string) => new VaultPathTreeItem(element, this));
+                    this.children = Array.from(this.session.mountPoints.keys()).map((element: string) => new VaultPathTreeItem(element, this));
                 }
                 catch (err) {
                     vscode.window.vault.log(`Unable to cache mount points: ${err.message}`);
@@ -107,7 +111,7 @@ export class VaultServerTreeItem extends VaultTreeItem {
         // Add a trailing slash to the path if it isn't already there
         browseablePath += browseablePath.endsWith('/') ? '' : '/';
         // Promopt for the secrets engine
-        const adaptor = await vscode.window.showQuickPick(adaptors.adaptorList, { placeHolder: 'Select engine type' });
+        const adaptor = await vscode.window.showQuickPick(adaptors.LIST, { placeHolder: 'Select engine type' });
         // If no secrets engine was collected
         if (!adaptor) {
             return undefined;
