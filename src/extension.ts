@@ -41,11 +41,12 @@ export function activate(context: vscode.ExtensionContext) {
         }
     }
     catch (err) {
-        vaultWindow.logError(`Unable to load session configuration from global state ${err}`);
+        vaultWindow.logError(`Unable to load session configuration from global state (${err.message})`);
     }
-    const vaultTreeDataProvider = new view.VaultTreeDataProvider(sessionList);
 
     const saveSessionConfigList = () => context.globalState.update('sessions', vaultTreeDataProvider.sessionList.map(element => element.config));
+
+    const vaultTreeDataProvider = new view.VaultTreeDataProvider(sessionList);
 
     const browseFn = (treeItem: view.VaultServerTreeItem) => treeItem.browse()
         .then(() => vaultTreeDataProvider.refresh(treeItem))
