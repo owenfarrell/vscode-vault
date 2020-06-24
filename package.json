@@ -44,6 +44,11 @@
                     "type": "number",
                     "default": 60,
                     "description": "Specifies the amount of time (in seconds) for which a copied value will be available on the clipboard."
+                },
+                "vault.saveConfigurations": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Save server configurations (name, URL, and login method) and auto-populate when opening a new window."
                 }
             }
         },
