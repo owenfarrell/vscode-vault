@@ -1,25 +1,37 @@
 'use strict';
 
+import * as login from './commands/login';
+import * as model from './model';
 import * as view from './view';
 import * as vscode from 'vscode';
 
 import loadConfig from './config/load';
-import { VaultWindow } from './model';
 
 declare module 'vscode' {
     export namespace window {
-        export let vault: VaultWindow;
+        export let vault: model.VaultWindow;
     }
 }
 
 export function activate(context: vscode.ExtensionContext) {
-    const vaultWindow = vscode.window.vault = new VaultWindow();
+    const vaultWindow = vscode.window.vault = new model.VaultWindow();
+
+    const savedSessions = context.globalState.get<model.VaultSessionConfig[]>('sessions');
+    if (savedSessions) {
+        savedSessions.forEach(element => {
+            // TODO Implement error handling
+            const loginFn = login.get(element.login).callback;
+            const session = new model.VaultSession(element.name, element.endpoint, loginFn);
+            this._serverList.push(new view.VaultServerTreeItem(session));
+        });
+    }
+
     const vaultTreeDataProvider = new view.VaultTreeDataProvider();
 
     // Load the configuration to start
     loadConfig(vaultWindow);
     // Subscribe to configuration event changes
-    const eventListener : vscode.Disposable = vscode.workspace.onDidChangeConfiguration((event : vscode.ConfigurationChangeEvent) => {
+    const eventListener: vscode.Disposable = vscode.workspace.onDidChangeConfiguration((event: vscode.ConfigurationChangeEvent) => {
         // If the Vault extension configuration changed
         if (event.affectsConfiguration('vault')) {
             // (Re)Load the configuration
