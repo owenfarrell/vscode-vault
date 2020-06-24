@@ -4,6 +4,7 @@ import * as commands from '../commands';
 import * as vscode from 'vscode';
 
 import { VaultServerTreeItem } from './server';
+import { VaultSession } from '../model';
 import { VaultTreeItem } from './treeitem';
 
 export class VaultTreeDataProvider implements vscode.TreeDataProvider<VaultTreeItem> {
@@ -11,6 +12,10 @@ export class VaultTreeDataProvider implements vscode.TreeDataProvider<VaultTreeI
     private _serverList: VaultServerTreeItem[] = [];
     private _onDidChangeTreeData = new vscode.EventEmitter<VaultTreeItem>();
     //#endregion
+
+    constructor(sessionList: VaultSession[] = []) {
+        sessionList.forEach(element => this._serverList.push(new VaultServerTreeItem(element)));
+    }
 
     //#region TreeDataProvider Implementation
     public readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
