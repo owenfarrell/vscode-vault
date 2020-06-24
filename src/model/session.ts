@@ -47,7 +47,7 @@ export class VaultSession implements vscode.Disposable {
 
     public get config(): VaultConnectionConfig {
         const mapEntries = Array.from(this.mountPoints.entries());
-        const mountPointConfig = mapEntries.map(entry => <any>{ path: entry[0], adaptor: entry[1].label });
+        const mountPointConfig = mapEntries.map((entry: [string, adaptors.SecretsEngineAdaptor]) => <any>{ path: entry[0], adaptor: entry[1].label });
         return Object.assign(this._config, { mountPoints: mountPointConfig });
     }
 

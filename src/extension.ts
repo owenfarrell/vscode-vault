@@ -27,11 +27,11 @@ export function activate(context: vscode.ExtensionContext) {
             // If a list of saved configurations exists
             if (savedConfigList) {
                 // For each configuration
-                sessionList = savedConfigList.map(connectionConfig => {
+                sessionList = savedConfigList.map((element : model.VaultConnectionConfig) => {
                     // Create a new session
-                    const session = new model.VaultSession(connectionConfig);
+                    const session = new model.VaultSession(element);
                     // For each mount point
-                    for (const entry of connectionConfig.mountPoints) {
+                    for (const entry of element.mountPoints) {
                         // Mount the mount point
                         session.mount(entry[0], entry[1]);
                     }
@@ -88,7 +88,7 @@ export function activate(context: vscode.ExtensionContext) {
         // If configuration saving is enabled
         if (saveConfigurations === true) {
             // Update the list of saved sessions
-            context.globalState.update(GLOBAL_STATE_SESSIONS_KEY, vaultTreeDataProvider.sessionList.map(element => element.config));
+            context.globalState.update(GLOBAL_STATE_SESSIONS_KEY, vaultTreeDataProvider.sessionList.map((element : model.VaultSession) => element.config));
         }
     };
 

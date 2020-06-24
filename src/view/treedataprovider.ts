@@ -15,13 +15,13 @@ export class VaultTreeDataProvider implements vscode.TreeDataProvider<VaultTreeI
 
     //#region Constructors
     constructor(sessionList: model.VaultSession[] = []) {
-        sessionList.forEach(element => this._serverList.push(new VaultServerTreeItem(element)));
+        sessionList.forEach((element: model.VaultSession) => this._serverList.push(new VaultServerTreeItem(element)));
     }
     //#endregion
 
     //#region Getters and Setters
     public get sessionList(): model.VaultSession[] {
-        return this._serverList.map(element => element.session);
+        return this._serverList.map((element: VaultServerTreeItem) => element.session);
     }
     //#endregion
 
