@@ -1,10 +1,9 @@
 'use strict';
 
+import * as config from './config';
 import * as model from './model';
 import * as view from './view';
 import * as vscode from 'vscode';
-
-import loadConfig from './config/load';
 
 declare module 'vscode' {
     export namespace window {
@@ -15,14 +14,25 @@ declare module 'vscode' {
 export function activate(context: vscode.ExtensionContext) {
     const vaultWindow = vscode.window.vault = new model.VaultWindow();
 
+    const loadConfig = () => {
+        // Get the Vault extension configuration
+        const configuration = vscode.workspace.getConfiguration('vault');
+        // Update the clipboard timeout based on the clipboardTimeout value from the configuration
+        vaultWindow.clipboardTimeout = configuration.get<number>('clipboardTimeout') * 1000;
+        // Clear the list of trusted authorities
+        config.TRUSTED_AUTHORITIES.length = 0;
+        // Get the trustedAuthorities value from the configuration
+        config.TRUSTED_AUTHORITIES.concat(configuration.get<string[]>('trustedAuthorities'));
+    };
+
     // Load the configuration to start
-    loadConfig(vaultWindow);
+    loadConfig();
     // Subscribe to configuration event changes
     const eventListener: vscode.Disposable = vscode.workspace.onDidChangeConfiguration((event: vscode.ConfigurationChangeEvent) => {
         // If the Vault extension configuration changed
         if (event.affectsConfiguration('vault')) {
             // (Re)Load the configuration
-            loadConfig(vaultWindow);
+            loadConfig();
         }
     });
 
