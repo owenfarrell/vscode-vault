@@ -59,20 +59,25 @@ export default async function(client: nv.client, path: string): Promise<boolean>
     const pathValidator = (userInput: string) => userInput.startsWith(path) ? null : 'Not a child of this path';
     // Prompt for the path
     path = await vscode.window.showInputBox({ prompt: 'Enter path to write to Vault', validateInput: pathValidator, value: path, valueSelection: [path.length, path.length] });
-    // If the path was collected
-    if (path) {
-        // Prompt for the fields to write
-        const userInput = await vscode.window.showInputBox({ prompt: 'Enter data to write', placeHolder: 'Enter JSON or key=value pairs', validateInput: validateFields });
-        // If the fields to write were collected
-        if (userInput?.length > 0) {
-            // Parse the fields
-            const parsedInput = parseFields(userInput);
-            // Write the fields to the path
-            await client.write(path, parsedInput);
-            // Flag the need for a refresh of the tree view
-            requiresRefresh = true;
-            vscode.window.vault.log(`Successfully wrote to ${path}`, 'checklist');
-        }
+    // If no path was collected
+    if (!path) {
+        return undefined;
     }
+
+    // Prompt for the fields to write
+    const userInput = await vscode.window.showInputBox({ prompt: 'Enter data to write', placeHolder: 'Enter JSON or key=value pairs', validateInput: validateFields });
+    // If no fields to write were collected
+    if (!userInput || userInput.length === 0) {
+        return undefined;
+    }
+
+    // Parse the fields
+    const parsedInput = parseFields(userInput);
+    // Write the fields to the path
+    await client.write(path, parsedInput);
+    // Flag the need for a refresh of the tree view
+    requiresRefresh = true;
+    vscode.window.vault.log(`Successfully wrote to ${path}`, 'checklist');
+
     return requiresRefresh;
 }
