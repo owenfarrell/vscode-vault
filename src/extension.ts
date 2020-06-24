@@ -1,6 +1,5 @@
 'use strict';
 
-import * as adaptors from './adaptors';
 import * as model from './model';
 import * as view from './view';
 import * as vscode from 'vscode';
@@ -35,8 +34,7 @@ export function activate(context: vscode.ExtensionContext) {
                 // TODO Implement error handling
                 const session = new model.VaultSession(config);
                 for (const entry of config.mountPoints) {
-                    const adaptor = adaptors.MAP.get(entry[1]);
-                    session.mount(entry[0], adaptor);
+                    session.mount(entry[0], entry[1]);
                 }
                 return session;
             });

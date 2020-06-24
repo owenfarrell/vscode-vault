@@ -7,7 +7,7 @@ import * as request from 'request';
 import * as vscode from 'vscode';
 
 import { format, URL } from 'url';
-import { VaultConnectionConfig, VaultClientConfig } from './config';
+import { VaultClientConfig, VaultConnectionConfig } from './config';
 
 import { SecretsEngineAdaptor } from '../adaptors/base';
 import { TRUSTED_AUTHORITIES } from '../config';
@@ -102,7 +102,10 @@ export class VaultSession implements vscode.Disposable {
         }
     }
 
-    public async mount(mountPoint: string, adaptor: SecretsEngineAdaptor): Promise<void> {
+    public async mount(mountPoint: string, adaptor: SecretsEngineAdaptor | string): Promise<void> {
+        if (typeof adaptor === 'string') {
+            adaptor = adaptors.MAP.get(adaptor);
+        }
         vscode.window.vault.log(`Adapting '${mountPoint}' for ${adaptor.label} `);
         // Adapt the client for requests to the specified path
         adaptor.adapt(mountPoint, this.client);
