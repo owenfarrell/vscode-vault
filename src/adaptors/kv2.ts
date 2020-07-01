@@ -33,7 +33,7 @@ export class KeyValueVersion2Adaptor implements SecretsEngineAdaptor {
         const originalReadFunction = client.read;
         client.read = async function(path, requestOptions): Promise<any> {
             const readResponse = await originalReadFunction(path.replace(dataRegex, '$1/data/'), requestOptions);
-            return readResponse.data;
+            return path.match(dataRegex) ? readResponse.data : readResponse;
         };
 
         const originalWriteFunction = client.write;
