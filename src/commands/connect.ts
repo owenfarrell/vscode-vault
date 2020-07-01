@@ -12,7 +12,7 @@ function validateURL(userInput: string): string | undefined {
     return validator.isURL(userInput, { require_tld: false }) ? undefined : 'Not a valid URL';
 }
 
-export default async function(reservedNames: string[] = []): Promise<model.VaultClientConfig> {
+export default async function(reservedNames: string[] = []): Promise<model.VaultConnectionConfig> {
     // Prompt for the Vault endpoint
     const endpoint = await vscode.window.showInputBox({ prompt: 'Enter the address of your vault server', validateInput: validateURL, value: process.env.VAULT_ADDR });
     // If no Vault endpoint was collected

@@ -25,7 +25,7 @@ export abstract class VaultTreeItem extends vscode.TreeItem {
     //#region Constructors
     constructor(label: string, parent?: VaultTreeItem, collapsableState = vscode.TreeItemCollapsibleState.Collapsed) {
         super(label, collapsableState);
-        this.id = (parent?.id || '') + label;
+        this.id = (parent?.id || '/') + label;
         this.parent = parent;
     }
     //#endregion

@@ -26,18 +26,8 @@ export function activate(context: vscode.ExtensionContext) {
             const savedConfigList = context.globalState.get<model.VaultConnectionConfig[]>(GLOBAL_STATE_SESSIONS_KEY);
             // If a list of saved configurations exists
             if (savedConfigList) {
-                // For each configuration
-                sessionList = savedConfigList.map((element : model.VaultConnectionConfig) => {
-                    // Create a new session
-                    const session = new model.VaultSession(element);
-                    // For each mount point
-                    for (const entry of element.mountPoints) {
-                        // Mount the mount point
-                        session.mount(entry[0], entry[1]);
-                    }
-                    // Return the new (disconnected) session
-                    return session;
-                });
+                // For each configuration, create a new session
+                sessionList = savedConfigList.map((element : model.VaultConnectionConfig) => new model.VaultSession(element));
             }
         }
         catch (err) {
@@ -94,6 +84,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     const browseFn = (treeItem: view.VaultServerTreeItem) => treeItem.browse()
         .then(() => vaultTreeDataProvider.refresh(treeItem))
+        .then(saveSessionList)
         .catch((err: Error) => vaultWindow.logError(`Unable to browse Vault path (${err.message})`));
 
     const connectFn = (treeItem?: view.VaultServerTreeItem) => vaultTreeDataProvider.connect(treeItem)

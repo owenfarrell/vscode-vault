@@ -96,7 +96,7 @@ export class VaultTreeDataProvider implements vscode.TreeDataProvider<VaultTreeI
             server.session.dispose();
             // Trigger a refresh
             this.refresh(server);
-            vscode.window.showInformationMessage(`Disconnected from ${server.id}`);
+            vscode.window.showInformationMessage(`Disconnected from ${server.label}`);
         }
         else {
             // Find the specified server in the list
@@ -105,7 +105,7 @@ export class VaultTreeDataProvider implements vscode.TreeDataProvider<VaultTreeI
             if (index > -1) {
                 // Remove the element
                 this._serverList.splice(index, 1);
-                vscode.window.showInformationMessage(`Removed ${server.id}`);
+                vscode.window.showInformationMessage(`Removed ${server.label}`);
             }
             // Trigger a refresh of window
             this._onDidChangeTreeData.fire();

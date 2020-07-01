@@ -8,36 +8,55 @@ import * as request from 'request';
 import * as url from 'url';
 import * as vscode from 'vscode';
 
-import { VaultClientConfig, VaultConnectionConfig } from './config';
+import { VaultConnectionConfig, VaultMountPointConfig } from './config';
 import { VaultToken } from './token';
 
 export class VaultSession implements vscode.Disposable {
     //#region Attributes
-    public readonly mountPoints: Map<string, adaptors.SecretsEngineAdaptor> = new Map();
-    private readonly _config: VaultClientConfig;
+    private readonly _config: VaultConnectionConfig;
     private _client: nv.client;
-    private _login: (client: nv.client) => Promise<VaultToken>;
-    private _options: request.CoreOptions;
+    private readonly _login: (client: nv.client) => Promise<VaultToken>;
+    private readonly _mountPoints: Set<string> = new Set();
+    private readonly _options: request.CoreOptions;
+    private readonly _specifiedMountPoints: Map<string, adaptors.SecretsEngineAdaptor> = new Map();
     private _tokenTimer: NodeJS.Timer;
     //#endregion
 
-    constructor(clientConfig: VaultClientConfig) {
-        this._config = clientConfig;
-        this._login = login.get(clientConfig.login).callback;
-
+    constructor(myConfig: VaultConnectionConfig) {
         // If the URL was provided as a string
-        const endpointUrl = new url.URL(clientConfig.endpoint);
-        // Remove any trailing slash from the URL
-        clientConfig.endpoint = url.format(endpointUrl).replace(/\/$/, '');
+        const endpointUrl = new url.URL(myConfig.endpoint);
+        // Get the login selection
+        const quickPick = login.get(myConfig.login);
+        // Create a list for explicitly defined
+        const mountPoints: VaultMountPointConfig[] = [];
+        // If mount points are explicitly defined
+        if (myConfig.mountPoints) {
+            // For each mount point in the configuration
+            myConfig.mountPoints.forEach((element:VaultMountPointConfig) => {
+                // Get the adaptor by name
+                const adaptor = adaptors.get(element.adaptor);
+                // If no adaptor was found
+                if (adaptor === undefined) {
+                    // Throw an error
+                    vscode.window.vault.log(`Unable to get ${element.adaptor} adaptor`);
+                }
+                // Add the path to the list of mount points
+                this._specifiedMountPoints.set(element.path, adaptor);
+                mountPoints.push({ path: element.path, adaptor: adaptor.label });
+            });
+        }
+        // Create fields from the sanitized parameter
+        this._config = {
+            endpoint: url.format(endpointUrl).replace(/\/$/, ''),
+            login: quickPick.label,
+            mountPoints,
+            name: myConfig.name
+        };
+        this._login = quickPick.callback;
         this._options = {
             followAllRedirects: true,
             strictSSL: config.TRUSTED_AUTHORITIES.indexOf(endpointUrl.host) < 0
         };
-
-        this._client = nv({
-            endpoint: clientConfig.endpoint,
-            requestOptions: this._options
-        });
     }
 
     //#region Getters and Setters
@@ -46,9 +65,11 @@ export class VaultSession implements vscode.Disposable {
     }
 
     public get config(): VaultConnectionConfig {
-        const mapEntries = Array.from(this.mountPoints.entries());
-        const mountPointConfig = mapEntries.map((entry: [string, adaptors.SecretsEngineAdaptor]) => <any>{ path: entry[0], adaptor: entry[1].label });
-        return Object.assign(this._config, { mountPoints: mountPointConfig });
+        return { ...this._config };
+    }
+
+    public get mountPoints(): string[] {
+        return Array.from(this._mountPoints);
     }
 
     public get name(): string {
@@ -59,18 +80,17 @@ export class VaultSession implements vscode.Disposable {
     //#region Disposable Method Implementations
     dispose() {
         this._tokenTimer && clearTimeout(this._tokenTimer);
-        this._client = nv({
-            endpoint: this._config.endpoint,
-            requestOptions: this._options
-        });
-        for (const entry of this.mountPoints.entries()) {
-            this.mount(entry[0], entry[1]);
-        }
+        this._client.token = undefined;
     }
     //#endregion
 
     //#region Session Management
     public async login(): Promise<void> {
+        // Create a Vault client
+        this._client = nv({
+            endpoint: this._config.endpoint,
+            requestOptions: this._options
+        });
         // Call the selected authentication function
         const token = await this._login(this._client);
         // If a token was collected
@@ -79,36 +99,66 @@ export class VaultSession implements vscode.Disposable {
             this.cacheToken(token);
             vscode.window.vault.log(`Connected to ${this._client.endpoint}`, 'shield');
         }
+        // Clear the existing set of mount points
+        this._mountPoints.clear();
+        try {
+            // Fetch the list of mounts from Vault (NOTE: this is likely fail due to user access restrictions)
+            const mounts: any = await this.client.mounts();
+            // For each mount point
+            for (const key in mounts.data) {
+                // Get the adaptor for the specified mount point
+                const adaptor = adaptors.get(mounts.data[key]);
+                // If the mount point is supported
+                if (adaptor !== undefined) {
+                    // Mount the path
+                    this.mountPath(key, adaptor);
+                }
+            }
+        }
+        catch (err) {
+            vscode.window.vault.log(`Unable to retrieve mount points for ${this._client.endpoint} (${err.message})`);
+        }
+        // For each explicitly specified path to mount
+        for (const entry of this._specifiedMountPoints.entries()) {
+            // Mount the path
+            this.mountPath(entry[0], entry[1]);
+        }
     }
     //#endregion
 
     //#region Mount Point Management
-    public async cacheMountPoints(): Promise<void> {
-        // Fetch the list of client mounts
-        const mounts: any = await this.client.mounts();
-        // Clear the existing array
-        this.mountPoints.clear();
-        // For each mount point
-        for (const key in mounts.data) {
-            // Get the adaptor for the specified mount point
-            const adaptor = adaptors.get(mounts.data[key]);
-            // If the mount point is supported
-            if (adaptor !== undefined) {
-                // Mount the path
-                this.mount(key, adaptor);
-            }
+    public mount(path: string, adaptor: adaptors.SecretsEngineAdaptor) {
+        // If no adaptor or adaptor type was specified
+        if (adaptor === undefined) {
+            throw new Error(`No adaptor defined for ${path}`);
         }
+        // Extract the mount from the path
+        const mountPoint = path.split('/')[0];
+        let adaptorType: string;
+        if (typeof adaptor === 'string') {
+            // Capture the adaptor type name
+            adaptorType = adaptor;
+            // Get the adaptor by name
+            adaptor = adaptors.get(adaptorType);
+        }
+        // Mount the path with the adaptor
+        this.mountPath(mountPoint, adaptor);
+        // Add the path to the list of mount points
+        this._specifiedMountPoints.set(path, adaptor);
+        // Update the representative configuration of the session
+        this._config.mountPoints.push({ path, adaptor: adaptor.label });
     }
 
-    public async mount(mountPoint: string, adaptor: adaptors.SecretsEngineAdaptor | string): Promise<void> {
-        if (typeof adaptor === 'string') {
-            adaptor = adaptors.get(adaptor);
+    private mountPath(path: string, adaptor: adaptors.SecretsEngineAdaptor) {
+        // If the specified path is already mounted
+        if (this._mountPoints.has(path) === true) {
+            vscode.window.vault.log(`${path} is already mounted`);
+            return;
         }
-        vscode.window.vault.log(`Adapting '${mountPoint}' for ${adaptor.label} `);
+        vscode.window.vault.log(`Adapting ${path} for ${adaptor.label}`);
         // Adapt the client for requests to the specified path
-        adaptor.adapt(mountPoint, this.client);
-        // Add the path to the list of mount points
-        this.mountPoints.set(mountPoint, adaptor);
+        adaptor.adapt(path, this.client);
+        this._mountPoints.add(path);
     }
     //#endregion
 
