@@ -287,8 +287,9 @@
     },
     "scripts": {
         "build": "vsce package -o vscode-vault.vsix",
-        "vscode:prepublish": "webpack --mode production",
         "compile": "webpack --mode development --watch",
+        "lint": "eslint 'src/**/*'",
+        "vscode:prepublish": "webpack --mode production",
         "webpack": "webpack --mode development"
     },
     "icon": "icon.png"

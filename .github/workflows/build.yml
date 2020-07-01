@@ -33,6 +33,20 @@ jobs:
         with:
           path: vscode-vault.vsix
 
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+      - name: Clean Install
+        run: npm ci
+      - name: Run Linter
+        run: npm run lint
+
   # TODO: Separate this in to a separate workflow when GitHub Actions allows downloading the latest artifact
   # https://github.com/actions/download-artifact/issues/3
   # https://github.com/actions/upload-artifact/issues/21
