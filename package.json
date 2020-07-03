@@ -1,296 +1,300 @@
 {
-    "name": "vscode-vault",
-    "version": "2.2.0",
-    "publisher": "owenfarrell",
-    "engines": {
-        "vscode": "^1.30.0"
-    },
-    "license": "MIT",
-    "displayName": "Vault",
-    "description": "Manages interactions with HashiCorp Vault",
-    "categories": [
-        "Other"
-    ],
-    "keywords": [
-        "HashiCorp",
-        "Vault",
-        "Secret",
-        "Password"
-    ],
-    "homepage": "https://github.com/owenfarrell/vscode-vault/",
-    "bugs": {
-        "url": "https://github.com/owenfarrell/vscode-vault/issues"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/owenfarrell/vscode-vault.git"
-    },
-    "galleryBanner": {},
-    "main": "./dist/extension",
-    "contributes": {
-        "configuration": {
-            "type": "object",
-            "title": "Vault Configuration",
-            "properties": {
-                "vault.trustedAuthorities": {
-                    "type": "array",
-                    "description": "A set of trusted authorities for which strict SSL checking will be skipped.",
-                    "items": {
-                        "description": "The hostname and port of a trusted Vault service",
-                        "type": "string"
-                    }
-                },
-                "vault.clipboardTimeout": {
-                    "type": "number",
-                    "default": 60,
-                    "description": "Specifies the amount of time (in seconds) for which a copied value will be available on the clipboard."
-                },
-                "vault.saveConfigurations": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Save server configurations (name, URL, and login method) and auto-populate when opening a new window."
-                }
-            }
+  "name": "vscode-vault",
+  "version": "2.2.0",
+  "publisher": "owenfarrell",
+  "engines": {
+    "vscode": "^1.30.0"
+  },
+  "license": "MIT",
+  "displayName": "Vault",
+  "description": "Manages interactions with HashiCorp Vault",
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "HashiCorp",
+    "Vault",
+    "Secret",
+    "Password"
+  ],
+  "homepage": "https://github.com/owenfarrell/vscode-vault/",
+  "bugs": {
+    "url": "https://github.com/owenfarrell/vscode-vault/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/owenfarrell/vscode-vault.git"
+  },
+  "galleryBanner": {},
+  "main": "./dist/extension",
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "Vault Configuration",
+      "properties": {
+        "vault.trustedAuthorities": {
+          "type": "array",
+          "description": "A set of trusted authorities for which strict SSL checking will be skipped.",
+          "items": {
+            "description": "The hostname and port of a trusted Vault service",
+            "type": "string"
+          }
         },
-        "commands": [
-            {
-                "command": "vault.browse",
-                "title": "Browse Path",
-                "category": "Vault",
-                "icon": {
-                    "light": "resources/light/command/browse.svg",
-                    "dark": "resources/dark/command/browse.svg"
-                }
-            },
-            {
-                "command": "vault.connect",
-                "title": "Connect to Server",
-                "category": "Vault",
-                "icon": {
-                    "light": "resources/light/command/connect.svg",
-                    "dark": "resources/dark/command/connect.svg"
-                }
-            },
-            {
-                "command": "vault.disconnect",
-                "title": "Disconnect from Server",
-                "category": "Vault",
-                "icon": {
-                    "light": "resources/light/command/disconnect.svg",
-                    "dark": "resources/dark/command/disconnect.svg"
-                }
-            },
-            {
-                "command": "vault.delete",
-                "title": "Delete Secret",
-                "category": "Vault",
-                "icon": {
-                    "light": "resources/light/command/delete.svg",
-                    "dark": "resources/dark/command/delete.svg"
-                }
-            },
-            {
-                "command": "vault.list",
-                "title": "Refresh",
-                "category": "Vault",
-                "icon": {
-                    "light": "resources/light/command/refresh.svg",
-                    "dark": "resources/dark/command/refresh.svg"
-                }
-            },
-            {
-                "command": "vault.read",
-                "title": "Read Secret",
-                "category": "Vault",
-                "icon": {
-                    "light": "resources/light/command/read.svg",
-                    "dark": "resources/dark/command/read.svg"
-                }
-            },
-            {
-                "command": "vault.reconnect",
-                "title": "Connect",
-                "category": "Vault",
-                "icon": {
-                    "light": "resources/light/command/reconnect.svg",
-                    "dark": "resources/dark/command/reconnect.svg"
-                }
-            },
-            {
-                "command": "vault.remove",
-                "title": "Remove",
-                "category": "Vault",
-                "icon": {
-                    "light": "resources/light/command/remove.svg",
-                    "dark": "resources/dark/command/remove.svg"
-                }
-            },
-            {
-                "command": "vault.write",
-                "title": "Write Secret",
-                "category": "Vault",
-                "icon": {
-                    "light": "resources/light/command/edit.svg",
-                    "dark": "resources/dark/command/edit.svg"
-                }
-            }
-        ],
-        "menus": {
-            "commandPalette": [
-                {
-                    "command": "vault.browse",
-                    "when": "false"
-                },
-                {
-                    "command": "vault.delete",
-                    "when": "false"
-                },
-                {
-                    "command": "vault.disconnect",
-                    "when": "false"
-                },
-                {
-                    "command": "vault.list",
-                    "when": "false"
-                },
-                {
-                    "command": "vault.read",
-                    "when": "false"
-                },
-                {
-                    "command": "vault.reconnect",
-                    "when": "false"
-                },
-                {
-                    "command": "vault.remove",
-                    "when": "false"
-                },
-                {
-                    "command": "vault.write",
-                    "when": "false"
-                }
-            ],
-            "view/item/context": [
-                {
-                    "command": "vault.reconnect",
-                    "group": "inline@1",
-                    "when": "view == vaultSecrets && viewItem == server"
-                },
-                {
-                    "command": "vault.remove",
-                    "group": "inline@2",
-                    "when": "view == vaultSecrets && viewItem == server"
-                },
-                {
-                    "command": "vault.browse",
-                    "group": "inline@1",
-                    "when": "view == vaultSecrets && viewItem == connection"
-                },
-                {
-                    "command": "vault.list",
-                    "group": "inline@2",
-                    "when": "view == vaultSecrets && viewItem == connection"
-                },
-                {
-                    "command": "vault.disconnect",
-                    "group": "inline@3",
-                    "when": "view == vaultSecrets && viewItem == connection"
-                },
-                {
-                    "command": "vault.list",
-                    "group": "inline@1",
-                    "when": "view == vaultSecrets && viewItem == path"
-                },
-                {
-                    "command": "vault.write",
-                    "group": "inline@2",
-                    "when": "view == vaultSecrets && viewItem == path"
-                },
-                {
-                    "command": "vault.read",
-                    "group": "inline@1",
-                    "when": "view == vaultSecrets && viewItem == secret"
-                },
-                {
-                    "command": "vault.write",
-                    "group": "inline@2",
-                    "when": "view == vaultSecrets && viewItem == secret"
-                },
-                {
-                    "command": "vault.delete",
-                    "group": "inline@5",
-                    "when": "view == vaultSecrets && viewItem == secret"
-                }
-            ],
-            "view/title": [
-                {
-                    "command": "vault.connect",
-                    "group": "navigation"
-                }
-            ]
+        "vault.clipboardTimeout": {
+          "type": "number",
+          "default": 60,
+          "description": "Specifies the amount of time (in seconds) for which a copied value will be available on the clipboard."
         },
-        "views": {
-            "explorer": [
-                {
-                    "id": "vaultSecrets",
-                    "name": "Vaults"
-                }
-            ]
-        },
-        "viewsWelcome": [
-            {
-                "view": "vaultSecrets",
-                "contents": "\nYou are not connected to any Vaults.\n\n[Add Vault](command:vault.connect)"
-            }
-        ]
+        "vault.saveConfigurations": {
+          "type": "boolean",
+          "default": true,
+          "description": "Save server configurations (name, URL, and login method) and auto-populate when opening a new window."
+        }
+      }
     },
-    "activationEvents": [
-        "onView:vaultSecrets",
-        "onCommand:vault.connect",
-        "onCommand:vault.delete",
-        "onCommand:vault.list",
-        "onCommand:vault.read",
-        "onCommand:vault.write"
+    "commands": [
+      {
+        "command": "vault.browse",
+        "title": "Browse Path",
+        "category": "Vault",
+        "icon": {
+          "light": "resources/light/command/browse.svg",
+          "dark": "resources/dark/command/browse.svg"
+        }
+      },
+      {
+        "command": "vault.connect",
+        "title": "Connect to Server",
+        "category": "Vault",
+        "icon": {
+          "light": "resources/light/command/connect.svg",
+          "dark": "resources/dark/command/connect.svg"
+        }
+      },
+      {
+        "command": "vault.disconnect",
+        "title": "Disconnect from Server",
+        "category": "Vault",
+        "icon": {
+          "light": "resources/light/command/disconnect.svg",
+          "dark": "resources/dark/command/disconnect.svg"
+        }
+      },
+      {
+        "command": "vault.delete",
+        "title": "Delete Secret",
+        "category": "Vault",
+        "icon": {
+          "light": "resources/light/command/delete.svg",
+          "dark": "resources/dark/command/delete.svg"
+        }
+      },
+      {
+        "command": "vault.list",
+        "title": "Refresh",
+        "category": "Vault",
+        "icon": {
+          "light": "resources/light/command/refresh.svg",
+          "dark": "resources/dark/command/refresh.svg"
+        }
+      },
+      {
+        "command": "vault.read",
+        "title": "Read Secret",
+        "category": "Vault",
+        "icon": {
+          "light": "resources/light/command/read.svg",
+          "dark": "resources/dark/command/read.svg"
+        }
+      },
+      {
+        "command": "vault.reconnect",
+        "title": "Connect",
+        "category": "Vault",
+        "icon": {
+          "light": "resources/light/command/reconnect.svg",
+          "dark": "resources/dark/command/reconnect.svg"
+        }
+      },
+      {
+        "command": "vault.remove",
+        "title": "Remove",
+        "category": "Vault",
+        "icon": {
+          "light": "resources/light/command/remove.svg",
+          "dark": "resources/dark/command/remove.svg"
+        }
+      },
+      {
+        "command": "vault.write",
+        "title": "Write Secret",
+        "category": "Vault",
+        "icon": {
+          "light": "resources/light/command/edit.svg",
+          "dark": "resources/dark/command/edit.svg"
+        }
+      }
     ],
-    "badges": [],
-    "markdown": "github",
-    "dependencies": {
-        "flat": "^4.1.0",
-        "http-status-codes": "^1.4.0",
-        "node-vault": "0.9.16",
-        "validator": "^13.0.0",
-        "vscode-uri": "^1.0.8"
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "vault.browse",
+          "when": "false"
+        },
+        {
+          "command": "vault.delete",
+          "when": "false"
+        },
+        {
+          "command": "vault.disconnect",
+          "when": "false"
+        },
+        {
+          "command": "vault.list",
+          "when": "false"
+        },
+        {
+          "command": "vault.read",
+          "when": "false"
+        },
+        {
+          "command": "vault.reconnect",
+          "when": "false"
+        },
+        {
+          "command": "vault.remove",
+          "when": "false"
+        },
+        {
+          "command": "vault.write",
+          "when": "false"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "vault.reconnect",
+          "group": "inline@1",
+          "when": "view == vaultSecrets && viewItem == server"
+        },
+        {
+          "command": "vault.remove",
+          "group": "inline@2",
+          "when": "view == vaultSecrets && viewItem == server"
+        },
+        {
+          "command": "vault.browse",
+          "group": "inline@1",
+          "when": "view == vaultSecrets && viewItem == connection"
+        },
+        {
+          "command": "vault.list",
+          "group": "inline@2",
+          "when": "view == vaultSecrets && viewItem == connection"
+        },
+        {
+          "command": "vault.disconnect",
+          "group": "inline@3",
+          "when": "view == vaultSecrets && viewItem == connection"
+        },
+        {
+          "command": "vault.list",
+          "group": "inline@1",
+          "when": "view == vaultSecrets && viewItem == path"
+        },
+        {
+          "command": "vault.write",
+          "group": "inline@2",
+          "when": "view == vaultSecrets && viewItem == path"
+        },
+        {
+          "command": "vault.read",
+          "group": "inline@1",
+          "when": "view == vaultSecrets && viewItem == secret"
+        },
+        {
+          "command": "vault.write",
+          "group": "inline@2",
+          "when": "view == vaultSecrets && viewItem == secret"
+        },
+        {
+          "command": "vault.delete",
+          "group": "inline@5",
+          "when": "view == vaultSecrets && viewItem == secret"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "vault.connect",
+          "group": "navigation"
+        }
+      ]
     },
-    "devDependencies": {
-        "@types/clipboardy": "^1.1.0",
-        "@types/flat": "^5.0.1",
-        "@types/mocha": "^5.2.7",
-        "@types/node": "^10.17.24",
-        "@types/request": "^2.48.5",
-        "@types/validator": "^13.0.0",
-        "@types/vscode": "1.30.0",
-        "@typescript-eslint/eslint-plugin": "^2.34.0",
-        "@typescript-eslint/parser": "^2.34.0",
-        "ajv": "^6.9.1",
-        "circular-dependency-plugin": "^5.2.0",
-        "eslint": "^6.8.0",
-        "eslint-config-standard": "^14.1.1",
-        "eslint-plugin-import": "^2.20.2",
-        "eslint-plugin-node": "^11.1.0",
-        "eslint-plugin-promise": "^4.2.1",
-        "eslint-plugin-standard": "^4.0.1",
-        "ts-loader": "^6.2.2",
-        "typescript": "^3.9.3",
-        "vsce": "^1.76.0",
-        "webpack": "^4.42.1",
-        "webpack-cli": "^3.3.11"
+    "views": {
+      "explorer": [
+        {
+          "id": "vaultSecrets",
+          "name": "Vaults"
+        }
+      ]
     },
-    "scripts": {
-        "build": "vsce package -o vscode-vault.vsix",
-        "compile": "webpack --mode development --watch",
-        "lint": "eslint 'src/**/*'",
-        "vscode:prepublish": "webpack --mode production",
-        "webpack": "webpack --mode development"
-    },
-    "icon": "icon.png"
+    "viewsWelcome": [
+      {
+        "view": "vaultSecrets",
+        "contents": "\nYou are not connected to any Vaults.\n\n[Add Vault](command:vault.connect)"
+      }
+    ]
+  },
+  "activationEvents": [
+    "onView:vaultSecrets",
+    "onCommand:vault.connect",
+    "onCommand:vault.delete",
+    "onCommand:vault.list",
+    "onCommand:vault.read",
+    "onCommand:vault.write"
+  ],
+  "badges": [],
+  "markdown": "github",
+  "dependencies": {
+    "flat": "^4.1.0",
+    "http-status-codes": "^1.4.0",
+    "node-vault": "0.9.16",
+    "validator": "^13.0.0",
+    "vscode-uri": "^1.0.8",
+    "snyk": "^1.359.1"
+  },
+  "devDependencies": {
+    "@types/clipboardy": "^1.1.0",
+    "@types/flat": "^5.0.1",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^10.17.24",
+    "@types/request": "^2.48.5",
+    "@types/validator": "^13.0.0",
+    "@types/vscode": "1.30.0",
+    "@typescript-eslint/eslint-plugin": "^2.34.0",
+    "@typescript-eslint/parser": "^2.34.0",
+    "ajv": "^6.9.1",
+    "circular-dependency-plugin": "^5.2.0",
+    "eslint": "^6.8.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "ts-loader": "^6.2.2",
+    "typescript": "^3.9.3",
+    "vsce": "^1.76.0",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
+  },
+  "scripts": {
+    "build": "vsce package -o vscode-vault.vsix",
+    "compile": "webpack --mode development --watch",
+    "lint": "eslint 'src/**/*'",
+    "vscode:prepublish": "webpack --mode production",
+    "webpack": "webpack --mode development",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
+  },
+  "icon": "icon.png",
+  "snyk": true
 }
