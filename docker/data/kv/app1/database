@@ -1,0 +1,5 @@
+{
+  "username": "mydatabaseusername",
+  "password": "MyVerySecureP@ssw0rd!",
+  "host": "mysql–instance1.123456789012.us-east-1.rds.amazonaws.com"
+}

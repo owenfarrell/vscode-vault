@@ -1,0 +1,20 @@
+
+path "cubbyhole/*" {
+  capabilities = ["create", "read", "update", "delete", "list"]
+}
+
+path "kv/app1/*" {
+  capabilities = ["create", "read", "update", "delete", "list"]
+}
+
+path "kv/app2/*" {
+  capabilities = ["create", "read", "update", "delete", "list"]
+}
+
+path "secret/app1/*" {
+  capabilities = ["create", "read", "update", "delete", "list"]
+}
+
+path "secret/app2/*" {
+  capabilities = ["create", "read", "update", "delete", "list"]
+}
