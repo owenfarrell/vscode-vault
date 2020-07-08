@@ -187,13 +187,8 @@
                     "when": "view == vaultSecrets && viewItem == connection"
                 },
                 {
-                    "command": "vault.list",
-                    "group": "inline@2",
-                    "when": "view == vaultSecrets && viewItem == connection"
-                },
-                {
                     "command": "vault.disconnect",
-                    "group": "inline@3",
+                    "group": "inline@2",
                     "when": "view == vaultSecrets && viewItem == connection"
                 },
                 {
