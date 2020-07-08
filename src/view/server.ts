@@ -30,16 +30,16 @@ export class VaultServerTreeItem extends VaultTreeItem {
     //#endregion
 
     //#region Getters and Setters
+    get client(): nv.client {
+        return this.session.client;
+    }
+
     public get connected(): boolean {
         return this.session.client?.token !== undefined;
     }
     //#endregion
 
     //#region VaultTreeItem Implementation
-    getClient(): nv.client {
-        return this.session.client;
-    }
-
     async refresh(): Promise<boolean> {
         vscode.window.vault.log(`Refreshing ${this.id}`);
         // If the Vault client is not connected

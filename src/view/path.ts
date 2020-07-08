@@ -13,10 +13,8 @@ export class VaultPathTreeItem extends VaultShellTreeItem {
     //#region VaultTreeItem Implementation
     async refresh(): Promise<boolean> {
         try {
-            // Get the client stub
-            const client = this.getClient();
             // List the path
-            const pathList = await commands.list(client, this.path);
+            const pathList = await commands.list(this.client, this.path);
             // Update the list of children based on the list of paths
             this.children = pathList.map((element: string) => {
                 // If the path ends with a slash, create a child path, otherwise create a child secret
@@ -50,13 +48,14 @@ export class VaultPathTreeItem extends VaultShellTreeItem {
 
     //#region Custom Command Methods
     async write(): Promise<VaultTreeItem> {
-        // Get the client stub
-        const client = this.getClient();
-        // Find the top-level path
-        let treeItem: VaultTreeItem;
-        for (treeItem = this; treeItem.parent.path.length > 0; treeItem = treeItem.parent);
+        let treeItem: VaultTreeItem = this;
+        // While the tree item has a parent with a path
+        while (treeItem.parent.path.length > 0) {
+            // Navigate up to the parent
+            treeItem = treeItem.parent;
+        }
         // Write the path
-        return await commands.write(client, this.path, treeItem.path) === true ? treeItem : undefined;
+        return await commands.write(this.client, this.path, treeItem.path) === true ? treeItem : undefined;
     }
     //#endregion
 }

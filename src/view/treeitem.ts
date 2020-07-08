@@ -58,13 +58,17 @@ export abstract class VaultTreeItem extends vscode.TreeItem {
             }
         }
     }
+
+    get client(): nv.client {
+        return this.parent.client;
+    }
     //#endregion
 
     //#region Custom Command Methods
     abstract async refresh(): Promise<boolean>;
 
-    getClient(): nv.client {
-        return this.parent.getClient();
+    getChild(label: string): VaultTreeItem {
+        return this._children ? this._children.find((value: VaultTreeItem) => value.label === label) : undefined;
     }
     //#endregion
 }
