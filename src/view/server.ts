@@ -78,10 +78,8 @@ export class VaultServerTreeItem extends VaultTreeItem {
             return undefined;
         }
 
-        // Remove any leading slashes from the path
-        browseablePath = browseablePath.replace(/^\/+/, '');
-        // Add a trailing slash to the path if it isn't already there
-        browseablePath += browseablePath.endsWith('/') ? '' : '/';
+        // Remove any leading slashes from the path and add a trailing slash to the path if it isn't already there
+        browseablePath = browseablePath.replace(/^\/+/, '').replace(/\/?$/, '/');
         // Prompt for the secrets engine
         const adaptor = await vscode.window.showQuickPick(adaptors.QUICK_PICK_LIST, { placeHolder: 'Select engine type' });
         // If no secrets engine was collected
@@ -91,18 +89,6 @@ export class VaultServerTreeItem extends VaultTreeItem {
 
         // Add the mount using the adaptor for the selected engine
         this.session.mount(browseablePath, adaptor);
-        // Create a new tree item for the path
-        const treeItem = new VaultPathTreeItem(browseablePath, this);
-        // If no children are defined
-        if (this.children === undefined) {
-            // Create a list of children
-            this.children = [treeItem];
-        }
-        // If children are defined
-        else {
-            // Add the tree item to the list of children
-            this.children.push(treeItem);
-        }
     }
     //#endregion
 }

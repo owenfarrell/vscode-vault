@@ -134,13 +134,6 @@ export class VaultSession implements vscode.Disposable {
         }
         // Extract the mount from the path
         const mountPoint = path.split('/')[0];
-        let adaptorType: string;
-        if (typeof adaptor === 'string') {
-            // Capture the adaptor type name
-            adaptorType = adaptor;
-            // Get the adaptor by name
-            adaptor = adaptors.get(adaptorType);
-        }
         // Mount the path with the adaptor
         this.mountPath(mountPoint, adaptor);
         // Add the path to the list of mount points
