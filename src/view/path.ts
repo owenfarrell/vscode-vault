@@ -2,24 +2,13 @@
 
 import * as commands from '../commands';
 import * as HTTPStatusCodes from 'http-status-codes';
-import * as path from 'path';
 
 import { VaultSecretTreeItem } from './secret';
+import { VaultShellTreeItem } from './shell';
 import { VaultTreeItem } from './treeitem';
 
-export class VaultPathTreeItem extends VaultTreeItem {
+export class VaultPathTreeItem extends VaultShellTreeItem {
     contextValue = 'path';
-
-    //#region Constructors
-    constructor(label: string, parent: VaultTreeItem) {
-        super(label, parent);
-        this.iconPath = this._defaultIconPath = {
-            light: path.join(__dirname, '..', 'resources', 'light', 'tree', 'folder.svg'),
-            dark: path.join(__dirname, '..', 'resources', 'dark', 'tree', 'folder.svg')
-        };
-        this.path = parent.path + label;
-    }
-    //#endregion
 
     //#region VaultTreeItem Implementation
     async refresh(): Promise<boolean> {
