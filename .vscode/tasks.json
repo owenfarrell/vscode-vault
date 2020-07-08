@@ -16,7 +16,20 @@
         },
         {
             "type": "npm",
-            "script": "watch",
+            "script": "test",
+            "problemMatcher": "$tsc-watch",
+            "isBackground": true,
+            "presentation": {
+                "reveal": "always"
+            },
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
+        },
+        {
+            "type": "npm",
+            "script": "compile",
             "problemMatcher": "$tsc-watch",
             "isBackground": true,
             "presentation": {

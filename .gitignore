@@ -1,6 +1,8 @@
 ###### VSCode Extensions
 
 *.vsix
+test-extensions/
+test-resources/
 
 ###### NPM
 
