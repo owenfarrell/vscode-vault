@@ -10,6 +10,10 @@ import { VaultPathTreeItem } from './path';
 import { VaultShellTreeItem } from './shell';
 import { VaultTreeItem } from './treeitem';
 
+const ANY_LEADING_SLASHES = /^\/+/;
+const OPTIONAL_TRAILING_SLASH = /\/?$/;
+const PATH_SEGMENT = /[^\\/]+\/?/g;
+
 export class VaultServerTreeItem extends VaultTreeItem {
     private static readonly CONNECTED_CONTEXT = 'connection';
     private static readonly DISCONNECTED_CONTEXT = 'server';
@@ -24,7 +28,7 @@ export class VaultServerTreeItem extends VaultTreeItem {
             light: path.join(__dirname, '..', 'resources', 'light', 'tree', 'server.svg'),
             dark: path.join(__dirname, '..', 'resources', 'dark', 'tree', 'server.svg')
         };
-        this.id = this.id.replace(/\/?$/, '/');
+        this.id = this.id.replace(OPTIONAL_TRAILING_SLASH, '/');
         this.session = session;
         // TODO Re-add support for custom options
     }
@@ -61,7 +65,7 @@ export class VaultServerTreeItem extends VaultTreeItem {
             // Update the context value
             this.contextValue = VaultServerTreeItem.CONNECTED_CONTEXT;
             // Map the list of mounts to a list of tree items
-            this.children = this.session.mountPoints.map((element: string) => new VaultPathTreeItem(element, this));
+            this.session.mountPoints.sort().forEach((element: string) => this.expand(element));
             // If no list of children or no children are defined
             if (this.children === undefined || this.children.length === 0) {
                 // Show an error message and prompt the user for an action
@@ -84,7 +88,7 @@ export class VaultServerTreeItem extends VaultTreeItem {
         }
 
         // Remove any leading slashes from the path and add a trailing slash to the path if it isn't already there
-        browseablePath = browseablePath.replace(/^\/+/, '').replace(/\/?$/, '/');
+        browseablePath = browseablePath.replace(ANY_LEADING_SLASHES, '').replace(OPTIONAL_TRAILING_SLASH, '/');
         // Prompt for the secrets engine
         const adaptor = await vscode.window.showQuickPick(adaptors.QUICK_PICK_LIST, { placeHolder: 'Select engine type' });
         // If no secrets engine was collected
@@ -94,13 +98,19 @@ export class VaultServerTreeItem extends VaultTreeItem {
 
         // Add the mount using the adaptor for the selected engine
         this.session.mount(browseablePath, adaptor);
+        // Expand the path in to a hierarchy
+        this.expand(browseablePath);
+    }
+    //#endregion
 
+    //#region User Interface Helper Methods
+    private expand(path: string): VaultTreeItem {
         // Track the last-known segment that already exists
         let refreshTreeItem: VaultTreeItem = this;
         // Track the last-known-parentx
         let parentTreeItem: VaultTreeItem = this;
         // Split the path in to segments
-        const pathSegments = browseablePath.match(/[^\\/]+\/?/g);
+        const pathSegments = path.match(PATH_SEGMENT);
         // For each segment
         pathSegments.forEach((label: string, index: number) => {
             let childTreeItem = parentTreeItem.getChild(label);
@@ -121,13 +131,7 @@ export class VaultServerTreeItem extends VaultTreeItem {
             // Update the parent reference
             parentTreeItem = childTreeItem;
         });
-
-        // If this tree item is currently empty
-        if (this.collapsibleState === vscode.TreeItemCollapsibleState.None) {
-            // Expand the tree item to display the new child
-            this.collapsibleState = vscode.TreeItemCollapsibleState.Expanded;
-        }
-
+        // Return the deepest tree item that already existed
         return refreshTreeItem;
     }
     //#endregion

@@ -32,7 +32,7 @@ export abstract class VaultTreeItem extends vscode.TreeItem {
 
     //#region Getters and Setters
     get children(): VaultTreeItem[] {
-        return [...this._children];
+        return this._children ? [...this._children] : undefined;
     }
 
     set children(value: VaultTreeItem[]) {
