@@ -38,25 +38,7 @@ export abstract class VaultTreeItem extends vscode.TreeItem {
     set children(value: VaultTreeItem[]) {
         // Set the field to the specified value
         this._children = [...value];
-        // If the specified value is undefined
-        if (value === undefined) {
-            // Update the icon to indicate an error
-            this.iconPath = VaultTreeItem.WARNING_ICON;
-        }
-        else {
-            // Update the icon to use the default icon
-            this.iconPath = this._defaultIconPath;
-            // If the specified value is empty
-            if (value.length === 0) {
-                // Update the collapsable state
-                this.collapsibleState = vscode.TreeItemCollapsibleState.None;
-            }
-            // If the specified value is *not* empty, but was previously empty
-            else if (this.collapsibleState === vscode.TreeItemCollapsibleState.None) {
-                // Update the collapsable state
-                this.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
-            }
-        }
+        this.onChildTreeItemChanges();
     }
 
     get client(): nv.client {
@@ -67,8 +49,42 @@ export abstract class VaultTreeItem extends vscode.TreeItem {
     //#region Custom Command Methods
     abstract async refresh(): Promise<boolean>;
 
+    addChild(child: VaultTreeItem) {
+        if (this._children) {
+            this._children.push(child);
+        }
+        else {
+            this._children = [child];
+        }
+        this.onChildTreeItemChanges();
+    }
+
     getChild(label: string): VaultTreeItem {
         return this._children ? this._children.find((value: VaultTreeItem) => value.label === label) : undefined;
+    }
+    //#endregion
+
+    //#region User Interface Helper Methods
+    private onChildTreeItemChanges() {
+        // If the specified value is undefined
+        if (this._children === undefined) {
+            // Update the icon to indicate an error
+            this.iconPath = VaultTreeItem.WARNING_ICON;
+        }
+        else {
+            // Update the icon to use the default icon
+            this.iconPath = this._defaultIconPath;
+            // If the specified value is empty
+            if (this._children.length === 0) {
+                // Update the collapsable state
+                this.collapsibleState = vscode.TreeItemCollapsibleState.None;
+            }
+            // If the specified value is *not* empty, but was previously empty
+            else if (this.collapsibleState === vscode.TreeItemCollapsibleState.None) {
+                // Update the collapsable state
+                this.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
+            }
+        }
     }
     //#endregion
 }

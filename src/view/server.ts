@@ -7,6 +7,7 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 
 import { VaultPathTreeItem } from './path';
+import { VaultShellTreeItem } from './shell';
 import { VaultTreeItem } from './treeitem';
 
 export class VaultServerTreeItem extends VaultTreeItem {
@@ -74,7 +75,7 @@ export class VaultServerTreeItem extends VaultTreeItem {
     //#endregion
 
     //#region Custom Command Methods
-    async browse(): Promise<VaultPathTreeItem> {
+    async browse(): Promise<VaultTreeItem> {
         // Prompt for the path
         let browseablePath = await vscode.window.showInputBox({ prompt: 'Enter path to browse' });
         // If no path was collected
@@ -93,16 +94,41 @@ export class VaultServerTreeItem extends VaultTreeItem {
 
         // Add the mount using the adaptor for the selected engine
         this.session.mount(browseablePath, adaptor);
-        // Create a new tree item for the path
-        const treeItem = new VaultPathTreeItem(browseablePath, this);
-        // Add the tree item to the list of children
-        this.children.push(treeItem);
+
+        // Track the last-known segment that already exists
+        let refreshTreeItem: VaultTreeItem = this;
+        // Track the last-known-parentx
+        let parentTreeItem: VaultTreeItem = this;
+        // Split the path in to segments
+        const pathSegments = browseablePath.match(/[^\\/]+\/?/g);
+        // For each segment
+        pathSegments.forEach((label: string, index: number) => {
+            let childTreeItem = parentTreeItem.getChild(label);
+            // If a child item for this segment already exists
+            if (childTreeItem) {
+                // Update the refresh item reference
+                refreshTreeItem = childTreeItem;
+            }
+            // If no child item for this segment already exists
+            else {
+                // Determine the child tree item type (path items are reserved for leaf nodes)
+                const ChildTreeItemType = index === pathSegments.length - 1 ? VaultPathTreeItem : VaultShellTreeItem;
+                // Create a new child tree itme
+                childTreeItem = new ChildTreeItemType(label, parentTreeItem);
+                // Add the child to the parent
+                parentTreeItem.addChild(childTreeItem);
+            }
+            // Update the parent reference
+            parentTreeItem = childTreeItem;
+        });
+
         // If this tree item is currently empty
         if (this.collapsibleState === vscode.TreeItemCollapsibleState.None) {
             // Expand the tree item to display the new child
             this.collapsibleState = vscode.TreeItemCollapsibleState.Expanded;
         }
-        return treeItem;
+
+        return refreshTreeItem;
     }
     //#endregion
 }
