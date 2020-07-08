@@ -80,7 +80,7 @@ export class VaultSession implements vscode.Disposable {
     //#region Disposable Method Implementations
     dispose() {
         this._tokenTimer && clearTimeout(this._tokenTimer);
-        this._client.token = undefined;
+        this._client && (this._client.token = undefined);
     }
     //#endregion
 

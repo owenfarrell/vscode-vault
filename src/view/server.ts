@@ -31,7 +31,7 @@ export class VaultServerTreeItem extends VaultTreeItem {
 
     //#region Getters and Setters
     public get connected(): boolean {
-        return this.session.client.token !== undefined;
+        return this.session.client?.token !== undefined;
     }
     //#endregion
 
