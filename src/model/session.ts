@@ -118,11 +118,8 @@ export class VaultSession implements vscode.Disposable {
         catch (err) {
             vscode.window.vault.log(`Unable to retrieve mount points for ${this._client.endpoint} (${err.message})`);
         }
-        // For each explicitly specified path to mount
-        for (const entry of this._specifiedMountPoints.entries()) {
-            // Mount the path
-            this.mountPath(entry[0], entry[1]);
-        }
+        // For each explicitly specified path to mount, mount the path
+        this._specifiedMountPoints.forEach((value: adaptors.SecretsEngineAdaptor, key: string) => this.mountPath(key, value));
     }
     //#endregion
 
