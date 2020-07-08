@@ -2,12 +2,14 @@
 
 import { CallableQuickPickItem } from './base';
 import github from './github';
+import ldap from './ldap';
 import native from './native';
 import userpass from './userpass';
 
 export const QUICK_PICK_LIST : CallableQuickPickItem[] = [
     native,
     github,
+    ldap,
     userpass
 ];
 
