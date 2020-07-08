@@ -83,7 +83,7 @@ export function activate(context: vscode.ExtensionContext) {
     };
 
     const browseFn = (treeItem: view.VaultServerTreeItem) => treeItem.browse()
-        .then(() => vaultTreeDataProvider.refresh(treeItem))
+        .then((updatedItem: view.VaultPathTreeItem) => updatedItem && vaultTreeDataProvider.refresh(treeItem))
         .then(saveSessionList)
         .catch((err: Error) => vaultWindow.logError(`Unable to browse Vault path (${err.message})`));
 
