@@ -27,8 +27,6 @@ export class VaultSession implements vscode.Disposable {
         const endpointUrl = new url.URL(myConfig.endpoint);
         // Get the login selection
         const quickPick = login.get(myConfig.login);
-        // Create a list for explicitly defined
-        const mountPoints: VaultMountPointConfig[] = [];
         // If mount points are explicitly defined
         if (myConfig.mountPoints) {
             // For each mount point in the configuration
@@ -42,14 +40,12 @@ export class VaultSession implements vscode.Disposable {
                 }
                 // Add the path to the list of mount points
                 this._specifiedMountPoints.set(element.path, adaptor);
-                mountPoints.push({ path: element.path, adaptor: adaptor.label });
             });
         }
         // Create fields from the sanitized parameter
         this._config = {
             endpoint: url.format(endpointUrl).replace(/\/$/, ''),
             login: quickPick.label,
-            mountPoints,
             name: myConfig.name
         };
         this._login = quickPick.callback;
@@ -65,7 +61,11 @@ export class VaultSession implements vscode.Disposable {
     }
 
     public get config(): VaultConnectionConfig {
-        return { ...this._config };
+        const mountPoints : VaultMountPointConfig[] = [];
+        this._specifiedMountPoints.forEach((value: adaptors.SecretsEngineAdaptor, key: string) => {
+            mountPoints.push({ adaptor: value.label, path: key });
+        });
+        return { ...this._config, mountPoints };
     }
 
     public get mountPoints(): string[] {
@@ -138,8 +138,6 @@ export class VaultSession implements vscode.Disposable {
         this.mountPath(mountPoint, adaptor);
         // Add the path to the list of mount points
         this._specifiedMountPoints.set(path, adaptor);
-        // Update the representative configuration of the session
-        this._config.mountPoints.push({ path, adaptor: adaptor.label });
     }
 
     private mountPath(path: string, adaptor: adaptors.SecretsEngineAdaptor) {
