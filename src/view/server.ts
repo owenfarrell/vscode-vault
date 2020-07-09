@@ -99,7 +99,7 @@ export class VaultServerTreeItem extends VaultTreeItem {
         // Add the mount using the adaptor for the selected engine
         this.session.mount(path, adaptor);
         // Expand the path in to a hierarchy
-        this.expand(path);
+        return this.expand(path);
     }
     //#endregion
 
