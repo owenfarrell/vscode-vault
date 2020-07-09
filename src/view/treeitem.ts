@@ -47,8 +47,6 @@ export abstract class VaultTreeItem extends vscode.TreeItem {
     //#endregion
 
     //#region Custom Command Methods
-    abstract async refresh(): Promise<boolean>;
-
     addChild(child: VaultTreeItem) {
         if (this._children) {
             this._children.push(child);
@@ -62,6 +60,8 @@ export abstract class VaultTreeItem extends vscode.TreeItem {
     getChild(label: string): VaultTreeItem {
         return this._children ? this._children.find((value: VaultTreeItem) => value.label === label) : undefined;
     }
+
+    abstract async refresh(): Promise<boolean>;
     //#endregion
 
     //#region User Interface Helper Methods
