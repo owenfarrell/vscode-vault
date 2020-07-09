@@ -49,7 +49,14 @@ export abstract class VaultTreeItem extends vscode.TreeItem {
     //#region Custom Command Methods
     addChild(child: VaultTreeItem) {
         if (this._children) {
-            this._children.push(child);
+            let index = 0;
+            // For each sibling that is alphabetically before the specified element
+            while (index < this._children.length && this._children[index].label.localeCompare(child.label) < 0) {
+                // Increment the index of the specified element
+                index++;
+            }
+            // Insert the specified element in alphabetical order
+            this._children.splice(index, 0, child);
         }
         else {
             this._children = [child];
