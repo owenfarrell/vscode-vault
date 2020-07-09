@@ -81,14 +81,14 @@ export class VaultServerTreeItem extends VaultTreeItem {
     //#region Custom Command Methods
     async browse(): Promise<VaultTreeItem> {
         // Prompt for the path
-        let browseablePath = await vscode.window.showInputBox({ prompt: 'Enter path to browse' });
+        const browseablePath = await vscode.window.showInputBox({ prompt: 'Enter path to browse' });
         // If no path was collected
         if (!browseablePath) {
             return undefined;
         }
 
         // Remove any leading slashes from the path and add a trailing slash to the path if it isn't already there
-        browseablePath = browseablePath.replace(ANY_LEADING_SLASHES, '').replace(OPTIONAL_TRAILING_SLASH, '/');
+        const path = browseablePath.replace(ANY_LEADING_SLASHES, '').replace(OPTIONAL_TRAILING_SLASH, '/');
         // Prompt for the secrets engine
         const adaptor = await vscode.window.showQuickPick(adaptors.QUICK_PICK_LIST, { placeHolder: 'Select engine type' });
         // If no secrets engine was collected
@@ -97,9 +97,9 @@ export class VaultServerTreeItem extends VaultTreeItem {
         }
 
         // Add the mount using the adaptor for the selected engine
-        this.session.mount(browseablePath, adaptor);
+        this.session.mount(path, adaptor);
         // Expand the path in to a hierarchy
-        this.expand(browseablePath);
+        this.expand(path);
     }
     //#endregion
 
