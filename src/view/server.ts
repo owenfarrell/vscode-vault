@@ -107,7 +107,7 @@ export class VaultServerTreeItem extends VaultTreeItem {
     private expand(path: string): VaultTreeItem {
         // Track the last-known segment that already exists
         let refreshTreeItem: VaultTreeItem = this;
-        // Track the last-known-parentx
+        // Track the last-known-parent
         let parentTreeItem: VaultTreeItem = this;
         // Split the path in to segments
         const pathSegments = path.match(PATH_SEGMENT);
