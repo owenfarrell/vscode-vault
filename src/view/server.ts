@@ -87,8 +87,6 @@ export class VaultServerTreeItem extends VaultTreeItem {
             return undefined;
         }
 
-        // Remove any leading slashes from the path and add a trailing slash to the path if it isn't already there
-        const path = browseablePath.replace(ANY_LEADING_SLASHES, '').replace(OPTIONAL_TRAILING_SLASH, '/');
         // Prompt for the secrets engine
         const adaptor = await vscode.window.showQuickPick(adaptors.QUICK_PICK_LIST, { placeHolder: 'Select engine type' });
         // If no secrets engine was collected
@@ -96,21 +94,23 @@ export class VaultServerTreeItem extends VaultTreeItem {
             return undefined;
         }
 
+        // Remove any leading slashes from the path and add a trailing slash to the path if it isn't already there
+        const formattedPath = browseablePath.replace(ANY_LEADING_SLASHES, '').replace(OPTIONAL_TRAILING_SLASH, '/');
         // Add the mount using the adaptor for the selected engine
-        this.session.mount(path, adaptor);
+        this.session.mount(formattedPath, adaptor);
         // Expand the path in to a hierarchy
-        return this.expand(path);
+        return this.expand(formattedPath);
     }
     //#endregion
 
     //#region User Interface Helper Methods
-    private expand(path: string): VaultTreeItem {
+    private expand(relativePath: string): VaultTreeItem {
         // Track the last-known segment that already exists
         let refreshTreeItem: VaultTreeItem = this;
         // Track the last-known-parent
         let parentTreeItem: VaultTreeItem = this;
         // Split the path in to segments
-        const pathSegments = path.match(PATH_SEGMENT);
+        const pathSegments = relativePath.match(PATH_SEGMENT);
         // For each segment
         pathSegments.forEach((label: string, index: number) => {
             let childTreeItem = parentTreeItem.getChild(label);
