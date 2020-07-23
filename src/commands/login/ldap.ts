@@ -6,34 +6,30 @@ import * as vscode from 'vscode';
 
 import { CallableQuickPickItem } from './base';
 
-const ldapLoginRequest = { mount_point: 'ldap', username: process.env.USER || process.env.USERNAME, password: undefined };
-
 async function login(client: nv.client): Promise<model.VaultToken> {
+    const ldapLoginRequest = { mount_point: 'ldap', username: process.env.USER || process.env.USERNAME, password: undefined };
+
     // Prompt the user for the authentication mount point
-    const newLdapMountPoint = await vscode.window.showInputBox({ prompt: 'Enter LDAP authentication mount point', value: ldapLoginRequest.mount_point });
+    ldapLoginRequest.mount_point = await vscode.window.showInputBox({ prompt: 'Enter LDAP authentication mount point', value: ldapLoginRequest.mount_point });
     // If no username was collected
-    if (!newLdapMountPoint) {
+    if (!ldapLoginRequest.mount_point) {
         return undefined;
     }
 
     // Prompt the user for the authentication username
-    const newLdapUsername = await vscode.window.showInputBox({ prompt: 'Enter Username', value: ldapLoginRequest.username });
+    ldapLoginRequest.username = await vscode.window.showInputBox({ prompt: 'Enter Username', value: ldapLoginRequest.username });
     // If no password was collected
-    if (!newLdapUsername) {
+    if (!ldapLoginRequest.username) {
         return undefined;
     }
 
     // Prompt the user for the authentication password
-    const newLdapPassword = await vscode.window.showInputBox({ password: true, prompt: 'Enter Password', value: ldapLoginRequest.password });
+    ldapLoginRequest.password = await vscode.window.showInputBox({ password: true, prompt: 'Enter Password', value: ldapLoginRequest.password });
     // If no input was collected
-    if (!newLdapPassword) {
+    if (!ldapLoginRequest.password) {
         return undefined;
     }
 
-    // Cache the collected inputs
-    ldapLoginRequest.mount_point = newLdapMountPoint;
-    ldapLoginRequest.username = newLdapUsername;
-    ldapLoginRequest.password = newLdapPassword;
     // Submit a login request
     const ldapLoginResult = await client.userpassLogin(ldapLoginRequest);
     // Parse the login response

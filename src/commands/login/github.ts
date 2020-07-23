@@ -7,30 +7,27 @@ import * as vscode from 'vscode';
 import { CallableQuickPickItem } from './base';
 import validator from 'validator';
 
-const githubLoginRequest = { mount_point: 'github', token: process.env.VAULT_AUTH_GITHUB_TOKEN };
-
 function validateGitHubToken(userInput: string): string | undefined {
     return userInput.length === 40 && validator.isHexadecimal(userInput) ? undefined : 'Not a valid GitHub token';
 }
 
 async function login(client: nv.client): Promise<model.VaultToken> {
+    const githubLoginRequest = { mount_point: 'github', token: process.env.VAULT_AUTH_GITHUB_TOKEN };
+
     // Prompt for the mount point
-    const newGitgubMountPoint = await vscode.window.showInputBox({ prompt: 'Enter authentication mount point', value: githubLoginRequest.mount_point });
+    githubLoginRequest.mount_point = await vscode.window.showInputBox({ prompt: 'Enter authentication mount point', value: githubLoginRequest.mount_point });
     // If the mount point was not collected
-    if (!newGitgubMountPoint) {
+    if (!githubLoginRequest.mount_point) {
         return undefined;
     }
 
     // Prompt for the GitHub token
-    const newGithubToken = await vscode.window.showInputBox({ prompt: 'Enter GitHub access token', value: githubLoginRequest.token, validateInput: validateGitHubToken });
+    githubLoginRequest.token = await vscode.window.showInputBox({ prompt: 'Enter GitHub access token', value: githubLoginRequest.token, validateInput: validateGitHubToken });
     // If the GitHub token was not collected
-    if (!newGithubToken) {
+    if (!githubLoginRequest.token) {
         return undefined;
     }
 
-    // Cache the collected inputs
-    githubLoginRequest.mount_point = newGitgubMountPoint;
-    githubLoginRequest.token = newGithubToken;
     // Submit a login request
     const githubLoginResult = await client.githubLogin(githubLoginRequest);
     // Parse the login response
