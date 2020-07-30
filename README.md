@@ -62,14 +62,15 @@ JSON data (or complex data structures, such as a map) is presented through the U
 
 ## Requirements
 
-TODO
+Running this extension requires VisualStuido Code version 1.30.0 (November 2018) or later.
 
 ## Extension Settings
 
 The following settings are supported
 
-* `vault.trustedEndpoints` : A collection of authorities (username and port, or `servername:port` in case of Native authentication) for which strict SSL checking will be skipped.
+* `vault.trustedEndpoints` : A collection of authorities (username and port, or `servername:port` in case of Native authentication) for which strict SSL checking will be skipped. Defaults to an empty list.
 * `vault.clipboardTimeout` : A duration (in seconds) after which clipboard contents will be cleared. When set to `0`, clipboard clearing will be disabled. Defaults to `60`.
+* `vault.saveConfigurations` : When true, saves server configurations (name, URL, and login method) to disk and auto-populates when opening a new window. Defaults to `true`.
 
 -----------------------------------------------------------------------------------------------------------
 
