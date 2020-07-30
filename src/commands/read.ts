@@ -1,6 +1,7 @@
 'use strict';
 
 import * as flat from 'flat';
+import * as model from '../model';
 import * as nv from 'node-vault';
 import * as vscode from 'vscode';
 
@@ -28,6 +29,6 @@ export default async function(client: nv.client, path: string): Promise<void> {
     // If an item was (automatically or manually) selected
     if (selectedItem) {
         // Clip the value of the selected item
-        vscode.window.vault.clip(selectedItem.key, selectedItem.secretValue);
+        model.VaultWindow.INSTANCE.clip(selectedItem.key, selectedItem.secretValue);
     }
 }

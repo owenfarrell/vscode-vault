@@ -1,5 +1,6 @@
 'use strict';
 
+import * as model from '../model';
 import * as nv from 'node-vault';
 import * as vscode from 'vscode';
 
@@ -43,7 +44,7 @@ function parseFields(input: string): UserInput {
             fieldCount++;
         }
     }
-    vscode.window.vault.log(`Parsed ${fieldCount} fields`);
+    model.VaultWindow.INSTANCE.log(`Parsed ${fieldCount} fields`);
     return data;
 }
 
@@ -81,7 +82,7 @@ export default async function(client: nv.client, path: string, mountPoint?: stri
     await client.write(path, parsedInput);
     // Flag the need for a refresh of the tree view
     requiresRefresh = true;
-    vscode.window.vault.log(`Successfully wrote to ${path}`, 'checklist');
+    model.VaultWindow.INSTANCE.log(`Successfully wrote to ${path}`, 'checklist');
 
     return requiresRefresh;
 }

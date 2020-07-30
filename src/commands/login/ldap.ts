@@ -1,12 +1,13 @@
 'use strict';
 
-import * as model from '../../model';
 import * as nv from 'node-vault';
 import * as vscode from 'vscode';
 
 import { CallableQuickPickItem } from './base';
+import { VaultToken } from '../../model/token';
+import { VaultWindow } from '../../model/window';
 
-async function login(client: nv.client): Promise<model.VaultToken> {
+async function login(client: nv.client): Promise<VaultToken> {
     const ldapLoginRequest = { mount_point: 'ldap', username: process.env.USER || process.env.USERNAME, password: undefined };
 
     // Prompt the user for the authentication mount point
@@ -33,8 +34,8 @@ async function login(client: nv.client): Promise<model.VaultToken> {
     // Submit a login request
     const ldapLoginResult = await client.userpassLogin(ldapLoginRequest);
     // Parse the login response
-    const token : model.VaultToken = { id: ldapLoginResult.auth.client_token, renewable: ldapLoginResult.auth.renewable, ttl: ldapLoginResult.auth.lease_duration };
-    vscode.window.vault.log('Logging in with username and password', 'person');
+    const token : VaultToken = { id: ldapLoginResult.auth.client_token, renewable: ldapLoginResult.auth.renewable, ttl: ldapLoginResult.auth.lease_duration };
+    VaultWindow.INSTANCE.log('Logging in with username and password', 'person');
 
     // Return the token (if defined)
     return token;

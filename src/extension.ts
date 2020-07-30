@@ -5,17 +5,11 @@ import * as model from './model';
 import * as view from './view';
 import * as vscode from 'vscode';
 
-declare module 'vscode' {
-    export namespace window {
-        export let vault: model.VaultWindow;
-    }
-}
-
 const CONFIGURATION_SECTION = 'vault';
 const GLOBAL_STATE_SESSIONS_KEY = 'sessions';
 
 export function activate(context: vscode.ExtensionContext) {
-    const vaultWindow = vscode.window.vault = new model.VaultWindow();
+    const vaultWindow = model.VaultWindow.INSTANCE;
 
     const clearSavedSessions = () => context.globalState.update(GLOBAL_STATE_SESSIONS_KEY, undefined);
 

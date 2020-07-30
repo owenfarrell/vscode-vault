@@ -10,6 +10,7 @@ import * as vscode from 'vscode';
 
 import { VaultConnectionConfig, VaultMountPointConfig } from './config';
 import { VaultToken } from './token';
+import { VaultWindow } from './window';
 
 export class VaultSession implements vscode.Disposable {
     //#region Attributes
@@ -36,7 +37,7 @@ export class VaultSession implements vscode.Disposable {
                 // If no adaptor was found
                 if (adaptor === undefined) {
                     // Throw an error
-                    vscode.window.vault.log(`Unable to get ${element.adaptor} adaptor`);
+                    VaultWindow.INSTANCE.log(`Unable to get ${element.adaptor} adaptor`);
                 }
                 // Add the path to the list of mount points
                 this._specifiedMountPoints.set(element.path, adaptor);
@@ -97,7 +98,7 @@ export class VaultSession implements vscode.Disposable {
         if (token) {
             // Cache the token
             this.cacheToken(token);
-            vscode.window.vault.log(`Connected to ${this._client.endpoint}`, 'shield');
+            VaultWindow.INSTANCE.log(`Connected to ${this._client.endpoint}`, 'shield');
         }
         // Clear the existing set of mount points
         this._mountPoints.clear();
@@ -116,7 +117,7 @@ export class VaultSession implements vscode.Disposable {
             }
         }
         catch (err) {
-            vscode.window.vault.log(`Unable to retrieve mount points for ${this._client.endpoint} (${err.message})`);
+            VaultWindow.INSTANCE.log(`Unable to retrieve mount points for ${this._client.endpoint} (${err.message})`);
         }
         // For each explicitly specified path to mount, mount the path
         this._specifiedMountPoints.forEach((value: adaptors.SecretsEngineAdaptor, key: string) => this.mountPath(key, value));
@@ -140,10 +141,10 @@ export class VaultSession implements vscode.Disposable {
     private mountPath(path: string, adaptor: adaptors.SecretsEngineAdaptor) {
         // If the specified path is already mounted
         if (this._mountPoints.has(path) === true) {
-            vscode.window.vault.log(`${path} is already mounted`);
+            VaultWindow.INSTANCE.log(`${path} is already mounted`);
             return;
         }
-        vscode.window.vault.log(`Adapting ${path} for ${adaptor.label}`);
+        VaultWindow.INSTANCE.log(`Adapting ${path} for ${adaptor.label}`);
         // Adapt the client for requests to the specified path
         adaptor.adapt(path, this.client);
         this._mountPoints.add(path);
@@ -172,13 +173,13 @@ export class VaultSession implements vscode.Disposable {
         }
         // If a scheduled action should take place
         if (action) {
-            vscode.window.vault.log(`Scheduling ${action} of token in ${ms}ms`, 'clock');
+            VaultWindow.INSTANCE.log(`Scheduling ${action} of token in ${ms}ms`, 'clock');
             this._tokenTimer = setTimeout(callback, ms);
         }
     }
 
     private clearToken(): void {
-        vscode.window.vault.log(`Clearing token for ${this.client.endpoint}`);
+        VaultWindow.INSTANCE.log(`Clearing token for ${this.client.endpoint}`);
         // Clear the token
         this.client.token = undefined;
     }
@@ -189,12 +190,12 @@ export class VaultSession implements vscode.Disposable {
             const tokenRenewResult = await this.client.tokenRenewSelf();
             // Cache the renewal request
             this.cacheToken({ id: tokenRenewResult.auth.client_token, renewable: tokenRenewResult.renewable, ttl: tokenRenewResult.lease_duration });
-            vscode.window.vault.log(`Successfully renewed token for ${this.client.endpoint}`, 'key');
+            VaultWindow.INSTANCE.log(`Successfully renewed token for ${this.client.endpoint}`, 'key');
         }
         catch (err) {
             // Clear the cached token
             this.clearToken();
-            vscode.window.vault.logError(`Unable to renew vault token: ${err.message}`);
+            VaultWindow.INSTANCE.logError(`Unable to renew vault token: ${err.message}`);
         }
     }
     //#endregion

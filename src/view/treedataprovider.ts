@@ -38,7 +38,7 @@ export class VaultTreeDataProvider implements vscode.TreeDataProvider<VaultTreeI
         // If the selected element has no children defined
         else if (element.children === undefined) {
             // If the selected element has no children defined
-            vscode.window.vault.log(`Refreshing ${element.id}`);
+            model.VaultWindow.INSTANCE.log(`Refreshing ${element.id}`);
             providerResult = this.refresh(element);
         }
         // If the selected element has children defined

@@ -46,10 +46,10 @@ export class VaultServerTreeItem extends VaultTreeItem {
 
     //#region VaultTreeItem Implementation
     async refresh(): Promise<boolean> {
-        vscode.window.vault.log(`Refreshing ${this.id}`);
+        model.VaultWindow.INSTANCE.log(`Refreshing ${this.id}`);
         // If the Vault client is not connected
         if (!this.connected) {
-            vscode.window.vault.log(`Resetting ${this.id} session`);
+            model.VaultWindow.INSTANCE.log(`Resetting ${this.id} session`);
             // Clear the list of children
             this.children = [];
             // Capture the existing context value

@@ -3,6 +3,8 @@
 import * as vscode from 'vscode';
 
 export class VaultWindow implements vscode.Disposable {
+    public static readonly INSTANCE = new VaultWindow();
+
     private _clipboardTimer: NodeJS.Timer;
     private _outputChannel: vscode.OutputChannel;
     private _statusBar: vscode.StatusBarItem;
@@ -10,7 +12,7 @@ export class VaultWindow implements vscode.Disposable {
 
     public clipboardTimeout: number;
 
-    constructor() {
+    private constructor() {
         this._outputChannel = vscode.window.createOutputChannel('Password Vault');
         this._statusBar = vscode.window.createStatusBarItem();
         this._statusBar.show();
