@@ -1,6 +1,6 @@
 'use strict';
 
-import * as commands from '../commands';
+import * as commands from 'src/commands';
 import * as HTTPStatusCodes from 'http-status-codes';
 
 import { VaultSecretTreeItem } from './secret';

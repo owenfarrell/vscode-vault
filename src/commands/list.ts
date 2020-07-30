@@ -1,6 +1,6 @@
 'use strict';
 
-import * as model from '../model';
+import * as model from 'src/model';
 import * as nv from 'node-vault';
 
 export default async function(client: nv.client, path: string): Promise<string[]> {

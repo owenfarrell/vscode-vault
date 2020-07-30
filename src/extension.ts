@@ -1,8 +1,8 @@
 'use strict';
 
-import * as config from './config';
-import * as model from './model';
-import * as view from './view';
+import * as config from 'src/config';
+import * as model from 'src/model';
+import * as view from 'src/view';
 import * as vscode from 'vscode';
 
 const CONFIGURATION_SECTION = 'vault';

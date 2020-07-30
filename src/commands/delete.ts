@@ -1,6 +1,6 @@
 'use strict';
 
-import * as model from '../model';
+import * as model from 'src/model';
 import * as nv from 'node-vault';
 import * as vscode from 'vscode';
 

@@ -1,7 +1,7 @@
 'use strict';
 
 import * as login from './login';
-import * as model from '../model';
+import * as model from 'src/model';
 import * as url from 'url';
 import * as vscode from 'vscode';
 

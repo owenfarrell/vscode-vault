@@ -7,8 +7,8 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 
 import { CallableQuickPickItem } from './base';
-import { VaultToken } from '../../model/token';
-import { VaultWindow } from '../../model/window';
+import { VaultToken } from 'src/model/token';
+import { VaultWindow } from 'src/model/window';
 
 const nativeTokenPath: string = path.resolve(os.homedir(), '.vault-token');
 let nativeToken: string = process.env.VAULT_TOKEN;

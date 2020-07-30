@@ -1,8 +1,8 @@
 'use strict';
 
-import * as adaptors from '../adaptors';
-import * as config from '../config';
-import * as login from '../commands/login';
+import * as adaptors from 'src/adaptors';
+import * as config from 'src/config';
+import * as login from 'src/commands/login';
 import * as nv from 'node-vault';
 import * as request from 'request';
 import * as url from 'url';

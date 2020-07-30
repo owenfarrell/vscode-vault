@@ -1,7 +1,7 @@
 'use strict';
 
-import * as commands from '../commands';
-import * as model from '../model';
+import * as commands from 'src/commands';
+import * as model from 'src/model';
 import * as vscode from 'vscode';
 
 import { VaultServerTreeItem } from './server';

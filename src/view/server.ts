@@ -1,7 +1,7 @@
 'use strict';
 
-import * as adaptors from '../adaptors';
-import * as model from '../model';
+import * as adaptors from 'src/adaptors';
+import * as model from 'src/model';
 import * as nv from 'node-vault';
 import * as path from 'path';
 import * as vscode from 'vscode';

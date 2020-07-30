@@ -4,8 +4,8 @@ import * as nv from 'node-vault';
 import * as vscode from 'vscode';
 
 import { CallableQuickPickItem } from './base';
-import { VaultToken } from '../../model/token';
-import { VaultWindow } from '../../model/window';
+import { VaultToken } from 'src/model/token';
+import { VaultWindow } from 'src/model/window';
 
 async function login(client: nv.client): Promise<VaultToken> {
     const ldapLoginRequest = { mount_point: 'ldap', username: process.env.USER || process.env.USERNAME, password: undefined };

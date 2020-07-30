@@ -4,6 +4,7 @@
 
 const CircularDependencyPlugin = require('circular-dependency-plugin');
 const path = require('path');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 /** @type {import('webpack').Configuration} */
 const config = {
@@ -23,7 +24,10 @@ const config = {
     },
     resolve: {
         // support reading TypeScript and JavaScript files, 📖 -> https://github.com/TypeStrong/ts-loader
-        extensions: ['.ts', '.js']
+        extensions: ['.ts', '.js'],
+        plugins: [
+            new TsconfigPathsPlugin()
+        ]
     },
     module: {
         rules: [

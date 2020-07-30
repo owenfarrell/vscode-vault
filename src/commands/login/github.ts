@@ -5,8 +5,8 @@ import * as vscode from 'vscode';
 
 import { CallableQuickPickItem } from './base';
 import validator from 'validator';
-import { VaultToken } from '../../model/token';
-import { VaultWindow } from '../../model/window';
+import { VaultToken } from 'src/model/token';
+import { VaultWindow } from 'src/model/window';
 
 function validateGitHubToken(userInput: string): string | undefined {
     return userInput.length === 40 && validator.isHexadecimal(userInput) ? undefined : 'Not a valid GitHub token';
