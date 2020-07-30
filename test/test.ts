@@ -30,7 +30,9 @@ require('./reconnect/userpass');
 
 require('./remove/native');
 
-async function clearUsageDataNotification() {
+before(async function() {
+    this.timeout(10000);
+
     const workbench = new extest.Workbench();
     const center = await workbench.openNotificationsCenter();
     const usageDataNotification = await extest.VSBrowser.instance.driver.wait(async function() {
@@ -41,14 +43,7 @@ async function clearUsageDataNotification() {
         });
     }, 5000);
     await usageDataNotification.dismiss();
-}
 
-before(function(done) {
-    this.timeout(10000);
-    clearUsageDataNotification().then(done);
-});
-
-before(async function() {
     const view = await new extest.ActivityBar().getViewControl('Explorer').openView();
     await delay(1000);
     const content = view.getContent();
