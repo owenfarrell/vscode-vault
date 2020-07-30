@@ -6,13 +6,11 @@ import * as nv from 'node-vault';
 import * as path from 'path';
 import * as vscode from 'vscode';
 
+import { formatPath, OPTIONAL_TRAILING_SLASH, PATH_SEPARATOR, splitPath } from 'src/util';
+
 import { VaultPathTreeItem } from './path';
 import { VaultShellTreeItem } from './shell';
 import { VaultTreeItem } from './treeitem';
-
-const ANY_LEADING_SLASHES = /^\/+/;
-const OPTIONAL_TRAILING_SLASH = /\/?$/;
-const PATH_SEGMENT = /[^\\/]+\/?/g;
 
 export class VaultServerTreeItem extends VaultTreeItem {
     private static readonly CONNECTED_CONTEXT = 'connection';
@@ -28,7 +26,7 @@ export class VaultServerTreeItem extends VaultTreeItem {
             light: path.join(__dirname, '..', 'resources', 'light', 'tree', 'server.svg'),
             dark: path.join(__dirname, '..', 'resources', 'dark', 'tree', 'server.svg')
         };
-        this.id = this.id.replace(OPTIONAL_TRAILING_SLASH, '/');
+        this.id = this.id.replace(OPTIONAL_TRAILING_SLASH, PATH_SEPARATOR);
         this.session = session;
         // TODO Re-add support for custom options
     }
@@ -86,18 +84,25 @@ export class VaultServerTreeItem extends VaultTreeItem {
         if (!browseablePath) {
             return undefined;
         }
+        // Remove any leading slashes from the path and add a trailing slash to the path if it isn't already there
+        const formattedPath = formatPath(browseablePath);
 
-        // Prompt for the secrets engine
-        const adaptor = await vscode.window.showQuickPick(adaptors.QUICK_PICK_LIST, { placeHolder: 'Select engine type' });
-        // If no secrets engine was collected
-        if (!adaptor) {
-            return undefined;
+        // Extract the mount point from the formatted path
+        const mountPoint = splitPath(formattedPath)[0];
+        // Check if the mount point is already mounted
+        const mounted = this.session.mountPoints.includes(mountPoint);
+        // If the mount point is not already mounted
+        if (mounted === false) {
+            // Prompt for the secrets engine
+            const adaptor = await vscode.window.showQuickPick(adaptors.QUICK_PICK_LIST, { placeHolder: 'Select engine type' });
+            // If no secrets engine was collected
+            if (!adaptor) {
+                return undefined;
+            }
+            // Add the mount using the adaptor for the selected engine
+            this.session.mount(mountPoint, adaptor);
         }
 
-        // Remove any leading slashes from the path and add a trailing slash to the path if it isn't already there
-        const formattedPath = browseablePath.replace(ANY_LEADING_SLASHES, '').replace(OPTIONAL_TRAILING_SLASH, '/');
-        // Add the mount using the adaptor for the selected engine
-        this.session.mount(formattedPath, adaptor);
         // Expand the path in to a hierarchy
         return this.expand(formattedPath);
     }
@@ -110,7 +115,7 @@ export class VaultServerTreeItem extends VaultTreeItem {
         // Track the last-known-parent
         let parentTreeItem: VaultTreeItem = this;
         // Split the path in to segments
-        const pathSegments = relativePath.match(PATH_SEGMENT);
+        const pathSegments = splitPath(relativePath);
         // For each segment
         pathSegments.forEach((label: string, index: number) => {
             let childTreeItem = parentTreeItem.getChild(label);

@@ -4,6 +4,8 @@ import * as nv from 'node-vault';
 import * as path from 'path';
 import * as vscode from 'vscode';
 
+import { PATH_SEPARATOR } from 'src/util';
+
 export interface TreeItemIconPath {
     light: string | vscode.Uri;
     dark: string | vscode.Uri
@@ -25,7 +27,7 @@ export abstract class VaultTreeItem extends vscode.TreeItem {
     //#region Constructors
     constructor(label: string, parent?: VaultTreeItem, collapsableState = vscode.TreeItemCollapsibleState.Collapsed) {
         super(label, collapsableState);
-        this.id = (parent?.id || '/') + label;
+        this.id = (parent?.id || PATH_SEPARATOR) + label;
         this.parent = parent;
     }
     //#endregion

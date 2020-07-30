@@ -3,6 +3,7 @@
 import * as nv from 'node-vault';
 import * as vscode from 'vscode';
 
+import { ANY_LEADING_SLASHES, OPTIONAL_TRAILING_SLASH } from 'src/util';
 import { SecretsEngineAdaptor } from './base';
 
 export class KeyValueVersion2Adaptor implements SecretsEngineAdaptor {
@@ -16,7 +17,7 @@ export class KeyValueVersion2Adaptor implements SecretsEngineAdaptor {
             KeyValueVersion2Adaptor.SHOWED_WARNING = true;
         }
 
-        const mountPointName = mountPoint.charAt(mountPoint.length - 1) === '/' ? mountPoint.slice(0, -1) : mountPoint;
+        const mountPointName = mountPoint.replace(ANY_LEADING_SLASHES, '').replace(OPTIONAL_TRAILING_SLASH, '');
         const metadataRegex = RegExp('(\\/?' + mountPointName + '(?!\\/metadata))\\/?');
         const dataRegex = RegExp('(\\/?' + mountPointName + '(?!\\/data))\\/?');
 

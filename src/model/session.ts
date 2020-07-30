@@ -9,6 +9,8 @@ import * as url from 'url';
 import * as vscode from 'vscode';
 
 import { VaultConnectionConfig, VaultMountPointConfig } from './config';
+
+import { splitPath } from 'src/util';
 import { VaultToken } from './token';
 import { VaultWindow } from './window';
 
@@ -131,7 +133,7 @@ export class VaultSession implements vscode.Disposable {
             throw new Error(`No adaptor defined for ${path}`);
         }
         // Extract the mount from the path
-        const mountPoint = path.split('/')[0];
+        const mountPoint = splitPath(path)[0];
         // Mount the path with the adaptor
         this.mountPath(mountPoint, adaptor);
         // Add the path to the list of mount points

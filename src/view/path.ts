@@ -3,6 +3,7 @@
 import * as commands from 'src/commands';
 import * as HTTPStatusCodes from 'http-status-codes';
 
+import { PATH_SEPARATOR } from 'src/util';
 import { VaultSecretTreeItem } from './secret';
 import { VaultShellTreeItem } from './shell';
 import { VaultTreeItem } from './treeitem';
@@ -18,7 +19,7 @@ export class VaultPathTreeItem extends VaultShellTreeItem {
             // Update the list of children based on the list of paths
             this.children = pathList.map((element: string) => {
                 // If the path ends with a slash, create a child path, otherwise create a child secret
-                const ChildTreeItem = element.endsWith('/') ? VaultPathTreeItem : VaultSecretTreeItem;
+                const ChildTreeItem = element.endsWith(PATH_SEPARATOR) ? VaultPathTreeItem : VaultSecretTreeItem;
                 // Instantiate a new child element
                 return new ChildTreeItem(element, this);
             });

@@ -167,15 +167,19 @@ describe('Browsing a Vault Path in a KV Version 1 Engine', function() {
                                 await input.confirm();
                             });
 
-                            it('does not accept a duplicate path', async function() {
-                                expect(await input.isDisplayed()).to.be.true;
-                                expect(await input.getText()).to.be.empty;
+                            it('does not prompt for more information', async function() {
+                                expect(await input.isDisplayed()).to.be.false;
                             });
+
+                            it('repaints the server tree item', refreshServer);
                         });
 
                         after(async function() {
-                            await input.cancel();
-                            expect(await input.isDisplayed()).to.be.false;
+                            if (input) {
+                                if (await input.isDisplayed()) {
+                                    await input.cancel();
+                                }
+                            }
                         });
                     });
 
@@ -190,39 +194,26 @@ describe('Browsing a Vault Path in a KV Version 1 Engine', function() {
                                 await input.confirm();
                             });
 
-                            it('prompts for the engine type', async function() {
-                                expect(await input.isDisplayed()).to.be.true;
+                            it('does not prompt for more information', async function() {
+                                expect(await input.isDisplayed()).to.be.false;
                             });
 
-                            let quickPickItem: extest.QuickPickItem;
-                            it('the engine type is a pickable option', async function() {
-                                expect(await input.getQuickPicks()).not.to.be.empty;
-                                quickPickItem = await input.findQuickPick(constants.BROWSE_KV2_TYPE);
-                                expect(quickPickItem).not.to.be.undefined;
+                            it('repaints the server tree item', refreshServer);
+
+                            let mountPointTreeItem: extest.TreeItem;
+                            it('repaints the mount point in the children', async function() {
+                                mountPointTreeItem = await serverTreeItem.findChildItem(constants.BROWSE_KV2_MOUNT_POINT);
+                                expect(mountPointTreeItem).not.to.be.undefined;
                             });
 
-                            context('when the engine is selected', function() {
-                                before(async function() {
-                                    await quickPickItem.select();
-                                });
+                            it('includes the relative path as a child', async function() {
+                                expect(await mountPointTreeItem.findChildItem(constants.BROWSE_KV2_RELATIVE_SIBLING)).not.to.be.undefined;
+                            });
 
-                                it('repaints the server tree item', refreshServer);
-
-                                let mountPointTreeItem: extest.TreeItem;
-                                it('repaints the mount point in the children', async function() {
-                                    mountPointTreeItem = await serverTreeItem.findChildItem(constants.BROWSE_KV2_MOUNT_POINT);
-                                    expect(mountPointTreeItem).not.to.be.undefined;
-                                });
-
-                                it('includes the relative path as a child', async function() {
-                                    expect(await mountPointTreeItem.findChildItem(constants.BROWSE_KV2_RELATIVE_SIBLING)).not.to.be.undefined;
-                                });
-
-                                after(async function() {
-                                    if (mountPointTreeItem) {
-                                        await mountPointTreeItem.collapse();
-                                    }
-                                });
+                            after(async function() {
+                                if (mountPointTreeItem) {
+                                    await mountPointTreeItem.collapse();
+                                }
                             });
                         });
                     });
