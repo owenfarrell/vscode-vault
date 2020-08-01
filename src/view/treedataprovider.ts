@@ -20,13 +20,13 @@ export class VaultTreeDataProvider implements vscode.TreeDataProvider<VaultTreeI
     //#endregion
 
     //#region Getters and Setters
-    public get sessionList(): model.VaultSession[] {
+    get sessionList(): model.VaultSession[] {
         return this._serverList.map((element: VaultServerTreeItem) => element.session);
     }
     //#endregion
 
     //#region TreeDataProvider Implementation
-    public readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
+    readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
     getChildren(element?: VaultTreeItem): vscode.ProviderResult<VaultTreeItem[]> {
         let providerResult: vscode.ProviderResult<VaultTreeItem[]>;

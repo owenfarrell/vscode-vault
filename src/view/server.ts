@@ -15,7 +15,7 @@ import { VaultTreeItem } from './treeitem';
 export class VaultServerTreeItem extends VaultTreeItem {
     private static readonly CONNECTED_CONTEXT = 'connection';
     private static readonly DISCONNECTED_CONTEXT = 'server';
-    public readonly session: model.VaultSession
+    readonly session: model.VaultSession
 
     //#region Constructors
     constructor(session: model.VaultSession) {
@@ -37,7 +37,7 @@ export class VaultServerTreeItem extends VaultTreeItem {
         return this.session.client;
     }
 
-    public get connected(): boolean {
+    get connected(): boolean {
         return this.session.client?.token !== undefined;
     }
     //#endregion

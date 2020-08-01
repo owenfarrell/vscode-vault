@@ -20,8 +20,8 @@ export abstract class VaultTreeItem extends vscode.TreeItem {
     //#region Attributes
     private _children: VaultTreeItem[];
     protected _defaultIconPath : TreeItemIconPath;
-    public readonly parent: VaultTreeItem;
-    public path: string = '';
+    readonly parent: VaultTreeItem;
+    path: string = '';
     //#endregion
 
     //#region Constructors

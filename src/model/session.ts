@@ -63,18 +63,18 @@ export class VaultSession implements vscode.Disposable {
     }
 
     //#region Getters and Setters
-    public getAdaptor(path: string) {
+    getAdaptor(path: string) {
         // Get the mount point from the specified path
         const mountPoint = splitPath(path)[0];
         // Return the adaptor for the mount point (if defined)
         return this._mountPoints.get(mountPoint);
     }
 
-    public get client(): nv.client {
+    get client(): nv.client {
         return this._client;
     }
 
-    public get config(): VaultConnectionConfig {
+    get config(): VaultConnectionConfig {
         const mountPoints : VaultMountPointConfig[] = [];
         this._specifiedMountPoints.forEach((value: adaptors.SecretsEngineAdaptor, key: string) => {
             mountPoints.push({ adaptor: value.label, path: key });
@@ -82,11 +82,11 @@ export class VaultSession implements vscode.Disposable {
         return { ...this._config, mountPoints };
     }
 
-    public get mountPoints(): string[] {
+    get mountPoints(): string[] {
         return [...Array.from(this._impliedMountPoints.keys()), ...Array.from(this._specifiedMountPoints.keys())];
     }
 
-    public get name(): string {
+    get name(): string {
         return this._config.name;
     }
     //#endregion
@@ -99,7 +99,7 @@ export class VaultSession implements vscode.Disposable {
     //#endregion
 
     //#region Session Management
-    public async login(): Promise<void> {
+    async login(): Promise<void> {
         // Create a Vault client
         this._client = nv({
             endpoint: this._config.endpoint,
@@ -140,7 +140,7 @@ export class VaultSession implements vscode.Disposable {
     //#endregion
 
     //#region Mount Point Management
-    public mount(path: string, adaptor: adaptors.SecretsEngineAdaptor) {
+    mount(path: string, adaptor: adaptors.SecretsEngineAdaptor) {
         // If no adaptor was specified
         if (adaptor === undefined) {
             throw new Error(`No adaptor defined for ${path}`);
