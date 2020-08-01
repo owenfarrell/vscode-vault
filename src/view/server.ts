@@ -58,7 +58,7 @@ export class VaultServerTreeItem extends VaultTreeItem {
             return oldContextValue !== this.contextValue;
         }
 
-        // If the server is not connected
+        // If the server was not connected
         if (this.contextValue === VaultServerTreeItem.DISCONNECTED_CONTEXT) {
             // Update the context value
             this.contextValue = VaultServerTreeItem.CONNECTED_CONTEXT;
@@ -87,22 +87,20 @@ export class VaultServerTreeItem extends VaultTreeItem {
         // Remove any leading slashes from the path and add a trailing slash to the path if it isn't already there
         const formattedPath = formatPath(browseablePath);
 
-        // Extract the mount point from the formatted path
-        const mountPoint = splitPath(formattedPath)[0];
         // Check if the mount point is already mounted
-        const mounted = this.session.mountPoints.includes(mountPoint);
+        let adaptor = this.session.getAdaptor(formattedPath);
         // If the mount point is not already mounted
-        if (mounted === false) {
+        if (adaptor === undefined) {
             // Prompt for the secrets engine
-            const adaptor = await vscode.window.showQuickPick(adaptors.QUICK_PICK_LIST, { placeHolder: 'Select engine type' });
+            adaptor = await vscode.window.showQuickPick(adaptors.QUICK_PICK_LIST, { placeHolder: 'Select engine type' });
             // If no secrets engine was collected
             if (!adaptor) {
                 return undefined;
             }
-            // Add the mount using the adaptor for the selected engine
-            this.session.mount(mountPoint, adaptor);
         }
 
+        // Add the mount using the adaptor for the selected engine
+        this.session.mount(formattedPath, adaptor);
         // Expand the path in to a hierarchy
         return this.expand(formattedPath);
     }

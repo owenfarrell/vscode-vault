@@ -18,8 +18,9 @@ export class VaultSession implements vscode.Disposable {
     //#region Attributes
     private readonly _config: VaultConnectionConfig;
     private _client: nv.client;
+    private readonly _impliedMountPoints: Map<string, adaptors.SecretsEngineAdaptor> = new Map();
     private readonly _login: (client: nv.client) => Promise<VaultToken>;
-    private readonly _mountPoints: Set<string> = new Set();
+    private readonly _mountPoints: Map<string, adaptors.SecretsEngineAdaptor> = new Map();
     private readonly _options: request.CoreOptions;
     private readonly _specifiedMountPoints: Map<string, adaptors.SecretsEngineAdaptor> = new Map();
     private _tokenTimer: NodeJS.Timer;
@@ -41,8 +42,11 @@ export class VaultSession implements vscode.Disposable {
                     // Throw an error
                     VaultWindow.INSTANCE.log(`Unable to get ${element.adaptor} adaptor`);
                 }
-                // Add the path to the list of mount points
-                this._specifiedMountPoints.set(element.path, adaptor);
+                // If an adaptor was found
+                else {
+                    // Add the path to the list of mount points
+                    this._specifiedMountPoints.set(element.path, adaptor);
+                }
             });
         }
         // Create fields from the sanitized parameter
@@ -59,6 +63,13 @@ export class VaultSession implements vscode.Disposable {
     }
 
     //#region Getters and Setters
+    public getAdaptor(path: string) {
+        // Get the mount point from the specified path
+        const mountPoint = splitPath(path)[0];
+        // Return the adaptor for the mount point (if defined)
+        return this._mountPoints.get(mountPoint);
+    }
+
     public get client(): nv.client {
         return this._client;
     }
@@ -72,7 +83,7 @@ export class VaultSession implements vscode.Disposable {
     }
 
     public get mountPoints(): string[] {
-        return Array.from(this._mountPoints);
+        return [...Array.from(this._impliedMountPoints.keys()), ...Array.from(this._specifiedMountPoints.keys())];
     }
 
     public get name(): string {
@@ -115,6 +126,8 @@ export class VaultSession implements vscode.Disposable {
                 if (adaptor !== undefined) {
                     // Mount the path
                     this.mountPath(key, adaptor);
+                    // Map the mount point to the adaptor
+                    this._impliedMountPoints.set(key, adaptor);
                 }
             }
         }
@@ -128,28 +141,29 @@ export class VaultSession implements vscode.Disposable {
 
     //#region Mount Point Management
     public mount(path: string, adaptor: adaptors.SecretsEngineAdaptor) {
-        // If no adaptor or adaptor type was specified
+        // If no adaptor was specified
         if (adaptor === undefined) {
             throw new Error(`No adaptor defined for ${path}`);
         }
-        // Extract the mount from the path
-        const mountPoint = splitPath(path)[0];
         // Mount the path with the adaptor
-        this.mountPath(mountPoint, adaptor);
+        this.mountPath(path, adaptor);
         // Add the path to the list of mount points
         this._specifiedMountPoints.set(path, adaptor);
     }
 
     private mountPath(path: string, adaptor: adaptors.SecretsEngineAdaptor) {
+        // Extract the mount from the path
+        const mountPoint = splitPath(path)[0];
         // If the specified path is already mounted
-        if (this._mountPoints.has(path) === true) {
+        if (this._mountPoints.has(mountPoint) === true) {
             VaultWindow.INSTANCE.log(`${path} is already mounted`);
             return;
         }
         VaultWindow.INSTANCE.log(`Adapting ${path} for ${adaptor.label}`);
         // Adapt the client for requests to the specified path
-        adaptor.adapt(path, this.client);
-        this._mountPoints.add(path);
+        adaptor.adapt(mountPoint, this.client);
+        // Map the mount point to the adaptor
+        this._mountPoints.set(mountPoint, adaptor);
     }
     //#endregion
 
