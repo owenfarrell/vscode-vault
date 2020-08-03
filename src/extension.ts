@@ -82,6 +82,7 @@ export function activate(context: vscode.ExtensionContext) {
         .catch((err: Error) => vaultWindow.logError(`Unable to browse Vault path (${err.message})`));
 
     const connectFn = (treeItem?: view.VaultServerTreeItem) => vaultTreeDataProvider.connect(treeItem)
+        .then((treeItem: view.VaultServerTreeItem) => treeItem && vaultTreeDataProvider.refresh(treeItem))
         .then(saveSessionList)
         .catch((err: Error) => vaultWindow.logError(`Unable to connect to Vault (${err.message})`));
 

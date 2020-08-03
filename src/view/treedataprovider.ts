@@ -61,7 +61,7 @@ export class VaultTreeDataProvider implements vscode.TreeDataProvider<VaultTreeI
     //#endregion
 
     //#region Custom Command Methods
-    async connect(treeItem?: VaultServerTreeItem): Promise<void> {
+    async connect(treeItem?: VaultServerTreeItem): Promise<VaultServerTreeItem> {
         // If no tree item was specified
         if (!treeItem) {
             const reservedNames: string[] = [];
@@ -80,13 +80,17 @@ export class VaultTreeDataProvider implements vscode.TreeDataProvider<VaultTreeI
                 treeItem = new VaultServerTreeItem(session);
                 // Add the server to the list of top-level tree items
                 this._serverList.push(treeItem);
+                // Trigger a refresh of the paenl
+                this._onDidChangeTreeData.fire();
             }
         }
+        // If a tree item was provided or created
         if (treeItem) {
+            // Log in to the session
             await treeItem.session.login();
-            // Trigger a refresh of the (new) server
-            this.refresh(treeItem);
         }
+        // Return the resulting tree item
+        return treeItem;
     }
 
     async disconnect(server: VaultServerTreeItem): Promise<void> {
