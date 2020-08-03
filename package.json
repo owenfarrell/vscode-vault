@@ -6,7 +6,7 @@
         "vscode": "^1.30.0"
     },
     "license": "MIT",
-    "displayName": "Vault",
+    "displayName": "HashiCorp Vault",
     "description": "Manages interactions with HashiCorp Vault",
     "categories": [
         "Other"
@@ -14,8 +14,9 @@
     "keywords": [
         "HashiCorp",
         "Vault",
-        "Secret",
-        "Password"
+        "secret",
+        "password",
+        "encrypt"
     ],
     "homepage": "https://github.com/owenfarrell/vscode-vault/",
     "bugs": {
