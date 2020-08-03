@@ -92,5 +92,5 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v2
         with:
-          title: Prepare for next development iteration
+          commit-message: Prepare for next development iteration
           base: master
