@@ -1,6 +1,6 @@
 {
     "name": "vscode-vault",
-    "version": "2.2.1",
+    "version": "2.2.2",
     "publisher": "owenfarrell",
     "engines": {
         "vscode": "^1.30.0"
