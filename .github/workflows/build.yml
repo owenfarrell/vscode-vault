@@ -47,6 +47,16 @@ jobs:
       - name: Run Linter
         run: npm run lint
 
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1
+
   # TODO: Separate this in to a separate workflow when GitHub Actions allows downloading the latest artifact
   # https://github.com/actions/download-artifact/issues/3
   # https://github.com/actions/upload-artifact/issues/21
