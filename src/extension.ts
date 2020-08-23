@@ -21,7 +21,7 @@ export function activate(context: vscode.ExtensionContext) {
             // If a list of saved configurations exists
             if (savedConfigList) {
                 // For each configuration, create a new session
-                sessionList = savedConfigList.map((element : model.VaultConnectionConfig) => new model.VaultSession(element));
+                sessionList = savedConfigList.map((element: model.VaultConnectionConfig) => new model.VaultSession(element));
             }
         }
         catch (err) {
@@ -68,11 +68,21 @@ export function activate(context: vscode.ExtensionContext) {
 
     const vaultTreeDataProvider = new view.VaultTreeDataProvider(sessionList);
 
+    // Create the TreeView
+    const treeView = vscode.window.createTreeView('vaultSecrets', { treeDataProvider: vaultTreeDataProvider });
+    // Track the last element to be selected in the tree view
+    let lastSelectedElement: view.VaultTreeItem;
+    // When the TreeView selection changes
+    treeView.onDidChangeSelection((e: vscode.TreeViewSelectionChangeEvent<view.VaultTreeItem>) => {
+        // Clear the last-known selection
+        lastSelectedElement = e.selection.length === 0 ? undefined : e.selection[0];
+    });
+
     const saveSessionList = () => {
         // If configuration saving is enabled
         if (saveConfigurations === true) {
             // Update the list of saved sessions
-            context.globalState.update(GLOBAL_STATE_SESSIONS_KEY, vaultTreeDataProvider.sessionList.map((element : model.VaultSession) => element.config));
+            context.globalState.update(GLOBAL_STATE_SESSIONS_KEY, vaultTreeDataProvider.sessionList.map((element: model.VaultSession) => element.config));
         }
     };
 
@@ -85,6 +95,9 @@ export function activate(context: vscode.ExtensionContext) {
         .then((newItem: view.VaultServerTreeItem) => newItem && vaultTreeDataProvider.refresh(newItem))
         .then(saveSessionList)
         .catch((err: Error) => vaultWindow.logError(`Unable to connect to Vault (${err.message})`));
+
+    const copyFn = () => lastSelectedElement instanceof view.VaultSecretTreeItem && lastSelectedElement.copy()
+        .catch((err: Error) => vaultWindow.logError(`Unable to copy Vault path (${err.message})`));
 
     const deleteFn = (treeItem: view.VaultSecretTreeItem) => treeItem.delete()
         .then(() => vaultTreeDataProvider.refresh(treeItem.parent))
@@ -108,11 +121,13 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         vaultWindow,
         eventListener,
-        vscode.window.createTreeView('vaultSecrets', { treeDataProvider: vaultTreeDataProvider }),
+        treeView,
         // Subscribe to "vault.browse" events
         vscode.commands.registerCommand('vault.browse', browseFn),
         // Subscribe to "vault.connect" events
         vscode.commands.registerCommand('vault.connect', connectFn),
+        // Subscribe to "vault.copy" events
+        vscode.commands.registerCommand('vault.copy', copyFn),
         // Subscribe to "vault.reconnect" events
         vscode.commands.registerCommand('vault.reconnect', connectFn),
         // Subscribe to "vault.delete" events

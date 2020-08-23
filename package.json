@@ -67,6 +67,11 @@
                 "icon": "$(plus)"
             },
             {
+                "command": "vault.copy",
+                "title": "Copy Secret",
+                "category": "Vault"
+            },
+            {
                 "command": "vault.disconnect",
                 "title": "Disconnect from Server",
                 "category": "Vault",
@@ -118,10 +123,22 @@
                 "icon": "$(edit)"
             }
         ],
+        "keybindings": [
+            {
+                "key": "ctrl+c",
+                "mac": "cmd+c",
+                "command": "vault.copy",
+                "when": "sideBarFocus && focusedView == vaultSecrets"
+            }
+        ],
         "menus": {
             "commandPalette": [
                 {
                     "command": "vault.browse",
+                    "when": "false"
+                },
+                {
+                    "command": "vault.copy",
                     "when": "false"
                 },
                 {

@@ -23,6 +23,11 @@ export class VaultSecretTreeItem extends VaultTreeItem {
     //#endregion
 
     //#region Custom Command Methods
+    async copy(): Promise<void> {
+        // Read the path
+        return commands.copy(this.client, this.path);
+    }
+
     async delete(): Promise<void> {
         // Delete the path
         return commands.delete(this.client, this.path);
