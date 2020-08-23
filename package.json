@@ -196,7 +196,6 @@
                 },
                 {
                     "command": "vault.delete",
-                    "group": "inline@5",
                     "when": "view == vaultSecrets && viewItem == secret"
                 }
             ],
