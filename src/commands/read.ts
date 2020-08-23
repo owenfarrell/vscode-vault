@@ -29,6 +29,6 @@ export default async function(client: nv.client, path: string): Promise<void> {
     // If an item was (automatically or manually) selected
     if (selectedItem) {
         // Clip the value of the selected item
-        model.VaultWindow.INSTANCE.clip(selectedItem.key, selectedItem.secretValue);
+        model.VaultWindow.INSTANCE.clip(`${path}:${selectedItem.key}`, selectedItem.secretValue);
     }
 }
