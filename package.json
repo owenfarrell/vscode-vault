@@ -251,7 +251,7 @@
     "badges": [],
     "markdown": "github",
     "dependencies": {
-        "flat": "^4.1.0",
+        "flat": "^5.0.2",
         "http-status-codes": "^1.4.0",
         "node-vault": "0.9.16",
         "validator": "^13.0.0",
