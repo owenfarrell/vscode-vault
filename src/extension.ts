@@ -94,7 +94,7 @@ export function activate(context: vscode.ExtensionContext) {
         .then(saveSessionList)
         .catch((err: Error) => vaultWindow.logError(`Unable to disconnect from Vault (${err.message})`));
 
-    const listFn = (treeItem: view.VaultTreeItem) => vaultTreeDataProvider.refresh(treeItem)
+    const listFn = (treeItem: view.VaultPathTreeItem) => vaultTreeDataProvider.refresh(treeItem)
         .catch((err: Error) => vaultWindow.logError(`Unable to list Vault path (${err.message})`));
 
     const readFn = (treeItem: view.VaultSecretTreeItem) => treeItem.read()
