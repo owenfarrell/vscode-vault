@@ -83,7 +83,7 @@ describe('Deleting from a KV Version 1 Engine Path', function() {
 
                                 for (const value of await pathTreeItem.getChildren()) {
                                     this.test.parent.addTest(it('deletes a secret that was created by a test', async function() {
-                                        const label = value.getLabel();
+                                        const label = await value.getLabel();
                                         if (validator.isUUID(label)) {
                                             await refreshPath();
 
