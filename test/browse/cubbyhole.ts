@@ -7,6 +7,7 @@ import * as extest from 'vscode-extension-tester';
 import { afterSuite, beforeSuite } from 'mocha-suite-hooks';
 import delay from 'delay';
 import { expect } from 'chai';
+import { waitToExpandTreeItem } from '../util';
 
 describe('Browsing a Vault Path in a Cubbyhole Engine', function() {
     let view: extest.SideBarView;
@@ -113,9 +114,7 @@ describe('Browsing a Vault Path in a Cubbyhole Engine', function() {
 
                                 context('when the server is expanded', function() {
                                     before(async function() {
-                                        if (await serverTreeItem.isExpanded() === false) {
-                                            await serverTreeItem.select();
-                                        }
+                                        await waitToExpandTreeItem(serverTreeItem);
                                         expect(await serverTreeItem.isExpanded()).to.be.true;
                                     });
 
@@ -133,14 +132,17 @@ describe('Browsing a Vault Path in a Cubbyhole Engine', function() {
 
                                     context('when the mount point is expanded', function() {
                                         before(async function() {
-                                            if (await mountPointTreeItem.isExpanded() === false) {
-                                                await mountPointTreeItem.select();
-                                            }
-                                            expect(await mountPointTreeItem.isExpanded()).to.be.true;
+                                            waitToExpandTreeItem(mountPointTreeItem);
+
+                                            // HACK When expanding the first child, existing handles to TreeItems are no longer valid
+                                            await refreshServer();
+                                            mountPointTreeItem = await serverTreeItem.findChildItem(constants.BROWSE_CUBBYHOLE_MOUNT_POINT);
                                         });
 
                                         it('has no children', async function() {
-                                            expect(await mountPointTreeItem.getChildren()).to.be.empty;
+                                            const children = await mountPointTreeItem.getChildren();
+                                            children.forEach(async(element: extest.TreeItem) => console.log('child: ' + await element.getLabel()));
+                                            expect(children).to.be.empty;
                                         });
                                     });
                                 });

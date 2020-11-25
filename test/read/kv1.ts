@@ -4,6 +4,9 @@
 import * as constants from '../constants';
 import * as extest from 'vscode-extension-tester';
 
+import { waitForChildTreeItem, waitToExpandTreeItem } from '../util';
+
+import { beforeSuite } from 'mocha-suite-hooks';
 import delay from 'delay';
 import { expect } from 'chai';
 
@@ -38,7 +41,7 @@ describe('Reading from a KV Version 1 Engine Path', function() {
                         expect(serverTreeItem).not.to.be.undefined;
                     }
 
-                    before(async function() {
+                    beforeSuite(async function() {
                         await refreshServer();
                     });
 
@@ -51,25 +54,15 @@ describe('Reading from a KV Version 1 Engine Path', function() {
                     context('when the path to a single-field secret is expanded', function() {
                         let secretTreeItem: extest.TreeItem;
                         before(async function() {
-                            let mountPointTreeItem = await serverTreeItem.findChildItem(constants.BROWSE_KV1_MOUNT_POINT);
+                            const mountPointTreeItem = await waitToExpandTreeItem(serverTreeItem, constants.BROWSE_KV1_MOUNT_POINT);
                             expect(mountPointTreeItem).not.to.be.undefined;
-                            if (await mountPointTreeItem.isExpanded() === false) {
-                                await mountPointTreeItem.select();
-                                await delay(50);
-                                mountPointTreeItem = await serverTreeItem.findChildItem(constants.BROWSE_KV1_MOUNT_POINT);
-                            }
                             expect(await mountPointTreeItem.isExpanded()).to.be.true;
 
-                            let pathTreeItem = await mountPointTreeItem.findChildItem(constants.READ_KV1_SINGLE_FIELD_PATH);
+                            const pathTreeItem = await waitToExpandTreeItem(mountPointTreeItem, constants.READ_KV1_SINGLE_FIELD_PATH);
                             expect(pathTreeItem).not.to.be.undefined;
-                            if (await pathTreeItem.isExpanded() === false) {
-                                await pathTreeItem.select();
-                                await delay(50);
-                                pathTreeItem = await mountPointTreeItem.findChildItem(constants.READ_KV1_SINGLE_FIELD_PATH);
-                            }
                             expect(await pathTreeItem.isExpanded()).to.be.true;
 
-                            secretTreeItem = await pathTreeItem.findChildItem(constants.READ_KV1_SINGLE_FIELD_SECRET);
+                            secretTreeItem = await waitForChildTreeItem(pathTreeItem, constants.READ_KV1_SINGLE_FIELD_SECRET);
                             expect(secretTreeItem).not.to.be.undefined;
                         });
 
@@ -99,25 +92,15 @@ describe('Reading from a KV Version 1 Engine Path', function() {
                     context('when the path to a multiple-field secret is expanded', function() {
                         let secretTreeItem: extest.TreeItem;
                         before(async function() {
-                            let mountPointTreeItem = await serverTreeItem.findChildItem(constants.BROWSE_KV1_MOUNT_POINT);
+                            const mountPointTreeItem = await waitToExpandTreeItem(serverTreeItem, constants.BROWSE_KV1_MOUNT_POINT);
                             expect(mountPointTreeItem).not.to.be.undefined;
-                            if (await mountPointTreeItem.isExpanded() === false) {
-                                await mountPointTreeItem.select();
-                                await delay(50);
-                                mountPointTreeItem = await serverTreeItem.findChildItem(constants.BROWSE_KV1_MOUNT_POINT);
-                            }
                             expect(await mountPointTreeItem.isExpanded()).to.be.true;
 
-                            let pathTreeItem = await mountPointTreeItem.findChildItem(constants.READ_KV1_MULTI_FIELD_PATH);
+                            const pathTreeItem = await waitToExpandTreeItem(mountPointTreeItem, constants.READ_KV1_MULTI_FIELD_PATH);
                             expect(pathTreeItem).not.to.be.undefined;
-                            if (await pathTreeItem.isExpanded() === false) {
-                                await pathTreeItem.select();
-                                await delay(50);
-                                pathTreeItem = await mountPointTreeItem.findChildItem(constants.READ_KV1_MULTI_FIELD_PATH);
-                            }
                             expect(await pathTreeItem.isExpanded()).to.be.true;
 
-                            secretTreeItem = await pathTreeItem.findChildItem(constants.READ_KV1_MULTI_FIELD_SECRET);
+                            secretTreeItem = await waitForChildTreeItem(pathTreeItem, constants.READ_KV1_MULTI_FIELD_SECRET);
                             expect(secretTreeItem).not.to.be.undefined;
                         });
 
