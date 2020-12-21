@@ -6,10 +6,10 @@ name: Build
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
   release:
     types:
       - created
@@ -90,7 +90,7 @@ jobs:
       - name: Checkout Source
         uses: actions/checkout@v2
         with:
-          ref: master
+          ref: main
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
@@ -103,4 +103,4 @@ jobs:
         uses: peter-evans/create-pull-request@v2
         with:
           commit-message: Prepare for next development iteration
-          base: master
+          base: main
