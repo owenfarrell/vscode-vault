@@ -55,7 +55,7 @@ jobs:
       - name: Run Linter
         run: npm run lint
 
-  analyze:
+  codeql:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
@@ -64,6 +64,29 @@ jobs:
       uses: github/codeql-action/init@v1
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
+
+  snyk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v2
+      - name: Analyze
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+  sonarcloud:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Analyze
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   # TODO: Separate this in to a separate workflow when GitHub Actions allows downloading the latest artifact
   # https://github.com/actions/download-artifact/issues/3
