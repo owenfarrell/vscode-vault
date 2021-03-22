@@ -144,6 +144,3 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand('vault.write', writeFn)
     );
 }
-
-export function deactivate() {
-}
