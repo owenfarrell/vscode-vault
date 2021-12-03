@@ -11,7 +11,7 @@ export interface SecretsEngineAdaptor extends vscode.QuickPickItem {
 export abstract class DefaultSecretsEngineAdaptor implements SecretsEngineAdaptor {
     label = 'Other';
 
-    adapt(mountPoint: string, client: nv.client): void {
+    adapt(): void {
         // Do nothing
     }
 
