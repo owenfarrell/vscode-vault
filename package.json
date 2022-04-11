@@ -219,7 +219,8 @@
             "view/title": [
                 {
                     "command": "vault.connect",
-                    "group": "navigation"
+                    "group": "navigation",
+                    "when": "view == vaultSecrets"
                 }
             ]
         },
