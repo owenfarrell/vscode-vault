@@ -8,8 +8,10 @@ import validator from 'validator';
 import { VaultToken } from 'src/model/token';
 import { VaultWindow } from 'src/model/window';
 
+const PREFIXED_TOKEN_FORMAT = /ghp_\w{36,}/;
+
 function validateGitHubToken(userInput: string): string | undefined {
-    return userInput.length === 40 && validator.isHexadecimal(userInput) ? undefined : 'Not a valid GitHub token';
+    return PREFIXED_TOKEN_FORMAT.test(userInput) || (userInput.length === 40 && validator.isAlphanumeric(userInput)) ? undefined : 'Not a valid GitHub token';
 }
 
 async function login(client: nv.client): Promise<VaultToken> {
