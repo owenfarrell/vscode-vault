@@ -18,12 +18,9 @@ on:
       - 'demo/**'
       - 'resources/**'
       - '**.md'
-  release:
-    types:
-      - created
 
 jobs:
-  build:
+  compile:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Source
@@ -34,12 +31,8 @@ jobs:
           node-version: 10.x
       - name: Clean Install
         run: npm ci
-      - name: Run Build
-        run: npm run build
-      - name: Upload Build Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          path: vscode-vault.vsix
+      - name: Run Webpack
+        run: npm run webpack
 
   lint:
     runs-on: ubuntu-latest
@@ -87,51 +80,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-  # TODO: Separate this in to a separate workflow when GitHub Actions allows downloading the latest artifact
-  # https://github.com/actions/download-artifact/issues/3
-  # https://github.com/actions/upload-artifact/issues/21
-  release:
-    needs: build
-    if: github.event_name == 'release' && github.event.action == 'created'
-    runs-on: ubuntu-latest
-    steps:
-      # TODO: Determine a more efficient way of accessing node_modules from the previous job
-      - name: Checkout Source
-        uses: actions/checkout@v2
-      - name: Setup Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: 10.x
-      - name: Clean Install
-        run: npm ci
-      - name: Download Build Artifact
-        uses: actions/download-artifact@v2
-      - name: Publish
-        run: ./node_modules/vsce/out/vsce publish --packagePath artifact/vscode-vault.vsix
-        env:
-          VSCE_PAT: ${{ secrets.VSCE_PAT }}
-
-  bump:
-    needs: release
-    if: github.event_name == 'release' && github.event.action == 'created'
-    runs-on: ubuntu-latest
-    steps:
-      # TODO: Determine a more efficient way of accessing node_modules from the previous job
-      - name: Checkout Source
-        uses: actions/checkout@v2
-        with:
-          ref: main
-      - name: Setup Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: 10.x
-      - name: Clean Install
-        run: npm ci
-      - name: Bump Version
-        run: npm version patch --git-tag-version=false
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v2
-        with:
-          commit-message: Prepare for next development iteration
-          base: main
