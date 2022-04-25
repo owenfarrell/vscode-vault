@@ -44,7 +44,8 @@ before(async function() {
     }, 5000);
     await usageDataNotification.dismiss();
 
-    const view = await new extest.ActivityBar().getViewControl('Explorer').openView();
+    const viewControl = await new extest.ActivityBar().getViewControl('Explorer');
+    const view = await viewControl.openView();
     await delay(1000);
     const content = view.getContent();
     const sections = await content.getSections();

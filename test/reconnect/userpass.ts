@@ -12,7 +12,8 @@ describe('Reconnect to Vault using Username & Password Authentication', function
     context('when the Explorer view is open', function() {
         let view: extest.SideBarView;
         before(async function() {
-            view = await new extest.ActivityBar().getViewControl('Explorer').openView();
+            const viewControl = await new extest.ActivityBar().getViewControl('Explorer');
+            view = await viewControl.openView();
             await delay(1000);
         });
 

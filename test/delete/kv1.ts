@@ -12,7 +12,8 @@ describe('Deleting from a KV Version 1 Engine Path', function() {
     let view: extest.SideBarView;
     context('when the Explorer view is open', function() {
         before(async function() {
-            view = await new extest.ActivityBar().getViewControl('Explorer').openView();
+            const viewControl = await new extest.ActivityBar().getViewControl('Explorer');
+            view = await viewControl.openView();
             await delay(1000);
         });
 
@@ -83,7 +84,7 @@ describe('Deleting from a KV Version 1 Engine Path', function() {
 
                                 for (const value of await pathTreeItem.getChildren()) {
                                     this.test.parent.addTest(it('deletes a secret that was created by a test', async function() {
-                                        const label = value.getLabel();
+                                        const label = await value.getLabel();
                                         if (validator.isUUID(label)) {
                                             await refreshPath();
 

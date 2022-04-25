@@ -12,7 +12,8 @@ describe('Connect to Vault using Native Authentication', function() {
     context('when the Explorer view is open', function() {
         let view: extest.SideBarView;
         before(async function() {
-            view = await new extest.ActivityBar().getViewControl('Explorer').openView();
+            const viewControl = await new extest.ActivityBar().getViewControl('Explorer');
+            view = await viewControl.openView();
             await delay(1000);
         });
 
@@ -31,7 +32,8 @@ describe('Connect to Vault using Native Authentication', function() {
                 context('when the connect action is clicked', function() {
                     before(async function() {
                         await extest.VSBrowser.instance.driver.actions().mouseMove(section).perform();
-                        await section.getAction('Connect to Server').click();
+                        const action = await section.getAction('Connect to Server');
+                        await action.click();
                     });
 
                     let input: extest.InputBox;

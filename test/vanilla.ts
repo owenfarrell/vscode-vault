@@ -10,7 +10,8 @@ describe('Extension Activation', function() {
         let view: extest.SideBarView;
 
         before(async function() {
-            view = await new extest.ActivityBar().getViewControl('Explorer').openView();
+            const viewControl = await new extest.ActivityBar().getViewControl('Explorer');
+            view = await viewControl.openView();
             await new Promise((resolve) => { setTimeout(resolve, 1000); });
         });
 
@@ -55,7 +56,7 @@ describe('Extension Activation', function() {
 
                     before(async function() {
                         await extest.VSBrowser.instance.driver.actions().mouseMove(section).perform();
-                        const action = section.getAction('Connect to Server');
+                        const action = await section.getAction('Connect to Server');
                         await action.click();
                         input = new extest.InputBox();
                     });

@@ -11,7 +11,8 @@ describe('Disconnecting from a Vault', function() {
     let view: extest.SideBarView;
     context('when the Explorer view is open', function() {
         before(async function() {
-            view = await new extest.ActivityBar().getViewControl('Explorer').openView();
+            const viewControl = await new extest.ActivityBar().getViewControl('Explorer');
+            view = await viewControl.openView();
             await delay(1000);
         });
 
