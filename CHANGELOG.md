@@ -4,6 +4,31 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 2.3
+
+### Added
+- Copy command with `ctrl + c` shortcut
+
+### Removed
+- Custom icon reosurces
+- Vault connection button from non-vault panels
+
+### Changed
+- GitHub authentication token validation
+- CI/CD pipeline to support pre-release publishing
+
+### Security
+- Bump elliptic from 6.5.3 to 6.5.4
+- Bump y18n from 4.0.0 to 4.0.1
+- Bump ssri from 6.0.1 to 6.0.2
+- Bump validator from 13.0.0 to 13.7.0
+- Bump hosted-git-info from 2.8.8 to 2.8.9
+- Bump path-parse from 1.0.6 to 1.0.7
+- Bump jszip from 3.5.0 to 3.7.1
+- Bump pathval from 1.1.0 to 1.1.1
+- Bump minimist from 1.2.5 to 1.2.6
+- Bump ansi-regex from 3.0.0 to 3.0.1
+
 ## 2.2.2
 
 ### Changed
