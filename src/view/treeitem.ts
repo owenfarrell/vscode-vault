@@ -65,7 +65,7 @@ export abstract class VaultTreeItem extends vscode.TreeItem {
         return this._children ? this._children.find((value: VaultTreeItem) => value.label === label) : undefined;
     }
 
-    abstract async refresh(): Promise<boolean>;
+    abstract refresh(): Promise<boolean>;
     //#endregion
 
     //#region User Interface Helper Methods
