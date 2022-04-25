@@ -17,8 +17,6 @@
         {
             "type": "npm",
             "script": "test",
-            "problemMatcher": "$tsc-watch",
-            "isBackground": true,
             "presentation": {
                 "reveal": "always"
             },
@@ -30,7 +28,6 @@
         {
             "type": "npm",
             "script": "compile",
-            "problemMatcher": "$tsc-watch",
             "isBackground": true,
             "presentation": {
                 "reveal": "never"
@@ -38,6 +35,16 @@
             "group": {
                 "kind": "build",
                 "isDefault": true
+            }
+        },
+        {
+            "type": "npm",
+            "script": "webpack",
+            "presentation": {
+                "reveal": "always"
+            },
+            "group": {
+                "kind": "build"
             }
         }
     ]
