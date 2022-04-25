@@ -25,9 +25,9 @@ jobs:
       - name: Generate Version
         run: npm link semver && npm version $(node version.js)
       - name: Build Package
-        run: npx vsce package -o vscode-vault.vsix $VSCE_PRE_RELEASE_FLAG
+        run: npx vsce package -o vscode-vault.vsix ${{ env.VSCE_PRE_RELEASE_FLAG }}
       - name: Publish Release
-        run: npx vsce publish --packagePath artifact/vscode-vault.vsix $VSCE_PRE_RELEASE_FLAG
+        run: npx vsce publish --packagePath artifact/vscode-vault.vsix ${{ env.VSCE_PRE_RELEASE_FLAG }}
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
 
