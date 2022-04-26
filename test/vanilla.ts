@@ -52,7 +52,7 @@ describe('Extension Activation', function() {
                 });
 
                 context('when the connect action is clicked', function() {
-                    let input: extest.QuickOpenBox;
+                    let input: extest.InputBox;
 
                     before(async function() {
                         await extest.VSBrowser.instance.driver.actions().mouseMove(section).perform();

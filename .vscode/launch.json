@@ -19,23 +19,21 @@
             ],
             "preLaunchTask": "npm: webpack",
             "env": {
-                "VAULT_ADDR": "http://localhost:8200"
+                "VAULT_ADDR": "http://localhost:8200",
+                "VAULT_TOKEN": "50m35up3r53cr3770k3n"
             }
         },
         {
-            "name": "Launch Tests",
-            "type": "extensionHost",
+            "name": "Debug Tests",
+            "type": "node",
             "request": "launch",
-            "runtimeExecutable": "${execPath}",
-            "args": [
-                "--extensionDevelopmentPath=${workspaceRoot}",
-                "--extensionTestsPath=${workspaceRoot}/out/test"
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "test"
             ],
-            "sourceMaps": true,
-            "outFiles": [
-                "${workspaceRoot}/out/test/**/*.js"
-            ],
-            "preLaunchTask": "npm: test-compile"
-        }
+            "env": {
+                "MOCHA_TIMEOUT": "0"
+            }
+        },
     ]
 }

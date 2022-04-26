@@ -32,7 +32,7 @@ xdescribe('Connect to Vault using GitHub Authentication', function() {
                 context('when the connect action is clicked', function() {
                     before(async function() {
                         await extest.VSBrowser.instance.driver.actions().mouseMove(section).perform();
-                        const action = await section.getAction('Connect to Server')
+                        const action = await section.getAction('Connect to Server');
                         await action.click();
                     });
 

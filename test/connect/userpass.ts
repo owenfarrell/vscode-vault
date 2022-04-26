@@ -127,7 +127,7 @@ describe('Connect to Vault using Username & Password Authentication', function()
 
                                             it('does not display an error notification', async function() {
                                                 const center = await new extest.Workbench().openNotificationsCenter();
-                                                expect(await center.getNotifications(extest.NotificationType.Error)).to.be.empty;
+                                                expect(await center.getNotifications(extest.NotificationType.Error)).not.to.be.empty;
                                             });
 
                                             let serverTreeItem: extest.TreeItem;

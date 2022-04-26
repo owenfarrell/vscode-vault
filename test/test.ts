@@ -18,7 +18,7 @@ require('./read/kv1');
 require('./read/kv2');
 
 require('./write/kv1');
-// require('./write/kv2');
+require('./write/kv2');
 
 require('./delete/kv1');
 require('./delete/kv2');
@@ -32,17 +32,6 @@ require('./remove/native');
 
 before(async function() {
     this.timeout(10000);
-
-    const workbench = new extest.Workbench();
-    const center = await workbench.openNotificationsCenter();
-    const usageDataNotification = await extest.VSBrowser.instance.driver.wait(async function() {
-        const notifications = await center.getNotifications(extest.NotificationType.Info);
-        return notifications.find(async(notification: extest.Notification) => {
-            const text = await notification.getText();
-            return text.startsWith('VS Code collects usage data');
-        });
-    }, 5000);
-    await usageDataNotification.dismiss();
 
     const viewControl = await new extest.ActivityBar().getViewControl('Explorer');
     const view = await viewControl.openView();

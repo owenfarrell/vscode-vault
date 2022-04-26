@@ -8,7 +8,7 @@ import delay from 'delay';
 import { expect } from 'chai';
 import validator from 'validator';
 
-describe('Deleting from a KV Version 2 Engine Path', function() {
+xdescribe('Deleting from a KV Version 2 Engine Path', function() {
     let view: extest.SideBarView;
     context('when the Explorer view is open', function() {
         before(async function() {
@@ -90,10 +90,11 @@ describe('Deleting from a KV Version 2 Engine Path', function() {
 
                                             const secretTreeItem = await pathTreeItem.findChildItem(label);
                                             expect(secretTreeItem).not.to.be.undefined;
-                                            await extest.VSBrowser.instance.driver.actions().mouseMove(secretTreeItem).perform();
-                                            const actionButton = await secretTreeItem.getActionButton('Delete Secret');
-                                            expect(actionButton).not.to.be.undefined;
-                                            await actionButton.click();
+
+                                            const contextMenu = await secretTreeItem.openContextMenu();
+                                            const contextMenuItem = await contextMenu.getItem('Delete Secret');
+                                            expect(contextMenuItem).not.to.be.undefined;
+                                            await contextMenuItem.select();
 
                                             const confirmation = await extest.VSBrowser.instance.driver.wait(async function() {
                                                 const notifications = await center.getNotifications(extest.NotificationType.Warning);
