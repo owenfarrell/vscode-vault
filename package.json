@@ -3,7 +3,7 @@
     "version": "2.3.0",
     "publisher": "owenfarrell",
     "engines": {
-        "vscode": "^1.42.0"
+        "vscode": "^1.63.0"
     },
     "license": "MIT",
     "displayName": "HashiCorp Vault",
