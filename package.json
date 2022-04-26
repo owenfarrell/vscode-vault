@@ -284,7 +284,7 @@
         "webpack-cli": "^4.9.2"
     },
     "scripts": {
-        "clean": "rimraf dist out test-extensions test-resources",
+        "clean": "rimraf dist out test-extensions test-resources *.vsix",
         "build": "vsce package -o vscode-vault.vsix",
         "compile": "webpack --mode development --watch",
         "lint": "eslint 'src/**/*'",
