@@ -17,7 +17,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
-          node-version: 14.x
+          node-version: 16.x
       - name: Identify Release Type
         run: echo "VSCE_PRE_RELEASE_FLAG=${{ github.event.release.prerelease && '--pre-release' || '' }}" >> $GITHUB_ENV
       - name: Clean Install
@@ -40,7 +40,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
-          node-version: 14.x
+          node-version: 16.x
       - name: Bump Version
         run: npm version minor --git-tag-version=false
       - name: Create Pull Request
