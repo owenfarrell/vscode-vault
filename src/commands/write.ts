@@ -62,7 +62,7 @@ export default async function(client: nv.client, path: string, mountPoint?: stri
         // Create an anonymous function that ensures writes to the same mount point
         const pathValidator = (userInput: string) => userInput.startsWith(mountPoint) ? null : 'Path is part of a different mount point';
         // Prompt for the path
-        path = await vscode.window.showInputBox({ prompt: 'Enter path to write to Vault', validateInput: pathValidator, value: pathInputBoxValue, valueSelection: [path.length, path.length] });
+        path = await vscode.window.showInputBox({ ignoreFocusOut: true, prompt: 'Enter path to write to Vault', validateInput: pathValidator, value: pathInputBoxValue, valueSelection: [path.length, path.length] });
     }
     // If no path was collected
     if (!path) {
@@ -70,7 +70,7 @@ export default async function(client: nv.client, path: string, mountPoint?: stri
     }
 
     // Prompt for the fields to write
-    const dataToWrite = await vscode.window.showInputBox({ prompt: 'Enter data to write', placeHolder: 'Enter JSON or key=value pairs', validateInput: validateFields });
+    const dataToWrite = await vscode.window.showInputBox({ ignoreFocusOut: true, prompt: 'Enter data to write', placeHolder: 'Enter JSON or key=value pairs', validateInput: validateFields });
     // If no fields to write were collected
     if (!dataToWrite || dataToWrite.length === 0) {
         return undefined;

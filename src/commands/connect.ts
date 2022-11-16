@@ -14,7 +14,7 @@ function validateURL(userInput: string): string | undefined {
 
 export default async function(reservedNames: string[] = []): Promise<model.VaultConnectionConfig> {
     // Prompt for the Vault endpoint
-    const endpoint = await vscode.window.showInputBox({ prompt: 'Enter the address of your vault server', validateInput: validateURL, value: process.env.VAULT_ADDR });
+    const endpoint = await vscode.window.showInputBox({ ignoreFocusOut: true, prompt: 'Enter the address of your vault server', validateInput: validateURL, value: process.env.VAULT_ADDR });
     // If no Vault endpoint was collected
     if (!endpoint) {
         return undefined;
@@ -30,7 +30,7 @@ export default async function(reservedNames: string[] = []): Promise<model.Vault
     // If the default name is reserved, don't preload the input box
     const nameInputBoxValue = validateName(endpointUrl.host) ? undefined : endpointUrl.host;
     // Prompt for the friendly (display) name
-    const name = await vscode.window.showInputBox({ prompt: 'Enter the friendly name of your vault', validateInput: validateName, value: nameInputBoxValue });
+    const name = await vscode.window.showInputBox({ ignoreFocusOut: true, prompt: 'Enter the friendly name of your vault', validateInput: validateName, value: nameInputBoxValue });
     // If no friendly (display) name was collected
     if (!name) {
         return undefined;

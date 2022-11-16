@@ -11,21 +11,21 @@ async function login(client: nv.client): Promise<VaultToken> {
     const ldapLoginRequest = { mount_point: 'ldap', username: process.env.USER || process.env.USERNAME, password: undefined };
 
     // Prompt the user for the authentication mount point
-    ldapLoginRequest.mount_point = await vscode.window.showInputBox({ prompt: 'Enter LDAP authentication mount point', value: ldapLoginRequest.mount_point });
+    ldapLoginRequest.mount_point = await vscode.window.showInputBox({ ignoreFocusOut: true, prompt: 'Enter LDAP authentication mount point', value: ldapLoginRequest.mount_point });
     // If no username was collected
     if (!ldapLoginRequest.mount_point) {
         return undefined;
     }
 
     // Prompt the user for the authentication username
-    ldapLoginRequest.username = await vscode.window.showInputBox({ prompt: 'Enter Username', value: ldapLoginRequest.username });
+    ldapLoginRequest.username = await vscode.window.showInputBox({ ignoreFocusOut: true, prompt: 'Enter Username', value: ldapLoginRequest.username });
     // If no password was collected
     if (!ldapLoginRequest.username) {
         return undefined;
     }
 
     // Prompt the user for the authentication password
-    ldapLoginRequest.password = await vscode.window.showInputBox({ password: true, prompt: 'Enter Password', value: ldapLoginRequest.password });
+    ldapLoginRequest.password = await vscode.window.showInputBox({ ignoreFocusOut: true, password: true, prompt: 'Enter Password', value: ldapLoginRequest.password });
     // If no input was collected
     if (!ldapLoginRequest.password) {
         return undefined;

@@ -75,7 +75,7 @@ export class VaultServerTreeItem extends VaultTreeItem {
     //#region Custom Command Methods
     async browse(): Promise<VaultTreeItem> {
         // Prompt for the path
-        const browseablePath = await vscode.window.showInputBox({ prompt: 'Enter path to browse' });
+        const browseablePath = await vscode.window.showInputBox({ ignoreFocusOut: true, prompt: 'Enter path to browse' });
         // If no path was collected
         if (!browseablePath) {
             return undefined;

@@ -11,21 +11,21 @@ async function login(client: nv.client): Promise<VaultToken> {
     const userpassLoginRequest = { mount_point: 'userpass', username: process.env.USER || process.env.USERNAME, password: undefined };
 
     // Prompt the user for the authentication mount point
-    userpassLoginRequest.mount_point = await vscode.window.showInputBox({ prompt: 'Enter userpass authentication mount point', value: userpassLoginRequest.mount_point });
+    userpassLoginRequest.mount_point = await vscode.window.showInputBox({ ignoreFocusOut: true, prompt: 'Enter userpass authentication mount point', value: userpassLoginRequest.mount_point });
     // If no username was collected
     if (!userpassLoginRequest.mount_point) {
         return undefined;
     }
 
     // Prompt the user for the authentication username
-    userpassLoginRequest.username = await vscode.window.showInputBox({ prompt: 'Enter Username', value: userpassLoginRequest.username });
+    userpassLoginRequest.username = await vscode.window.showInputBox({ ignoreFocusOut: true, prompt: 'Enter Username', value: userpassLoginRequest.username });
     // If no password was collected
     if (!userpassLoginRequest.username) {
         return undefined;
     }
 
     // Prompt the user for the authentication password
-    userpassLoginRequest.password = await vscode.window.showInputBox({ password: true, prompt: 'Enter Password', value: userpassLoginRequest.password });
+    userpassLoginRequest.password = await vscode.window.showInputBox({ ignoreFocusOut: true, password: true, prompt: 'Enter Password', value: userpassLoginRequest.password });
     // If no input was collected
     if (!userpassLoginRequest.password) {
         return undefined;

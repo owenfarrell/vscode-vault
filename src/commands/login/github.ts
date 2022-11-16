@@ -18,14 +18,14 @@ async function login(client: nv.client): Promise<VaultToken> {
     const githubLoginRequest = { mount_point: 'github', token: process.env.VAULT_AUTH_GITHUB_TOKEN };
 
     // Prompt for the mount point
-    githubLoginRequest.mount_point = await vscode.window.showInputBox({ prompt: 'Enter authentication mount point', value: githubLoginRequest.mount_point });
+    githubLoginRequest.mount_point = await vscode.window.showInputBox({ ignoreFocusOut: true, prompt: 'Enter authentication mount point', value: githubLoginRequest.mount_point });
     // If the mount point was not collected
     if (!githubLoginRequest.mount_point) {
         return undefined;
     }
 
     // Prompt for the GitHub token
-    githubLoginRequest.token = await vscode.window.showInputBox({ prompt: 'Enter GitHub access token', value: githubLoginRequest.token, validateInput: validateGitHubToken });
+    githubLoginRequest.token = await vscode.window.showInputBox({ ignoreFocusOut: true, prompt: 'Enter GitHub access token', value: githubLoginRequest.token, validateInput: validateGitHubToken });
     // If the GitHub token was not collected
     if (!githubLoginRequest.token) {
         return undefined;

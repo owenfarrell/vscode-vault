@@ -30,7 +30,7 @@ async function login(client: nv.client): Promise<VaultToken> {
     }
 
     // Prompt for the Vault token
-    const userInput = await vscode.window.showInputBox({ prompt: 'Enter Vault token', value: nativeToken });
+    const userInput = await vscode.window.showInputBox({ ignoreFocusOut: true, prompt: 'Enter Vault token', value: nativeToken });
     // If the Vault token was collected
     if (!userInput) {
         return undefined;
