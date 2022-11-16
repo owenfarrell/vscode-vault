@@ -18,8 +18,8 @@ export class KeyValueVersion2Adaptor implements SecretsEngineAdaptor {
         }
 
         const mountPointName = mountPoint.replace(ANY_LEADING_SLASHES, '').replace(OPTIONAL_TRAILING_SLASH, '');
-        const metadataRegex = RegExp('(\\/?' + mountPointName + '(?!\\/metadata))\\/?');
-        const dataRegex = RegExp('(\\/?' + mountPointName + '(?!\\/data))\\/?');
+        const metadataRegex = RegExp(`(\\/?${mountPointName}(?!\\/metadata))\\/?`);
+        const dataRegex = RegExp(`(\\/?${mountPointName}(?!\\/data))\\/?`);
 
         const originalDeleteFunction = client.delete;
         client.delete = function(path, requestOptions): Promise<any> {

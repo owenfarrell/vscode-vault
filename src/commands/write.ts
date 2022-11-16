@@ -6,7 +6,7 @@ import * as vscode from 'vscode';
 
 import validator from 'validator';
 
-const KEY_VALUE_PAIR: RegExp = new RegExp('([\\w_]+)=([^ ]+)', 'g');
+const KEY_VALUE_PAIR: RegExp = /'(\\w+)=([^ ]+)'/g;
 const KEY_VALUE_PAIR_LIST: RegExp = new RegExp(`^((${KEY_VALUE_PAIR.source}) *)+$`);
 
 interface UserInput {
@@ -30,7 +30,7 @@ function parseFields(input: string): UserInput {
         // Initialize the field count counter
         fieldCount = 0;
         // Create a clone of the validation regex
-        const regex: RegExp = new RegExp(KEY_VALUE_PAIR.source, KEY_VALUE_PAIR.flags);
+        const regex: RegExp = new RegExp(KEY_VALUE_PAIR);
         let match: RegExpExecArray;
         // While more regex matches exist
         while ((match = regex.exec(input)) !== null) {
