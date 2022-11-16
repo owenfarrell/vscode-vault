@@ -94,26 +94,11 @@ export class VaultTreeDataProvider implements vscode.TreeDataProvider<VaultTreeI
     }
 
     async disconnect(server: VaultServerTreeItem): Promise<void> {
-        // If the server is connected
-        if (server.connected) {
-            // Dispose of the server's session
-            server.session.dispose();
-            // Trigger a refresh
-            this.refresh(server);
-            vscode.window.showInformationMessage(`Disconnected from ${server.label}`);
-        }
-        else {
-            // Find the specified server in the list
-            const index = this._serverList.indexOf(server);
-            // If the element was found in the list
-            if (index > -1) {
-                // Remove the element
-                this._serverList.splice(index, 1);
-                vscode.window.showInformationMessage(`Removed ${server.label}`);
-            }
-            // Trigger a refresh of window
-            this._onDidChangeTreeData.fire();
-        }
+        // Dispose of the server's session
+        server.session.dispose();
+        // Trigger a refresh
+        this.refresh(server);
+        vscode.window.showInformationMessage(`Disconnected from ${server.label}`);
     }
 
     async refresh(element: VaultTreeItem): Promise<VaultTreeItem[]> {
@@ -123,6 +108,19 @@ export class VaultTreeDataProvider implements vscode.TreeDataProvider<VaultTreeI
             this._onDidChangeTreeData.fire();
         }
         return undefined;
+    }
+
+    async remove(server: VaultServerTreeItem): Promise<void> {
+        // Find the specified server in the list
+        const index = this._serverList.indexOf(server);
+        // If the element was found in the list
+        if (index > -1) {
+            // Remove the element
+            this._serverList.splice(index, 1);
+            vscode.window.showInformationMessage(`Removed ${server.label}`);
+        }
+        // Trigger a refresh of window
+        this._onDidChangeTreeData.fire();
     }
     //#endregion
 }

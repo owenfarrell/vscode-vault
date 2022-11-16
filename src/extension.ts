@@ -91,7 +91,7 @@ export function activate(context: vscode.ExtensionContext) {
         .then(saveSessionList)
         .catch((err: Error) => vaultWindow.logError(`Unable to browse Vault path (${err.message})`));
 
-    const connectFn = (treeItem?: view.VaultServerTreeItem) => vaultTreeDataProvider.connect(treeItem)
+    const connectFn = () => vaultTreeDataProvider.connect()
         .then((newItem: view.VaultServerTreeItem) => newItem && vaultTreeDataProvider.refresh(newItem))
         .then(saveSessionList)
         .catch((err: Error) => vaultWindow.logError(`Unable to connect to Vault (${err.message})`));
@@ -99,13 +99,20 @@ export function activate(context: vscode.ExtensionContext) {
     const copyFn = () => lastSelectedElement instanceof view.VaultSecretTreeItem && lastSelectedElement.copy()
         .catch((err: Error) => vaultWindow.logError(`Unable to copy Vault path (${err.message})`));
 
+    const reconnectFn = (treeItem?: view.VaultServerTreeItem) => vaultTreeDataProvider.connect(treeItem)
+        .then((newItem: view.VaultServerTreeItem) => newItem && vaultTreeDataProvider.refresh(newItem))
+        .catch((err: Error) => vaultWindow.logError(`Unable to reconnect to Vault (${err.message})`));
+
     const deleteFn = (treeItem: view.VaultSecretTreeItem) => treeItem.delete()
         .then(() => vaultTreeDataProvider.refresh(treeItem.parent))
         .catch((err: Error) => vaultWindow.logError(`Unable to delete Vault path (${err.message})`));
 
     const disconnectFn = (treeItem: view.VaultServerTreeItem) => vaultTreeDataProvider.disconnect(treeItem)
-        .then(saveSessionList)
         .catch((err: Error) => vaultWindow.logError(`Unable to disconnect from Vault (${err.message})`));
+
+    const removeFn = (treeItem: view.VaultServerTreeItem) => vaultTreeDataProvider.remove(treeItem)
+        .then(saveSessionList)
+        .catch((err: Error) => vaultWindow.logError(`Unable to remove Vault (${err.message})`));
 
     const listFn = (treeItem: view.VaultPathTreeItem) => vaultTreeDataProvider.refresh(treeItem)
         .catch((err: Error) => vaultWindow.logError(`Unable to list Vault path (${err.message})`));
@@ -129,13 +136,13 @@ export function activate(context: vscode.ExtensionContext) {
         // Subscribe to "vault.copy" events
         vscode.commands.registerCommand('vault.copy', copyFn),
         // Subscribe to "vault.reconnect" events
-        vscode.commands.registerCommand('vault.reconnect', connectFn),
+        vscode.commands.registerCommand('vault.reconnect', reconnectFn),
         // Subscribe to "vault.delete" events
         vscode.commands.registerCommand('vault.delete', deleteFn),
         // Subscribe to "vault.disconnect" events
         vscode.commands.registerCommand('vault.disconnect', disconnectFn),
         // Subscribe to "vault.remove" events
-        vscode.commands.registerCommand('vault.remove', disconnectFn),
+        vscode.commands.registerCommand('vault.remove', removeFn),
         // Subscribe to "vault.list" events
         vscode.commands.registerCommand('vault.list', listFn),
         // Subscribe to "vault.read" events
