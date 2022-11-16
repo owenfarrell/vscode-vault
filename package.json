@@ -243,7 +243,7 @@
     "dependencies": {
         "flat": "^5.0.2",
         "http-status-codes": "^1.4.0",
-        "node-vault": "0.9.16",
+        "node-vault": "^0.9.19",
         "validator": "^13.7.0",
         "vscode-uri": "^1.0.8"
     },
