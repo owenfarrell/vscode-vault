@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Added
 - Copy command with `ctrl + c` shortcut
+- Namespace support
 
 ### Removed
 - Custom icon reosurces
@@ -16,6 +17,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Changed
 - GitHub authentication token validation
 - CI/CD pipeline to support pre-release publishing
+- Ignored focus out for input boxes throughout login sequence
 
 ### Security
 - Bump elliptic from 6.5.3 to 6.5.4
@@ -28,6 +30,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Bump pathval from 1.1.0 to 1.1.1
 - Bump minimist from 1.2.5 to 1.2.6
 - Bump ansi-regex from 3.0.0 to 3.0.1
+- Bump got from 11.8.3 to 11.8.5
+- Bump terser from 5.12.1 to 5.14.2
+- Bump loader-utils from 1.4.0 to 1.4.2
+- Bump minimatch from 3.0.4 to 3.1.2
 
 ## 2.2.2
 
