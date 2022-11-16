@@ -13,11 +13,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Source
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 16
       - name: Identify Release Type
         run: echo "VSCE_PRE_RELEASE_FLAG=${{ github.event.release.prerelease && '--pre-release' || '' }}" >> $GITHUB_ENV
       - name: Clean Install
@@ -36,11 +36,11 @@ jobs:
     if: github.event.release.prerelease == false
     steps:
       - name: Checkout Source
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 16
       - name: Bump Version
         run: npm version minor --git-tag-version=false
       - name: Create Pull Request
