@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Added
 - Copy command with `ctrl + c` shortcut
 - Namespace support
+- AppRole auth method support
 
 ### Removed
 - Custom icon reosurces

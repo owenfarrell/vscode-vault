@@ -1,5 +1,6 @@
 'use strict';
 
+import approle from './approle';
 import { CallableQuickPickItem } from './base';
 import github from './github';
 import ldap from './ldap';
@@ -8,6 +9,7 @@ import userpass from './userpass';
 
 export const QUICK_PICK_LIST : CallableQuickPickItem[] = [
     native,
+    approle,
     github,
     ldap,
     userpass
