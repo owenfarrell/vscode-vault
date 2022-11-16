@@ -20,6 +20,13 @@ export default async function(reservedNames: string[] = []): Promise<model.Vault
         return undefined;
     }
 
+    // Prompt for the Vault namespace
+    const namespace = await vscode.window.showInputBox({ ignoreFocusOut: true, placeHolder: 'leave blank for the root namespace', prompt: 'Enter the namespace of your vault tenant' });
+    // If no Vault namespace was collected
+    if (namespace === undefined) {
+        return undefined;
+    }
+
     // Create a URL object from the Vault endpoint
     const endpointUrl = new url.URL(endpoint);
     // Create an anonymous function that ensures names are unique
@@ -44,5 +51,5 @@ export default async function(reservedNames: string[] = []): Promise<model.Vault
     }
 
     // Create a new Vault session config object
-    return { endpoint: endpoint, login: selectedItem.label, name: name };
+    return { endpoint, login: selectedItem.label, name, namespace };
 }

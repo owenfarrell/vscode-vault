@@ -7,6 +7,7 @@ export interface VaultMountPointConfig {
 
 export interface VaultConnectionConfig {
     name: string,
+    namespace?: string,
     endpoint: string,
     login: string,
     mountPoints?: VaultMountPointConfig[]

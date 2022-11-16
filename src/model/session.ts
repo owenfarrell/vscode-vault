@@ -53,7 +53,8 @@ export class VaultSession implements vscode.Disposable {
         this._config = {
             endpoint: url.format(endpointUrl).replace(/\/$/, ''),
             login: quickPick.label,
-            name: myConfig.name
+            name: myConfig.name,
+            namespace: myConfig.namespace?.replace(/\/$/, '')
         };
         this._login = quickPick.callback;
         this._options = {
@@ -103,6 +104,7 @@ export class VaultSession implements vscode.Disposable {
         // Create a Vault client
         this._client = nv({
             endpoint: this._config.endpoint,
+            namespace: this._config.namespace,
             requestOptions: this._options
         });
         // Call the selected authentication function
