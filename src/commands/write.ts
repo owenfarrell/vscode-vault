@@ -6,8 +6,8 @@ import * as vscode from 'vscode';
 
 import validator from 'validator';
 
-const KEY_VALUE_PAIR: RegExp = /'(\\w+)=([^ ]+)'/g;
-const KEY_VALUE_PAIR_LIST: RegExp = new RegExp(`^((${KEY_VALUE_PAIR.source}) *)+$`);
+const KEY_VALUE_PAIR: RegExp = /(?=(\w[\w-]+))\1=(?:([^"'][^\s]+)|'([^']+)'|"([^"]+)")/g;
+const KEY_VALUE_PAIR_LIST: RegExp = new RegExp(`^(${KEY_VALUE_PAIR.source} *)+$`);
 
 interface UserInput {
     data: any;
@@ -36,8 +36,8 @@ function parseFields(input: string): UserInput {
         while ((match = regex.exec(input)) !== null) {
             // Extract the key from the first capture group
             const key: string = match[1];
-            // Extract the key from the second capture group
-            const value: string = match[2];
+            // Extract the key from the subsequent capture groups
+            const value: string = match[2] || match[3] || match[4];
             // Add the key/value pair to the object
             data[key] = value;
             // Increment the field count counter
@@ -50,7 +50,7 @@ function parseFields(input: string): UserInput {
 
 function validateFields(userInput: string) {
     // If the input is valid JSON or key/value pairs, return null (no error), otherwise return an error message
-    return validator.isJSON(userInput) || userInput.match(KEY_VALUE_PAIR_LIST) ? null : 'Must be JSON or key/value pairs';
+    return validator.isJSON(userInput) || KEY_VALUE_PAIR_LIST.test(userInput) ? null : 'Must be JSON or key/value pairs';
 }
 
 export default async function(client: nv.client, path: string, mountPoint?: string): Promise<boolean> {
